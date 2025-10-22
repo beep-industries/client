@@ -82,6 +82,21 @@ src/
 
 > **Note**: Some files and folders shown in the architecture tree do not exist yet. This structure is provided as a guide for the intended project organization.
 
+
+## Build and run with docker
+
+To build and run the Beep client application using Docker, follow these steps:
+1. **Build the Docker Image**  
+   Open a terminal in the root directory of the project (where the `Dockerfile` is located) and run the following command to build the Docker image:
+   ```bash
+   docker build -t beep-client .
+   ```
+
+2. **Run the Docker Container**
+    After the image is built, you can run a container using the following command:
+    ```bash
+    docker run -d --rm -p 8080:8080 beep-client
+    ```
 ---
 
 _This README will be completed with additional sections as development progresses._
