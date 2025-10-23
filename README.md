@@ -108,7 +108,7 @@ To automatically format your code on save:
 You can manually format the entire codebase by running:
 
 ```bash
-npm run format
+pnpm run format
 ```
 
 This command will format all TypeScript, JavaScript, JSON, and CSS files in the `src/` directory according to the rules defined in `.prettierrc`.

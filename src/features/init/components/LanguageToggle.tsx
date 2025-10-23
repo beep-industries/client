@@ -1,15 +1,20 @@
 import { Button } from "@/shared/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/shared/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/dropdown-menu"
 import { useTranslation } from "react-i18next"
 import { Languages } from "lucide-react"
 
 const languages = [
   { code: "en", name: "English", native: "English", emoji: "🌍" },
   { code: "fr", name: "French", native: "Français", emoji: "🌎" },
-];
+]
 
 export function LanguageToggle() {
-  const { i18n } = useTranslation();
+  const { i18n } = useTranslation()
 
   return (
     <DropdownMenu>
@@ -21,10 +26,7 @@ export function LanguageToggle() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {languages.map((lang) => (
-          <DropdownMenuItem
-            key={lang.code}
-            onClick={() => i18n.changeLanguage(lang.code)}
-          >
+          <DropdownMenuItem key={lang.code} onClick={() => i18n.changeLanguage(lang.code)}>
             {lang.emoji} {lang.native} ({lang.name})
           </DropdownMenuItem>
         ))}
