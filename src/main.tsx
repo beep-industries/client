@@ -1,4 +1,4 @@
-
+import './i18n'
 import './app/styles/index.css'
 import './app/styles/App.css'
 import ReactDOM from 'react-dom/client'

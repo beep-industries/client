@@ -1,0 +1,14 @@
+{
+    "home": {
+        "title": "Home",
+        "description": "Welcome to the home page"
+    },
+    "about": {
+        "title": "About Us",
+        "description": "Learn more about us on this page"
+    },
+    "common": {
+        "language": "Language",
+        "switch": "Switch"
+    }
+}
