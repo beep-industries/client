@@ -82,6 +82,38 @@ src/
 
 > **Note**: Some files and folders shown in the architecture tree do not exist yet. This structure is provided as a guide for the intended project organization.
 
+---
+
+## Code Formatting with Prettier
+
+This project uses **Prettier** to maintain consistent code formatting across the codebase.
+
+### Configuration
+
+The Prettier configuration is located in the `.prettierrc` file at the root of the project.
+
+### Setup in VS Code
+
+To automatically format your code on save:
+
+1. Install the **Prettier - Code formatter** extension in VS Code
+2. Set Prettier as your default formatter:
+   - Open VS Code Settings (Ctrl+, or Cmd+,)
+   - Search for "Default Formatter"
+   - Select **Prettier - Code formatter** from the dropdown
+3. Enable "Format On Save" in VS Code settings
+
+### Format Command
+
+You can manually format the entire codebase by running:
+
+```bash
+npm run format
+```
+
+This command will format all TypeScript, JavaScript, JSON, and CSS files in the `src/` directory according to the rules defined in `.prettierrc`.
+
+---
 
 ## Build and run with docker
 
