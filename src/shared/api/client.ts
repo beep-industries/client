@@ -1,4 +1,4 @@
-import ky from "ky";
+import ky from "ky"
 
 export const api = ky.create({
   prefixUrl: import.meta.env.VITE_API_URL || "/api",
@@ -6,11 +6,11 @@ export const api = ky.create({
   hooks: {
     beforeRequest: [
       (request) => {
-        const token = localStorage.getItem("auth_token");
+        const token = localStorage.getItem("auth_token")
         if (token) {
-          request.headers.set("Authorization", `Bearer ${token}`);
+          request.headers.set("Authorization", `Bearer ${token}`)
         }
       },
     ],
   },
-});
+})

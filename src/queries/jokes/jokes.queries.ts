@@ -1,13 +1,13 @@
-import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
-  getRandomJoke,
-  getJokes,
   getJokeByCategory,
+  getJokes,
   getMultipleJokes,
-  getSafeJokes,
   getProgrammingJokes,
+  getRandomJoke,
+  getSafeJokes,
 } from "./jokes.api"
-import type { JokeFilters, JokeApiResponse } from "./jokes.types"
+import type { JokeApiResponse, JokeFilters } from "./jokes.types"
 
 // Query keys factory
 export const jokeKeys = {

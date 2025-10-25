@@ -1,5 +1,11 @@
 import ky from "ky"
-import { JokeApiResponseSchema, type JokeFilters, type JokeApiResponse } from "./jokes.types"
+import {
+  JokeApiResponseSchema,
+  type JokeFilters,
+  type JokeApiResponse,
+  type SingleJoke,
+  SingleJokeSchema,
+} from "./jokes.types"
 
 // Create a dedicated client for the JokeAPI
 const jokeApi = ky.create({
@@ -12,9 +18,10 @@ const jokeApi = ky.create({
 })
 
 // Get a single random joke
-export const getRandomJoke = async (): Promise<JokeApiResponse> => {
+export const getRandomJoke = async (): Promise<SingleJoke> => {
   const response = await jokeApi.get("joke/Any").json()
-  return JokeApiResponseSchema.parse(response)
+  console.log("Random Joke Response:", response)
+  return SingleJokeSchema.parse(response)
 }
 
 // Get jokes with filters

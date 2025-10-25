@@ -8,40 +8,40 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from './routes/__root'
-import { Route as JokesRouteImport } from './routes/jokes'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as rootRouteImport } from "./routes/__root"
+import { Route as JokesRouteImport } from "./routes/jokes"
+import { Route as IndexRouteImport } from "./routes/index"
 
 const JokesRoute = JokesRouteImport.update({
-  id: '/jokes',
-  path: '/jokes',
+  id: "/jokes",
+  path: "/jokes",
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/jokes': typeof JokesRoute
+  "/": typeof IndexRoute
+  "/jokes": typeof JokesRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/jokes': typeof JokesRoute
+  "/": typeof IndexRoute
+  "/jokes": typeof JokesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/jokes': typeof JokesRoute
+  "/": typeof IndexRoute
+  "/jokes": typeof JokesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/jokes'
+  fullPaths: "/" | "/jokes"
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/jokes'
-  id: '__root__' | '/' | '/jokes'
+  to: "/" | "/jokes"
+  id: "__root__" | "/" | "/jokes"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -49,19 +49,19 @@ export interface RootRouteChildren {
   JokesRoute: typeof JokesRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    '/jokes': {
-      id: '/jokes'
-      path: '/jokes'
-      fullPath: '/jokes'
+    "/jokes": {
+      id: "/jokes"
+      path: "/jokes"
+      fullPath: "/jokes"
       preLoaderRoute: typeof JokesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
+    "/": {
+      id: "/"
+      path: "/"
+      fullPath: "/"
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
