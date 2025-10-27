@@ -9,7 +9,12 @@ export interface GetTokensResponse {
 }
 
 export interface GetTokensRequest {
-    email: string
-    password: string
-    totpToken?: string
+  email: string
+  password: string
+  totpToken?: string
+}
+
+export interface RefreshTokensResponse {
+  acccessToken: string
+  refreshToken: string
 }

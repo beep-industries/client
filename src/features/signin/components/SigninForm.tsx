@@ -11,10 +11,10 @@ import { Input } from "@/shared/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signinFormSchema, type SigninForm } from "../types/signin-form"
-import { useAuthTokens } from "@/queries/auth/auth.queries"
+import { useAuthTokensMutation } from "@/shared/queries/auth/auth.queries"
 
 export function SigninForm() {
-  const { mutate: authTokens } = useAuthTokens()
+  const { mutate: authTokens } = useAuthTokensMutation()
   const form = useForm<SigninForm>({
     resolver: zodResolver(signinFormSchema),
     defaultValues: {
