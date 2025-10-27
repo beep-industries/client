@@ -1,0 +1,85 @@
+stages:
+  - test
+  - build
+  - tag
+  - deploy
+
+variables:
+  IMAGE_NAME: ${HARBOR_HOST}/${HARBOR_PROJECT}/${CI_PROJECT_NAME}
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_REF_NAME  == $CI_DEFAULT_BRANCH
+      variables:
+        VERSION: ${CI_COMMIT_SHORT_SHA}-production
+        ENVIRONMENT: production
+        WEBRTC_URL_ENDPOINT: wss://voice.beep.ovh
+        API_URL_ENDPOINT: https://api.beep.ovh/
+    - when: always
+
+lint:
+  stage: test
+  image: node:18.17.1
+  before_script:
+    - corepack enable
+    - corepack prepare pnpm@latest-9 --activate
+    - pnpm config set store-dir .pnpm-store
+  script:
+    - echo "Building image with tag ${WEBRTC_URL_ENDPOINT}"
+    - pnpm install
+    - pnpm lint
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: $CI_COMMIT_REF_NAME  == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+build:
+  stage: build
+  image:
+    name: 'gcr.io/kaniko-project/executor:v1.14.0-debug'
+    entrypoint:
+      - ''
+  script:
+    - echo "Building image with version ${VERSION} for api ${API_URL_ENDPOINT} and rtc ${WEBRTC_URL_ENDPOINT}"
+    - >-
+      echo
+      "{\"auths\":{\"${HARBOR_HOST}\":{\"auth\":\"$(echo -n ${HARBOR_USERNAME}:${HARBOR_PASSWORD} | base64 -w 0)\"}}}"
+      > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --build-arg "VITE_BACKEND_URL=${API_URL_ENDPOINT}" --build-arg "VITE_WEBRTC_URL=${WEBRTC_URL_ENDPOINT}" --destination $IMAGE_NAME:$VERSION
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: manual
+
+deploy:
+  image: alpine/git
+  stage: deploy
+  variables:
+    CURRENT_REPO: beep-new
+    SSH_PRIVATE_KEY: ./ssh_key
+    KNOWN_HOSTS: ./known_hosts
+    VALUES: ./charts/${CURRENT_REPO}/${ENVIRONMENT}.yaml
+    REPO: argeepcd
+  tags:
+    - beep-runner
+  before_script:
+    - cat $BEEP_BOT_SSH_PRIVATE_KEY |base64 -d > $SSH_PRIVATE_KEY
+    - chmod 600 $SSH_PRIVATE_KEY
+    - ssh-keyscan gitlab.polytech.umontpellier.fr > $KNOWN_HOSTS
+    - GIT_SSH_COMMAND="ssh -i $SSH_PRIVATE_KEY -o UserKnownHostsFile=$KNOWN_HOSTS" git clone "git@gitlab.polytech.umontpellier.fr:beep/${REPO}.git"
+    - git config --global user.email "beep@bot.com"
+    - git config --global user.name "beep-bot"
+    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O yq && chmod +x ./yq
+  script:
+    - cd $REPO
+    - ../yq -i ".image.tag = \"$VERSION\"" $VALUES
+    - git add .
+    - git commit -m "[BUMP] ${CURRENT_REPO}-${ENVIRONMENT} to $VERSION"
+    - GIT_SSH_COMMAND="ssh -i .$SSH_PRIVATE_KEY -o UserKnownHostsFile=.$KNOWN_HOSTS" git push "git@gitlab.polytech.umontpellier.fr:beep/${REPO}.git"
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
