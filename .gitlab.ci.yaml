@@ -29,10 +29,7 @@ lint:
     - pnpm install
     - pnpm lint
   rules:
-    - if: $CI_COMMIT_TAG
-      when: never
     - if: $CI_COMMIT_REF_NAME  == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 build:
   stage: build
@@ -48,10 +45,7 @@ build:
       > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Dockerfile --build-arg "VITE_BACKEND_URL=${API_URL_ENDPOINT}" --build-arg "VITE_WEBRTC_URL=${WEBRTC_URL_ENDPOINT}" --destination $IMAGE_NAME:$VERSION
   rules:
-    - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-      when: manual
 
 deploy:
   image: alpine/git
@@ -79,7 +73,5 @@ deploy:
     - git commit -m "[BUMP] ${CURRENT_REPO}-${ENVIRONMENT} to $VERSION"
     - GIT_SSH_COMMAND="ssh -i .$SSH_PRIVATE_KEY -o UserKnownHostsFile=.$KNOWN_HOSTS" git push "git@gitlab.polytech.umontpellier.fr:beep/${REPO}.git"
   rules:
-    - if: $CI_COMMIT_TAG
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
