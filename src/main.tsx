@@ -1,12 +1,12 @@
-import "./i18n"
-import "./app/styles/index.css"
-import "./app/styles/App.css"
+import "@/i18n"
+import "@/app/styles/index.css"
+import "@/app/styles/App.css"
 import ReactDOM from "react-dom/client"
 import { createRouter, RouterProvider } from "@tanstack/react-router"
-import { routeTree } from "./routeTree.gen"
-import { ThemeProvider } from "./app/providers/ThemeProvider"
+import { routeTree } from "@/routeTree.gen"
+import { ThemeProvider } from "@/app/providers/ThemeProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { AuthProvider, useAuth } from "./shared/lib/auth-provider/auth"
+import { AuthProvider, useAuth } from "@/app/providers/AuthProvider.tsx"
 
 const queryClient = new QueryClient({
   defaultOptions: {

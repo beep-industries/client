@@ -1,5 +1,12 @@
 # Beep
 
+## Prerequisites
+
+```
+node 22.21+
+```
+
+
 ## Project Architecture
 
 The project follows a modern and modular architecture to facilitate maintainability and scalability.
