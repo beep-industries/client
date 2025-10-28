@@ -11,8 +11,8 @@ import { Input } from "@/shared/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signinFormSchema, type SigninForm } from "../types/signin-form"
-import { useAuth } from "@/shared/lib/auth-provider/auth"
 import { useTranslation } from "react-i18next"
+import { useAuth } from "@/app/providers/AuthProvider"
 
 export function SigninForm() {
   const { t } = useTranslation()

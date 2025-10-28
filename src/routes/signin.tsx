@@ -1,5 +1,5 @@
+import { useAuth } from "@/app/providers/AuthProvider"
 import { SigninCard } from "@/features/signin/components/SigninCard"
-import { useAuth } from "@/shared/lib/auth-provider/auth"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useEffect } from "react"
 

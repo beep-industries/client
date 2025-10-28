@@ -8,18 +8,16 @@ The project follows a modern and modular architecture to facilitate maintainabil
 src/
 ├── app/                          # Global app configuration
 │   ├── providers/                # All React providers
-│   │   ├── QueryProvider.tsx     # TanStack Query
-│   │   ├── RouterProvider.tsx    # TanStack Router
 │   │   ├── ThemeProvider.tsx     # Theme context
-│   │   └── I18nProvider.tsx      # i18n
+│   │   └── AuthProvider.tsx     
 │   ├── styles/
 │   │   ├── globals.css           # Global styles + Tailwind
 │   │   └── themes.css            # CSS variables for themes
 │   └── App.tsx                   # Main entry point
 │
 ├── features/                     # Features by business domain
+# Each feature has its own folder with components, hooks, types, and utils  
 │   ├── auth/
-│   │   ├── api/                  # Auth API calls
 │   │   ├── components/           # Auth-specific components
 │   │   ├── hooks/                # Auth business hooks
 │   │   ├── types/                # TypeScript types
@@ -37,11 +35,14 @@ src/
 │   │   ├── useDebounce.ts
 │   │   └── useLocalStorage.ts
 │   ├── lib/                      # External libs configuration
-│   │   ├── api-client.ts         # Configured Axios/Fetch
-│   │   ├── query-client.ts       # TanStack Query config
+│   │   ├── api.ts                # Configured Axios/Fetch
 │   │   └── utils.ts              # cn() and utilities
+│   ├── queries/                  # TanStack Query configurations
+│   │   └── auth/                 # Authentication queries
+│   │       ├── auth.api.ts       # Auth API functions
+│   │       ├── auth.queries.ts   # TanStack Query hooks
+│   │       └── auth.types.ts     # Auth query types
 │   ├── types/                    # Global types
-│   │   ├── api.types.ts
 │   │   └── common.types.ts
 │   └── constants/                # Global constants
 │       ├── routes.ts
@@ -56,20 +57,17 @@ src/
 │   └── dashboard/
 │       └── index.tsx
 │
-├── locales/                      # Translation files
-│   ├── en/
-│   │   ├── common.json
-│   │   └── features.json
-│   └── fr/
-│       ├── common.json
-│       └── features.json
-│
 ├── assets/                       # Static assets
 │   ├── images/
 │   └── icons/
 │
 ├── main.tsx                      # Vite entry point
 └── vite-env.d.ts
+public/
+├── locales/                      # Translation files
+│   ├── en.json                   # English translations
+│   └── fr.json                   # French translations
+└── vite.svg                      # Vite logo
 ```
 
 ### Architecture Principles
@@ -79,6 +77,7 @@ src/
 - **Centralized configuration**: All providers and global configuration are in `app/`
 - **File-based routing**: TanStack Router with an intuitive file structure
 - **Internationalization**: Multi-language support with translation files organized by language
+- **Query layer**: TanStack Query configurations organized by domain in `shared/queries/`
 
 > **Note**: Some files and folders shown in the architecture tree do not exist yet. This structure is provided as a guide for the intended project organization.
 

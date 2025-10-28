@@ -1,4 +1,4 @@
-import { api } from "@/shared/api/client"
+import { api } from "@/shared/lib/api"
 import type { GetTokensRequest, GetTokensResponse, RefreshTokensResponse } from "./auth.types"
 
 export const getTokens = (body: GetTokensRequest) =>
