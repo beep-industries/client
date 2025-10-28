@@ -18,8 +18,8 @@ const SigninRoute = SigninRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -49,7 +49,7 @@ export interface RootRouteChildren {
   SigninRoute: typeof SigninRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     "/signin": {
       id: "/signin"
