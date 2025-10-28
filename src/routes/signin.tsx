@@ -11,7 +11,7 @@ export const Route = createFileRoute("/signin")({
 })
 
 export function SigninPage() {
-  const auth  = useAuth()
+  const auth = useAuth()
   const { navigate } = useRouter()
   const { redirect } = Route.useSearch()
 

@@ -78,10 +78,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [logoutMutation.isSuccess, refreshMutation.isError])
 
-  useEffect(() => { console.log(isAuthenticated,user)}, [isAuthenticated, user])
+  useEffect(() => {
+    console.log(isAuthenticated, user)
+  }, [isAuthenticated, user])
   const login = (email: string, password: string) => authTokenMutation.mutate({ email, password })
   const logout = () => logoutMutation.mutate()
-   return (
+  return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
