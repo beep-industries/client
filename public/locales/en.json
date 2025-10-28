@@ -9,6 +9,8 @@
     },
     "common": {
         "language": "Language",
-        "switch": "Switch"
+        "switch": "Switch",
+        "signin": "Sign In",
+        "logout": "Log Out"
     }
 }

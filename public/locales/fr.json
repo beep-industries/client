@@ -9,6 +9,8 @@
     },
     "common": {
         "language": "Langue",
-        "switch": "Changer"
+        "switch": "Changer",
+        "logout": "Se déconnecter",
+        "signin": "Connexion"
     }
 }

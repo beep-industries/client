@@ -12,8 +12,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signinFormSchema, type SigninForm } from "../types/signin-form"
 import { useAuth } from "@/shared/lib/auth-provider/auth"
+import { useTranslation } from "react-i18next"
 
 export function SigninForm() {
+  const { t } = useTranslation()
   const { login } = useAuth()
   const form = useForm<SigninForm>({
     resolver: zodResolver(signinFormSchema),
@@ -59,7 +61,7 @@ export function SigninForm() {
           />
           <div className="flex justify-end">
             <Button type="submit" className="hover:cursor-pointer">
-              Singin
+              {t("common.signin")}
             </Button>
           </div>
         </form>

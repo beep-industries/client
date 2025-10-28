@@ -1,4 +1,4 @@
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
+import { createRootRouteWithContext, Outlet, redirect } from "@tanstack/react-router"
 import { ModeToggle } from "@/features/init/components/ModeToggle"
 import { LanguageToggle } from "@/features/init/components/LanguageToggle"
 import { type AuthState } from "@/shared/lib/auth-provider/auth"
@@ -9,6 +9,16 @@ interface AppContext {
 
 export const Route = createRootRouteWithContext<AppContext>()({
   component: RootComponent,
+  beforeLoad: ({ context, location }) => {
+    if (!context.auth.isAuthenticated && location.pathname !== "/signin") {
+      throw redirect({
+        to: "/signin",
+        search: {
+          redirect: location.href,
+        },
+      })
+    }
+  },
 })
 
 function RootComponent() {
