@@ -1,36 +1,26 @@
-import * as React from "react"
-import { createRootRoute, Outlet } from "@tanstack/react-router"
-import { QueryClient } from "@tanstack/react-query"
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router"
 import { ModeToggle } from "@/features/init/components/ModeToggle"
 import { LanguageToggle } from "@/features/init/components/LanguageToggle"
+import { type AuthState } from "@/shared/lib/auth-provider/auth"
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 5 * 60 * 1000, // 5 minutes
-      gcTime: 10 * 60 * 1000, // 10 minutes
-    },
-  },
-})
+interface AppContext {
+  auth: AuthState // Placeholder for future auth context
+}
 
-export const Route = createRootRoute({
-  context: () => ({ queryClient }),
+export const Route = createRootRouteWithContext<AppContext>()({
   component: RootComponent,
 })
 
-
 function RootComponent() {
   return (
-    <React.Fragment>
-      <div className="flex flex-col h-screen ">
-        <div className="flex flex-row justify-end gap-1 p-2">
-          <ModeToggle />
-          <LanguageToggle />
-        </div>
-        <div className="flex flex-col h-full">
-          <Outlet />
-        </div>
+    <div className="flex h-screen flex-col">
+      <div className="flex flex-row justify-end gap-1 p-2">
+        <ModeToggle />
+        <LanguageToggle />
       </div>
-    </React.Fragment>
+      <div className="flex h-full flex-col">
+        <Outlet />
+      </div>
+    </div>
   )
 }

@@ -7,7 +7,7 @@ import {
 } from "@/shared/queries/auth/auth.queries"
 import { jwtDecode } from "jwt-decode"
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean
   user: User | null
   login: (email: string, password: string) => void
@@ -30,12 +30,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Restore auth state on app load
   useEffect(() => {
     // Refresh tokens only on initial load and only if the user didn't log out
-    if (!isAuthenticated && !logoutMutation.isIdle) refreshMutation.mutate()
-  }, [refreshMutation, isAuthenticated, logoutMutation.isIdle])
+    if (isAuthenticated) return
+    refreshMutation.mutate()
+  }, [])
 
   // Auto-refresh tokens every 5 minutes
   useEffect(() => {
-    if (!isAuthenticated) return
     const interval = setInterval(
       () => {
         // Only refresh if the user is still authenticated and not in the middle of logging out
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ) // 5 minutes in milliseconds
 
     return () => clearInterval(interval)
-  }, [isAuthenticated, refreshMutation, logoutMutation.isIdle])
+  }, [])
 
   // Handle authentication state changes
   useEffect(() => {
@@ -57,17 +57,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true)
       setUser(authTokenMutation.data.user)
     }
-    if (refreshMutation.isSuccess && refreshMutation.data?.acccessToken) {
+    if (refreshMutation.isSuccess && refreshMutation.data?.accessToken) {
       setIsAuthenticated(true)
       // User info is stored in the access token
       // Decode it to get user data
-      const user: User = jwtDecode(refreshMutation.data.acccessToken)
+      const user: User = jwtDecode(refreshMutation.data.accessToken)
       setUser(user)
     }
   }, [
     authTokenMutation.data?.user,
     authTokenMutation.isSuccess,
-    refreshMutation.data?.acccessToken,
+    refreshMutation.data?.accessToken,
     refreshMutation.isSuccess,
   ])
 
@@ -80,8 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = (email: string, password: string) => authTokenMutation.mutate({ email, password })
   const logout = () => logoutMutation.mutate()
-
-  return (
+   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,

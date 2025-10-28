@@ -15,6 +15,6 @@ export interface GetTokensRequest {
 }
 
 export interface RefreshTokensResponse {
-  acccessToken: string
+  accessToken: string
   refreshToken: string
 }

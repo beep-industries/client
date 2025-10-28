@@ -11,10 +11,10 @@ import { Input } from "@/shared/components/ui/input"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signinFormSchema, type SigninForm } from "../types/signin-form"
-import { useAuthTokensMutation } from "@/shared/queries/auth/auth.queries"
+import { useAuth } from "@/shared/lib/auth-provider/auth"
 
 export function SigninForm() {
-  const { mutate: authTokens } = useAuthTokensMutation()
+  const { login } = useAuth()
   const form = useForm<SigninForm>({
     resolver: zodResolver(signinFormSchema),
     defaultValues: {
@@ -24,7 +24,7 @@ export function SigninForm() {
   })
 
   function onSubmit(data: SigninForm) {
-    authTokens(data)
+    login(data.email, data.password)
   }
 
   return (

@@ -7,4 +7,4 @@ export const getTokens = (body: GetTokensRequest) =>
 export const revokeAuthCookies = () => api.post("authentication/logout").json<void>()
 
 export const refreshTokens = () =>
-  api.post("authentication/refresh-tokens").json<RefreshTokensResponse>()
+  api.post("authentication/refresh").json<RefreshTokensResponse>()
