@@ -22,7 +22,6 @@ const AuthContext = createContext<AuthState | undefined>(undefined)
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  // const [isLoading, setIsLoading] = useState(true)
   const authTokenMutation = useAuthTokensMutation()
   const logoutMutation = useLogoutMutation()
   const refreshMutation = useRefreshTokensMutation()
@@ -78,9 +77,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [logoutMutation.isSuccess, refreshMutation.isError])
 
-  useEffect(() => {
-    console.log(isAuthenticated, user)
-  }, [isAuthenticated, user])
   const login = (email: string, password: string) => authTokenMutation.mutate({ email, password })
   const logout = () => logoutMutation.mutate()
   return (
