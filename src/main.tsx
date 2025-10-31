@@ -7,6 +7,9 @@ import { routeTree } from "@/routeTree.gen"
 import { ThemeProvider } from "@/app/providers/ThemeProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AuthProvider, useAuth } from "@/app/providers/AuthProvider.tsx"
+import { RealTimeSocketProvider } from "@/app/providers/RealTimeSocketProvider"
+import { RealTimeChannelProvider } from "@/app/providers/RealTimeChannelProvider"
+import { userTopics } from "@/shared/queries/real-time/user.channel.ts"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,7 +48,11 @@ function BaseProvider() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <AuthenticatedRouter />
+          <RealTimeSocketProvider>
+            <RealTimeChannelProvider topics={userTopics}>
+              <AuthenticatedRouter />
+            </RealTimeChannelProvider>
+          </RealTimeSocketProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>

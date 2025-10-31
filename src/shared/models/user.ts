@@ -10,3 +10,17 @@ export interface User {
   createdAt?: string
   updatedAt?: string
 }
+
+//caca boudin ouin ouin c mal branle
+export interface JwtUser {
+  sub: string
+  email: string
+  username: string
+  firstName: string
+  lastName: string
+  profilePicture?: string
+  totpAuthentication: boolean
+  verifiedAt: Date | null
+  createdAt?: string
+  updatedAt?: string
+}

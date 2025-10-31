@@ -1,4 +1,4 @@
-import type { User } from "@/shared/models/user"
+import type { JwtUser, User } from "@/shared/models/user"
 import React, { createContext, useContext, useState, useEffect } from "react"
 import {
   useAuthTokensMutation,
@@ -60,7 +60,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsAuthenticated(true)
       // User info is stored in the access token
       // Decode it to get user data
-      const user: User = jwtDecode(refreshMutation.data.accessToken)
+      const jwtUser: JwtUser = jwtDecode(refreshMutation.data.accessToken)
+      const user: User = { ...jwtUser, id: jwtUser.sub }
       setUser(user)
     }
   }, [
