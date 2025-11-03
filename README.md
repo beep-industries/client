@@ -121,10 +121,54 @@ This command will format all TypeScript, JavaScript, JSON, and CSS files in the 
 
 ---
 
+## Authentication with Keycloak
+
+This project uses **Keycloak** for authentication and authorization. The Keycloak instance is automatically configured when you start the Docker Compose stack.
+
+### Test User Credentials
+
+A test user is automatically created with the following credentials:
+
+- **Username**: `testuser`
+- **Password**: `test123`
+
+### Testing the Authentication Flow
+
+1. **Start Keycloak**:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Access the application**:
+   - Open your browser and go to `http://localhost:5173`
+   - Click on the "Se connecter" (Login) button
+   - You will be redirected to the Keycloak login page
+
+3. **Login with the test user**:
+   - Enter username: `testuser`
+   - Enter password: `test123`
+   - After successful authentication, you will be redirected to `/discover`
+
+4. **Access Keycloak Admin Console** (optional):
+   - Go to `http://localhost:8080`
+   - Use the admin credentials from your `.env` file
+   - You can manage users, clients, and realm settings
+
+### Realm Configuration
+
+The Keycloak realm (`myrealm`) and client (`frontend`) are automatically imported on startup from the `keycloak-config/realm-export.json` file. The configuration includes:
+
+- **Client ID**: `frontend`
+- **Redirect URIs**: `http://localhost:5173/*`
+- **Web Origins**: `http://localhost:5173`
+- **PKCE**: Enabled (S256)
+
+---
+
 ## Build and run with docker
 
 To build and run the Beep client application using Docker, follow these steps:
-1. **Build the Docker Image**  
+1. **Build the Docker Image**
    Open a terminal in the root directory of the project (where the `Dockerfile` is located) and run the following command to build the Docker image:
    ```bash
    docker build -t beep-client .
@@ -136,5 +180,7 @@ To build and run the Beep client application using Docker, follow these steps:
     docker run -d --rm -p 8080:8080 beep-client
     ```
 ---
+
+## 
 
 _This README will be completed with additional sections as development progresses._
