@@ -26,7 +26,7 @@ function AuthComponent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4">Chargement...</h2>
+          <h2 className="mb-4 text-2xl font-semibold">Chargement...</h2>
           <p className="text-gray-600">Initialisation de l'authentification</p>
         </div>
       </div>
@@ -37,13 +37,11 @@ function AuthComponent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-semibold mb-4 text-red-600">
-            Erreur d'authentification
-          </h2>
-          <p className="text-gray-600 mb-4">{auth.error.message}</p>
+          <h2 className="mb-4 text-2xl font-semibold text-red-600">Erreur d'authentification</h2>
+          <p className="mb-4 text-gray-600">{auth.error.message}</p>
           <button
             onClick={() => auth.signinRedirect()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             Réessayer
           </button>
@@ -55,8 +53,8 @@ function AuthComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h2 className="text-2xl font-semibold mb-4">Connexion</h2>
-        <p className="text-gray-600 mb-4">Redirection vers Keycloak...</p>
+        <h2 className="mb-4 text-2xl font-semibold">Connexion</h2>
+        <p className="mb-4 text-gray-600">Redirection vers Keycloak...</p>
       </div>
     </div>
   )
