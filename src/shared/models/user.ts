@@ -11,7 +11,7 @@ export interface User {
   updatedAt?: string
 }
 
-//caca boudin ouin ouin c mal branle
+//needed because of the actual backend to be removed when the backend handles the jwt correctly
 export interface JwtUser {
   sub: string
   email: string

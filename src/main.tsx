@@ -8,7 +8,8 @@ import { ThemeProvider } from "@/app/providers/ThemeProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AuthProvider, useAuth } from "@/app/providers/AuthProvider.tsx"
 import { RealTimeSocketProvider } from "@/app/providers/RealTimeSocketProvider"
-import { RealTimeChannelProvider } from "@/app/providers/RealTimeChannelProvider"
+import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider"
+import { VideoProvider } from "@/app/providers/VideoProvider.tsx"
 import { userTopics } from "@/shared/queries/real-time/user.channel.ts"
 
 const queryClient = new QueryClient({
@@ -49,9 +50,11 @@ function BaseProvider() {
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <RealTimeSocketProvider>
-            <RealTimeChannelProvider topics={userTopics}>
-              <AuthenticatedRouter />
-            </RealTimeChannelProvider>
+            <VideoProvider>
+              <RealTimeTopicProvider topics={userTopics}>
+                <AuthenticatedRouter />
+              </RealTimeTopicProvider>
+            </VideoProvider>
           </RealTimeSocketProvider>
         </AuthProvider>
       </QueryClientProvider>
