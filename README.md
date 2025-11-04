@@ -123,6 +123,8 @@ This command will format all TypeScript, JavaScript, JSON, and CSS files in the 
 
 ## Authentication with Keycloak
 
+> **⚠️ Work in Progress**: Keycloak integration is currently under development. Keycloak is not yet available in our infrastructure. The configuration below is for local development and testing purposes only.
+
 This project uses **Keycloak** for authentication and authorization. The Keycloak instance is automatically configured when you start the Docker Compose stack.
 
 ### Test User Credentials
