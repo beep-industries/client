@@ -5,10 +5,10 @@ import { useRealTimeSocket } from "./RealTimeSocketProvider"
 import type { TopicName } from "@/shared/models/real-time.ts"
 
 interface EventContextValue<S> {
-  state: S | undefined
+  state: S
 }
 
-export interface RealTimeEventProviderProps<P = unknown, S = unknown> {
+export interface RealTimeEventProviderProps<P, S> {
   children: React.ReactNode
   topic: TopicName
   event: string
@@ -28,7 +28,7 @@ const EventContext = createContext<EventContextValue<unknown> | undefined>(undef
 // Registry of all ancestor event states keyed by id, to support nested providers access
 const EventRegistryContext = createContext<Map<string, unknown> | undefined>(undefined)
 
-export function RealTimeEventProvider<P = unknown, S = unknown>({
+export function RealTimeEventProvider<P, S>({
   children,
   topic,
   event,
@@ -57,11 +57,11 @@ export function RealTimeEventProvider<P = unknown, S = unknown>({
     if (!ch) return
     channelRef.current = ch
 
-    const cb = (payload: unknown) => {
+    const cb = (payload: P) => {
       if (stateCfg) {
-        setState((prev) => stateCfg.reducer((prev ?? stateCfg.initial) as S, payload as P, event))
+        setState((prev) => stateCfg.reducer(prev ?? stateCfg.initial, payload, event))
       }
-      if (onEvent) onEvent(payload as P, { topic: topicName, channel: ch, event })
+      if (onEvent) onEvent(payload, { topic: topicName, channel: ch, event })
     }
 
     const id = ch.on(event, cb)
@@ -75,26 +75,24 @@ export function RealTimeEventProvider<P = unknown, S = unknown>({
     }
   }, [isAuthenticated, connected, getChannel, topicName, event, onEvent, stateCfg])
 
-  const value = useMemo<EventContextValue<S>>(() => ({ state: state as S | undefined }), [state])
+  const value = useMemo<EventContextValue<S>>(() => ({ state: state as S }), [state])
 
   // Merge into registry for nested access
   const parentRegistry = useContext(EventRegistryContext)
   const registry = useMemo(() => {
     const map = new Map(parentRegistry ?? undefined)
-    map.set(resolvedId, state as unknown)
+    map.set(resolvedId, state)
     return map
   }, [parentRegistry, resolvedId, state])
 
   return (
     <EventRegistryContext.Provider value={registry}>
-      <EventContext.Provider value={value as EventContextValue<unknown>}>
-        {children}
-      </EventContext.Provider>
+      <EventContext.Provider value={value}>{children}</EventContext.Provider>
     </EventRegistryContext.Provider>
   )
 }
 
-export function useEventState<S = unknown>() {
+export function useEventState<S>() {
   const ctx = useContext(EventContext)
   if (!ctx) throw new Error("useEventState must be used within a RealTimeEventProvider")
   return ctx.state as S | undefined

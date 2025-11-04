@@ -18,10 +18,9 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
     const cleanups: (() => void)[] = []
 
     topics.forEach((spec) => {
-      const s = spec as TopicJoinSpec
-      if (s.autoJoin === false) return
-      const topicName = typeof s.topic === "function" ? s.topic(user) : s.topic
-      const ch = join(topicName, s.params)
+      if (spec.autoJoin === false) return
+      const topicName = typeof spec.topic === "function" ? spec.topic(user) : spec.topic
+      const ch = join(topicName, spec.params)
       // caller can use useRealTimeSocket().getChannel(topic) to access
       cleanups.push(() => {
         try {
