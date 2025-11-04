@@ -48,9 +48,9 @@ src/
 │   │   └── auth/                 # Authentication queries
 │   │       ├── auth.api.ts       # Auth API functions
 │   │       ├── auth.queries.ts   # TanStack Query hooks
-│   │       └── auth.real-time.ts     # Auth query types
+│   │       └── auth.types.ts     # Auth query types
 │   ├── types/                    # Global types
-│   │   └── common.real-time.ts
+│   │   └── common.types.ts
 │   └── constants/                # Global constants
 │       ├── routes.ts
 │       └── api-endpoints.ts
