@@ -10,13 +10,13 @@ function AuthComponent() {
   const auth = useAuth()
 
   useEffect(() => {
-    // Si l'utilisateur est déjà authentifié, rediriger vers /discover
+    // If user is already authenticated, redirect to /discover
     if (auth.isAuthenticated) {
       window.location.href = "/discover"
       return
     }
 
-    // Si pas d'authentification en cours, démarrer le login
+    // If no authentication in progress, start login flow
     if (!auth.isLoading && !auth.isAuthenticated && !auth.activeNavigator) {
       auth.signinRedirect()
     }
@@ -26,8 +26,8 @@ function AuthComponent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-semibold">Chargement...</h2>
-          <p className="text-gray-600">Initialisation de l'authentification</p>
+          <h2 className="mb-4 text-2xl font-semibold">Loading...</h2>
+          <p className="text-gray-600">Initializing authentication</p>
         </div>
       </div>
     )
@@ -37,13 +37,13 @@ function AuthComponent() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <h2 className="mb-4 text-2xl font-semibold text-red-600">Erreur d'authentification</h2>
+          <h2 className="mb-4 text-2xl font-semibold text-red-600">Authentication Error</h2>
           <p className="mb-4 text-gray-600">{auth.error.message}</p>
           <button
             onClick={() => auth.signinRedirect()}
             className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
-            Réessayer
+            Retry
           </button>
         </div>
       </div>
@@ -53,8 +53,8 @@ function AuthComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h2 className="mb-4 text-2xl font-semibold">Connexion</h2>
-        <p className="mb-4 text-gray-600">Redirection vers Keycloak...</p>
+        <h2 className="mb-4 text-2xl font-semibold">Login</h2>
+        <p className="mb-4 text-gray-600">Redirecting to Keycloak...</p>
       </div>
     </div>
   )
