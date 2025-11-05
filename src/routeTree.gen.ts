@@ -10,6 +10,9 @@
 
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as SigninRouteImport } from "./routes/signin"
+import { Route as KeycloakAuthRouteImport } from "./routes/keycloak-auth"
+import { Route as DiscoverRouteImport } from "./routes/discover"
+import { Route as AuthRouteImport } from "./routes/auth"
 import { Route as IndexRouteImport } from "./routes/index"
 
 const SigninRoute = SigninRouteImport.update({
@@ -17,45 +20,93 @@ const SigninRoute = SigninRouteImport.update({
   path: "/signin",
   getParentRoute: () => rootRouteImport,
 } as any)
+const KeycloakAuthRoute = KeycloakAuthRouteImport.update({
+  id: "/keycloak-auth",
+  path: "/keycloak-auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: "/discover",
+  path: "/discover",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: "/auth",
+  path: "/auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+  id: "/",
+  path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
+  "/auth": typeof AuthRoute
+  "/discover": typeof DiscoverRoute
+  "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/auth": typeof AuthRoute
+  "/discover": typeof DiscoverRoute
+  "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
+  "/auth": typeof AuthRoute
+  "/discover": typeof DiscoverRoute
+  "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/signin"
+  fullPaths: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/signin"
-  id: "__root__" | "/" | "/signin"
+  to: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
+  id: "__root__" | "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  DiscoverRoute: typeof DiscoverRoute
+  KeycloakAuthRoute: typeof KeycloakAuthRoute
   SigninRoute: typeof SigninRoute
 }
 
-declare module '@tanstack/react-router' {
+declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
     "/signin": {
       id: "/signin"
       path: "/signin"
       fullPath: "/signin"
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/keycloak-auth": {
+      id: "/keycloak-auth"
+      path: "/keycloak-auth"
+      fullPath: "/keycloak-auth"
+      preLoaderRoute: typeof KeycloakAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/discover": {
+      id: "/discover"
+      path: "/discover"
+      fullPath: "/discover"
+      preLoaderRoute: typeof DiscoverRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/auth": {
+      id: "/auth"
+      path: "/auth"
+      fullPath: "/auth"
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/": {
@@ -70,6 +121,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  DiscoverRoute: DiscoverRoute,
+  KeycloakAuthRoute: KeycloakAuthRoute,
   SigninRoute: SigninRoute,
 }
 export const routeTree = rootRouteImport
