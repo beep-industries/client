@@ -27,7 +27,7 @@ services:
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./keycloak-config:/opt/keycloak/data/import
+      - ./keycloak-config:/opt/keycloak/data/import:ro
     ports:
       - 8080:8080
     restart: always
