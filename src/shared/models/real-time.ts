@@ -17,3 +17,7 @@ export interface TopicJoinSpec {
   params?: ChannelParams
   autoJoin?: boolean
 }
+
+export interface EventContextValue<TState> {
+  state: TState
+}
