@@ -11,7 +11,7 @@ export default defineConfig({
     tanstackRouter({
       target: "react",
       autoCodeSplitting: true,
-      quoteStyle: "double"
+      quoteStyle: "double",
     }),
     react(),
   ],
