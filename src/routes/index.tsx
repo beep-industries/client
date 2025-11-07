@@ -1,4 +1,4 @@
-import { Button } from "@/shared/components/ui/button"
+import { Button } from "@/shared/components/ui/Button"
 import { useLogoutMutation } from "@/shared/queries/auth/auth.queries"
 import { createFileRoute } from "@tanstack/react-router"
 import { useEffect } from "react"

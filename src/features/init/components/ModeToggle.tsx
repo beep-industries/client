@@ -1,11 +1,11 @@
 import { useTheme } from "@/app/providers/ThemeProvider"
-import { Button } from "@/shared/components/ui/button"
+import { Button } from "@/shared/components/ui/Button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu"
+} from "@/shared/components/ui/DropdownMenu"
 import { Moon, Sun } from "lucide-react"
 
 export function ModeToggle() {
