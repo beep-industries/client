@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/Card"
 import { SigninForm } from "./SigninForm.tsx"
 
 export function SigninCard() {

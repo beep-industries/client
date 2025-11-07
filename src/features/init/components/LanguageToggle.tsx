@@ -1,10 +1,10 @@
-import { Button } from "@/shared/components/ui/button"
+import { Button } from "@/shared/components/ui/Button"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/shared/components/ui/dropdown-menu"
+} from "@/shared/components/ui/DropdownMenu"
 import { useTranslation } from "react-i18next"
 import { Languages } from "lucide-react"
 

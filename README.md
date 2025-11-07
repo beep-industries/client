@@ -183,6 +183,15 @@ To build and run the Beep client application using Docker, follow these steps:
     ```
 ---
 
+## Adding new shadcn components
+
+Use the following command to add components in order to import it with the right file naming convention:
+
+```bash
+pnpm add-component <component-name>
+```
+
+
 ## 
 
 _This README will be completed with additional sections as development progresses._

@@ -10,10 +10,12 @@
     "preview": "vite preview",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css}\"",
     "check-format": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "add-component": "tsx ./.npm-scripts/AddComponent.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-slot": "^1.2.3",
@@ -28,8 +30,8 @@
     "jwt-decode": "^4.0.0",
     "ky": "^1.13.0",
     "lucide-react": "^0.546.0",
-    "phoenix": "^1.8.1",
     "oidc-client-ts": "^3.3.0",
+    "phoenix": "^1.8.1",
     "prettier-plugin-tailwindcss": "^0.7.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -50,6 +52,7 @@
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react-swc": "^4.1.0",
     "eslint": "^9.36.0",
+    "eslint-plugin-check-file": "^3.3.1",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
