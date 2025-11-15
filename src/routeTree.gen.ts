@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root"
+import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SigninRouteImport } from "./routes/signin"
 import { Route as KeycloakAuthRouteImport } from "./routes/keycloak-auth"
 import { Route as DiscoverRouteImport } from "./routes/discover"
 import { Route as AuthRouteImport } from "./routes/auth"
 import { Route as IndexRouteImport } from "./routes/index"
 
+const WebrtcRoute = WebrtcRouteImport.update({
+  id: "/webrtc",
+  path: "/webrtc",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SigninRoute = SigninRouteImport.update({
   id: "/signin",
   path: "/signin",
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   "/discover": typeof DiscoverRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
+  "/webrtc": typeof WebrtcRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   "/discover": typeof DiscoverRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
+  "/webrtc": typeof WebrtcRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,27 @@ export interface FileRoutesById {
   "/discover": typeof DiscoverRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
+  "/webrtc": typeof WebrtcRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
+  fullPaths:
+    | "/"
+    | "/auth"
+    | "/discover"
+    | "/keycloak-auth"
+    | "/signin"
+    | "/webrtc"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
-  id: "__root__" | "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin"
+  to: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin" | "/webrtc"
+  id:
+    | "__root__"
+    | "/"
+    | "/auth"
+    | "/discover"
+    | "/keycloak-auth"
+    | "/signin"
+    | "/webrtc"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,10 +99,18 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   KeycloakAuthRoute: typeof KeycloakAuthRoute
   SigninRoute: typeof SigninRoute
+  WebrtcRoute: typeof WebrtcRoute
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
+    "/webrtc": {
+      id: "/webrtc"
+      path: "/webrtc"
+      fullPath: "/webrtc"
+      preLoaderRoute: typeof WebrtcRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     "/signin": {
       id: "/signin"
       path: "/signin"
@@ -125,6 +155,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   KeycloakAuthRoute: KeycloakAuthRoute,
   SigninRoute: SigninRoute,
+  WebrtcRoute: WebrtcRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
