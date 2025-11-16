@@ -1,0 +1,8 @@
+name: Node CI
+
+on: 
+  push:
+
+jobs:
+  build_and_test:
+    uses: beep-industries/actions/.github/workflows/node-ci.yml@feat/node
