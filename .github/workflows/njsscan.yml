@@ -1,0 +1,8 @@
+name: SAST Scan
+
+on:
+  push:
+
+jobs:
+  njsscan:
+    uses: beep-industries/actions/.github/workflows/njsscan.yml@feat/node
