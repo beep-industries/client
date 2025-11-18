@@ -5,4 +5,4 @@ on:
 
 jobs:
   build_and_test:
-    uses: beep-industries/actions/.github/workflows/node-ci.yml@feat/node
+    uses: beep-industries/actions/.github/workflows/node-ci.yml@main
