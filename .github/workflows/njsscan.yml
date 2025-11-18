@@ -5,4 +5,4 @@ on:
 
 jobs:
   njsscan:
-    uses: beep-industries/actions/.github/workflows/njsscan.yml@feat/node
+    uses: beep-industries/actions/.github/workflows/njsscan.yml@main
