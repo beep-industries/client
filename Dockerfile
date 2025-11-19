@@ -24,7 +24,7 @@ FROM base AS deps
 USER reactuser
 
 # Copy package files for dependency caching
-COPY --chown=reactuser:nodejs package.json package-lock.json pnpm-lock.yaml* ./
+COPY --chown=reactuser:nodejs package.json pnpm-lock.yaml ./
 
 # Install dependencies
 RUN pnpm install --frozen-lockfile
