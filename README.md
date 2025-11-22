@@ -192,6 +192,25 @@ pnpm add-component <component-name>
 ```
 
 
-## 
+## WebRTC Demo
+
+- A minimal WebRTC provider and UI component were added to mirror the provided HTML example.
+- Navigate to /webrtc to try it.
+- Signaling uses a Phoenix channel for the initial offer/answer and leave events, while in-call negotiation still uses the WebRTC DataChannel (offer/answer messages over the RTC data channel), just like the original HTML snippet.
+
+Signaling details:
+- Topic: `voice-channel:<session_id>`
+- Events:
+  - `offer` request payload: `{ session_id, endpoint_id, offer_sdp }` → ok reply: `{ answer_sdp }`
+  - `leave` request payload: `{ session_id, endpoint_id }`
+
+Configuration:
+- Set `VITE_REAL_TIME_URL` to your backend HTTP base (e.g., `http://localhost:4000`). The client derives the Phoenix socket URL as `ws(s)://.../socket`.
+
+Files:
+- src/app/providers/WebRTCProvider.tsx: Context/provider encapsulating the WebRTC logic (join, leave, startCam, startMic) with Phoenix channel signaling for initial connection and RTC DataChannel for subsequent negotiation.
+- src/app/providers/RealTimeSocketProvider.tsx: Provides a Phoenix socket and helpers to join/leave topics.
+- src/features/webrtc/components/WebRTCDemo.tsx: Simple UI using the provider.
+- src/routes/webrtc.tsx: Route exposing the demo page and wiring RealTimeSocketProvider + WebRTCProvider.
 
 _This README will be completed with additional sections as development progresses._
