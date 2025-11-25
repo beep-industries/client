@@ -1,40 +1,59 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react"
 import { useRealTimeSocket } from "@/app/providers/RealTimeSocketProvider"
+import { Presence } from "phoenix"
+
+export interface PresenceDesc {
+  id: number
+  username: string
+  video: boolean
+  audio: boolean
+}
+
+export interface RemoteState {
+  id: number
+  username: string
+  tracks: { audio: MediaStream | null; video: MediaStream | null }
+  audio: boolean
+  video: boolean
+}
 
 export interface WebRTCState {
   // UI/status
   session: number | null
-  endpointId: number
   iceStatus: RTCIceConnectionState
   channelStatus: string
   joined: boolean
   camEnabled: boolean
   micEnabled: boolean
   // Media
-  remoteTracks: MediaStreamTrack[]
+  remoteTracks: RemoteState[]
   // Actions
-  join: (session: number) => Promise<void>
+  join: (session: number, username: string) => Promise<void>
   leave: () => Promise<void>
   startCam: () => Promise<void>
+  stopCam: () => void
   startMic: () => Promise<void>
+  stopMic: () => void
 }
 
 const WebRTCContext = createContext<WebRTCState | undefined>(undefined)
 
 export function WebRTCProvider({ children }: { children: React.ReactNode }) {
-  const endpointIdRef = useRef<number>(Math.floor(Math.random() * 1000000000))
   const [session, setSession] = useState<number | null>(null)
   const [iceStatus, setIceStatus] = useState<RTCIceConnectionState>("new")
   const [channelStatus, setChannelStatus] = useState<string>("Click Join Button...")
   const [joined, setJoined] = useState(false)
   const [camEnabled, setCamEnabled] = useState(false)
   const [micEnabled, setMicEnabled] = useState(false)
-  const [remoteTracks, setRemoteTracks] = useState<MediaStreamTrack[]>([])
+  const [remoteTracks, setRemoteTracks] = useState<RemoteState[]>([])
 
   const rtcRef = useRef<RTCPeerConnection | null>(null)
+  const presenceRef = useRef<Presence | null>(null)
   const dataChannelRef = useRef<RTCDataChannel | null>(null)
   const camStreamRef = useRef<MediaStream | null>(null)
+  const camTransceiverRef = useRef<RTCRtpTransceiver | null>(null)
   const micStreamRef = useRef<MediaStream | null>(null)
+  const micTransceiverRef = useRef<RTCRtpTransceiver | null>(null)
   const negotiateCallbackRef = useRef<((json: string) => void) | null>(null)
 
   // Phoenix Channel for signaling (initial offer/leave). DataChannel remains for in-call negotiation.
@@ -62,16 +81,22 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       // Remote tracks management
       rtc.ontrack = (e) => {
         const track = e.track
+        const id = e.transceiver.mid!.split("-")[0]
+
         setRemoteTracks((prev) => {
-          if (prev.find((t) => t.id === track.id)) return prev
-          return [...prev, track]
+          return prev.map((t) => {
+            if (t.id === parseInt(id)) {
+              if (track.kind === "video") {
+                t.tracks.video = new MediaStream([track])
+              } else {
+                t.tracks.audio = new MediaStream([track])
+              }
+            }
+            return t
+          })
         })
-        track.addEventListener("mute", () => {
-          setRemoteTracks((prev) => prev.filter((t) => t.id !== track.id))
-        })
-        track.addEventListener("ended", () => {
-          setRemoteTracks((prev) => prev.filter((t) => t.id !== track.id))
-        })
+        track.addEventListener("mute", () => {})
+        track.addEventListener("ended", () => {})
       }
       rtcRef.current = rtc
     }
@@ -84,7 +109,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     if (!dc) throw new Error("Data channel not open")
     const offer = await rtc.createOffer()
     await rtc.setLocalDescription(offer)
-    await dc.send(JSON.stringify(offer))
+    dc.send(JSON.stringify(offer))
     const json = await new Promise<string>((resolve) => {
       negotiateCallbackRef.current = resolve
     })
@@ -107,16 +132,16 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       }
       const answer = await rtc.createAnswer()
       await rtc.setLocalDescription(answer)
-      await dataChannelRef.current?.send(JSON.stringify(answer))
+      dataChannelRef.current?.send(JSON.stringify(answer))
     },
     [ensureRtc]
   )
 
   const join = useCallback(
-    async (sess: number) => {
+    async (sess: number, username: string) => {
       setSession(sess)
       const rtc = ensureRtc()
-      setChannelStatus(`Joining session ${sess} as endpoint ${endpointIdRef.current}`)
+      setChannelStatus(`Joining session ${sess} as endpoint`)
       setJoined(true)
 
       const dataChannel = rtc.createDataChannel("offer/answer")
@@ -130,7 +155,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         }
       }
       dataChannel.onopen = () => {
-        setChannelStatus(`Joined session ${sess} as endpoint ${endpointIdRef.current}`)
+        setChannelStatus(`Joined session ${sess}`)
         setCamEnabled(true)
         setMicEnabled(true)
       }
@@ -139,7 +164,28 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       // Join Phoenix channel topic and perform initial offer/answer via channel
       const topic = `voice-channel:${sess}`
       channelTopicRef.current = topic
-      const channel = joinTopic(topic)
+      const channel = joinTopic(topic, { username: username })
+      presenceRef.current = new Presence(channel)
+
+      presenceRef.current.onSync(() => {
+        const tracks: PresenceDesc[] = []
+        presenceRef.current?.list().forEach((user: { metas: PresenceDesc[] }) => {
+          tracks.push({ ...user.metas[0] })
+        })
+
+        setRemoteTracks((prev) => {
+          return tracks.map((user) => {
+            const updated = prev.find((value) => value.username === user.username)
+            if (updated) {
+              return { ...updated, video: user.video, audio: user.audio }
+            }
+            return {
+              ...user,
+              tracks: { audio: null, video: null },
+            }
+          })
+        })
+      })
 
       const offer = await rtc.createOffer()
       await rtc.setLocalDescription(offer)
@@ -148,12 +194,10 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         channel
           .push("offer", {
             session_id: String(sess),
-            endpoint_id: String(endpointIdRef.current),
             offer_sdp: offer.sdp,
           })
           .receive("ok", async (resp: { answer_sdp: string }) => {
             try {
-              console.log("join ok", resp)
               await rtc.setRemoteDescription(JSON.parse(resp.answer_sdp))
               setIceStatus(rtc.iceConnectionState)
               resolve()
@@ -177,6 +221,14 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     setJoined(false)
     setCamEnabled(false)
     setMicEnabled(false)
+    await camTransceiverRef.current?.sender.replaceTrack(null)
+    camTransceiverRef.current = null
+    camStreamRef.current?.getTracks().forEach((t) => t.stop())
+    camStreamRef.current = null
+    await micTransceiverRef.current?.sender.replaceTrack(null)
+    micTransceiverRef.current = null
+    micStreamRef.current?.getTracks().forEach((t) => t.stop())
+    micStreamRef.current = null
     // Close rtc
     rtcRef.current?.close()
     rtcRef.current = null
@@ -189,7 +241,6 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         await new Promise<void>((resolve) => {
           ch?.push("leave", {
             session_id: String(sess),
-            endpoint_id: String(endpointIdRef.current),
           })
             .receive("ok", () => resolve())
             .receive("error", () => resolve()) // resolve anyway
@@ -199,37 +250,69 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         channelTopicRef.current = null
       }
     }
-    endpointIdRef.current = Math.floor(Math.random() * 1000000000)
   }, [joinTopic, leaveTopic, session])
 
   const startCam = useCallback(async () => {
     setCamEnabled(false)
-    const rtc = ensureRtc()
-    const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 360 } })
-    camStreamRef.current = stream
-    rtc.addTransceiver(stream.getTracks()[0], {
-      direction: "sendonly",
-      streams: [stream],
+    camStreamRef.current = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 360 },
     })
-    await negotiate()
-  }, [ensureRtc, negotiate])
+    if (camTransceiverRef.current) {
+      camTransceiverRef.current?.sender.replaceTrack(camStreamRef.current.getTracks()[0])
+    } else {
+      const rtc = ensureRtc()
+      camTransceiverRef.current = rtc.addTransceiver(camStreamRef.current.getTracks()[0], {
+        direction: "sendonly",
+        streams: [camStreamRef.current],
+      })
+      await negotiate()
+    }
+    joinTopic(channelTopicRef.current!).push("state_change", {
+      video: true,
+      audio: !micEnabled,
+    })
+  }, [ensureRtc, joinTopic, micEnabled, negotiate])
+
+  const stopCam = useCallback(async () => {
+    await camTransceiverRef.current!.sender.replaceTrack(null)
+    camStreamRef.current?.getTracks().forEach((t) => t.stop())
+    camStreamRef.current = null
+    setCamEnabled(true)
+    joinTopic(channelTopicRef.current!).push("state_change", {
+      video: false,
+      audio: !micEnabled,
+    })
+  }, [joinTopic, micEnabled])
 
   const startMic = useCallback(async () => {
     setMicEnabled(false)
     const rtc = ensureRtc()
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-    micStreamRef.current = stream
-    rtc.addTransceiver(stream.getTracks()[0], {
+    micStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true })
+    micTransceiverRef.current = rtc.addTransceiver(micStreamRef.current.getTracks()[0], {
       direction: "sendonly",
-      streams: [stream],
+      streams: [micStreamRef.current],
     })
     await negotiate()
-  }, [ensureRtc, negotiate])
+    joinTopic(channelTopicRef.current!).push("state_change", {
+      video: !camEnabled,
+      audio: true,
+    })
+  }, [camEnabled, ensureRtc, joinTopic, negotiate])
+
+  const stopMic = useCallback(async () => {
+    await micTransceiverRef.current!.sender.replaceTrack(null)
+    micStreamRef.current?.getTracks().forEach((t) => t.stop())
+    micStreamRef.current = null
+    setMicEnabled(true)
+    joinTopic(channelTopicRef.current!).push("state_change", {
+      video: !camEnabled,
+      audio: false,
+    })
+  }, [camEnabled, joinTopic])
 
   const value = useMemo<WebRTCState>(
     () => ({
       session,
-      endpointId: endpointIdRef.current,
       iceStatus,
       channelStatus,
       joined,
@@ -239,7 +322,9 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       join,
       leave,
       startCam,
+      stopCam,
       startMic,
+      stopMic,
     }),
     [
       session,
@@ -252,7 +337,9 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       join,
       leave,
       startCam,
+      stopCam,
       startMic,
+      stopMic,
     ]
   )
 
