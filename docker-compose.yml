@@ -9,6 +9,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     networks:
       - keycloak_network
+    ports:
+      - 5432:5432
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.4.2
@@ -43,3 +45,4 @@ volumes:
 networks:
   keycloak_network:
     driver: bridge
+    name: keycloak_network
