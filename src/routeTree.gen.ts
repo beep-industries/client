@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from "./routes/__root"
 import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SigninRouteImport } from "./routes/signin"
 import { Route as KeycloakAuthRouteImport } from "./routes/keycloak-auth"
+import { Route as FriendsRouteImport } from "./routes/friends"
 import { Route as DiscoverRouteImport } from "./routes/discover"
 import { Route as AuthRouteImport } from "./routes/auth"
 import { Route as IndexRouteImport } from "./routes/index"
@@ -29,6 +30,11 @@ const SigninRoute = SigninRouteImport.update({
 const KeycloakAuthRoute = KeycloakAuthRouteImport.update({
   id: "/keycloak-auth",
   path: "/keycloak-auth",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FriendsRoute = FriendsRouteImport.update({
+  id: "/friends",
+  path: "/friends",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -51,6 +57,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/friends": typeof FriendsRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
@@ -59,6 +66,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/friends": typeof FriendsRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
@@ -68,6 +76,7 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/friends": typeof FriendsRoute
   "/keycloak-auth": typeof KeycloakAuthRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
@@ -78,16 +87,25 @@ export interface FileRouteTypes {
     | "/"
     | "/auth"
     | "/discover"
+    | "/friends"
     | "/keycloak-auth"
     | "/signin"
     | "/webrtc"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/auth" | "/discover" | "/keycloak-auth" | "/signin" | "/webrtc"
+  to:
+    | "/"
+    | "/auth"
+    | "/discover"
+    | "/friends"
+    | "/keycloak-auth"
+    | "/signin"
+    | "/webrtc"
   id:
     | "__root__"
     | "/"
     | "/auth"
     | "/discover"
+    | "/friends"
     | "/keycloak-auth"
     | "/signin"
     | "/webrtc"
@@ -97,6 +115,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DiscoverRoute: typeof DiscoverRoute
+  FriendsRoute: typeof FriendsRoute
   KeycloakAuthRoute: typeof KeycloakAuthRoute
   SigninRoute: typeof SigninRoute
   WebrtcRoute: typeof WebrtcRoute
@@ -123,6 +142,13 @@ declare module "@tanstack/react-router" {
       path: "/keycloak-auth"
       fullPath: "/keycloak-auth"
       preLoaderRoute: typeof KeycloakAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/friends": {
+      id: "/friends"
+      path: "/friends"
+      fullPath: "/friends"
+      preLoaderRoute: typeof FriendsRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/discover": {
@@ -153,6 +179,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DiscoverRoute: DiscoverRoute,
+  FriendsRoute: FriendsRoute,
   KeycloakAuthRoute: KeycloakAuthRoute,
   SigninRoute: SigninRoute,
   WebrtcRoute: WebrtcRoute,

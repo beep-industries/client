@@ -5,3 +5,9 @@ export const api = ky.create({
   timeout: 30000,
   credentials: "include",
 })
+
+export const communities_api = ky.create({
+  prefixUrl: import.meta.env.VITE_COMMUNITIES_URL,
+  timeout: 30000,
+  credentials: "include",
+})
