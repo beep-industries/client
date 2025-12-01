@@ -5,7 +5,6 @@ import { Input } from "@/shared/components/ui/Input.tsx"
 
 export default function WebRTCDemo() {
   const {
-    endpointId,
     iceStatus,
     channelStatus,
     joined,
@@ -15,18 +14,26 @@ export default function WebRTCDemo() {
     join,
     leave,
     startCam,
+    stopCam,
     startMic,
+    stopMic,
   } = useWebRTC()
 
   const [session, setSession] = useState<number>(10000000)
+  const [username, setUsername] = useState<string>("")
 
   // Map remote tracks to MediaStreams
   const streams = useMemo(() => {
-    return remoteTracks.map((track) => {
-      const stream = new MediaStream()
-      stream.addTrack(track)
-      return { id: track.id, stream }
+    const tracks = remoteTracks.map((track) => {
+      return {
+        username: track.username,
+        tracks: { audio: track.tracks.audio, video: track.tracks.video },
+        video: track.video,
+        audio: track.audio,
+      }
     })
+    console.log("streams", remoteTracks)
+    return tracks
   }, [remoteTracks])
 
   return (
@@ -41,35 +48,46 @@ export default function WebRTCDemo() {
           disabled={joined}
           style={{ color: "black", padding: 4 }}
         />
-        <Button onClick={() => join(session)} disabled={joined}>
+        <Input
+          id="username"
+          type="string"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          disabled={joined}
+          style={{ color: "black", padding: 4 }}
+        />
+        <Button onClick={() => join(session, username)} disabled={joined}>
           Join
         </Button>
         <Button onClick={() => leave()} disabled={!joined}>
           Leave
         </Button>
-        <Button onClick={() => startCam()} disabled={!joined || !camEnabled}>
-          Cam
+        <Button onClick={camEnabled ? () => startCam() : () => stopCam()} disabled={!joined}>
+          {camEnabled ? "Cam" : "Mute Cam"}
         </Button>
-        <Button onClick={() => startMic()} disabled={!joined || !micEnabled}>
-          Mic
+        <Button onClick={micEnabled ? () => startMic() : () => stopMic()} disabled={!joined}>
+          {micEnabled ? "Mic" : "Mute Mic"}
         </Button>
         <span>
           Status: <strong>{iceStatus}</strong>
         </span>
       </div>
       <div style={{ marginTop: 8 }}>{channelStatus}</div>
-
       <div id="media" style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
-        {streams.map(({ id, stream }) => (
-          <Video key={id} stream={stream} />
+        {streams.map((user) => (
+          <div key={user.username}>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>{user.username}</span>
+            {user.video ? <Video stream={user.tracks.video} /> : <span>No video</span>}
+            {user.audio ? <Video stream={user.tracks.audio} /> : <span>No audio</span>}
+          </div>
         ))}
       </div>
-      <div style={{ marginTop: 8, fontSize: 12, opacity: 0.7 }}>Endpoint: {endpointId}</div>
+      '{" "}
     </div>
   )
 }
 
-function Video({ stream }: { stream: MediaStream }) {
+function Video({ stream }: { stream: MediaStream | null }) {
   const ref = useRef<HTMLVideoElement>(null)
   useEffect(() => {
     if (ref.current) {
