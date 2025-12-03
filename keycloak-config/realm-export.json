@@ -1,6 +1,9 @@
 {
   "realm": "myrealm",
   "enabled": true,
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": false,
+  "verifyEmail": true,
   "clients": [
     {
       "clientId": "frontend",
@@ -17,6 +20,21 @@
         "pkce.code.challenge.method": "S256",
         "post.logout.redirect.uris": "http://localhost:5173/*"
       }
+    },
+    {
+      "clientId": "user-service",
+      "name": "User Service Backend",
+      "enabled": true,
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "ABvykyIUah2CcQPiRcvcgd7GA4MrEdx4",
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "webOrigins": ["/*"],
+      "attributes": {
+        "use.refresh.tokens": "true"
+      }
     }
   ],
   "users": [
@@ -24,6 +42,7 @@
       "username": "testuser",
       "enabled": true,
       "email": "test@example.com",
+      "emailVerified": true,
       "firstName": "Test",
       "lastName": "User",
       "credentials": [
@@ -34,6 +53,14 @@
         }
       ],
       "realmRoles": ["user"]
+    },
+    {
+      "username": "service-account-user-service",
+      "enabled": true,
+      "serviceAccountClientId": "user-service",
+      "clientRoles": {
+        "realm-management": ["manage-users"]
+      }
     }
   ],
   "roles": {
