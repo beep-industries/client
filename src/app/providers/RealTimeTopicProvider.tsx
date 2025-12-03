@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { useAuth } from "@/app/providers/AuthProvider"
+import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useRealTimeSocket } from "./RealTimeSocketProvider"
 import type { TopicJoinSpec } from "@/shared/models/real-time.ts"
 

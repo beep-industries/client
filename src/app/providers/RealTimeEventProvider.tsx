@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import type { Channel } from "phoenix"
-import { useAuth } from "@/app/providers/AuthProvider"
+import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useRealTimeSocket } from "./RealTimeSocketProvider"
 import type { EventContextValue, TopicName } from "@/shared/models/real-time.ts"
 

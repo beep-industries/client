@@ -1,7 +1,7 @@
 import { createRootRouteWithContext, Outlet, redirect } from "@tanstack/react-router"
 import { ModeToggle } from "@/features/init/components/ModeToggle"
 import { LanguageToggle } from "@/features/init/components/LanguageToggle"
-import type { AuthState } from "@/app/providers/AuthProvider"
+import type { AuthState } from "@/app/providers/KeycloakAuthProvider"
 
 interface AppContext {
   auth: AuthState // Placeholder for future auth context

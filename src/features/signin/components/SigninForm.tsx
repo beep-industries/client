@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { signinFormSchema, type SigninForm } from "../types/signin-form"
 import { useTranslation } from "react-i18next"
-import { useAuth } from "@/app/providers/AuthProvider"
+import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 
 export function SigninForm() {
   const { t } = useTranslation()
