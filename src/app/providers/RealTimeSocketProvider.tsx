@@ -9,7 +9,7 @@ import React, {
 } from "react"
 import type { Channel, Socket } from "phoenix"
 import { Socket as PhoenixSocket } from "phoenix"
-import { useAuth } from "@/app/providers/AuthProvider"
+import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import type { ChannelParams, RealTimeSocketState } from "@/shared/models/real-time.ts"
 
 function buildSocketUrl(httpBase: string): string {
