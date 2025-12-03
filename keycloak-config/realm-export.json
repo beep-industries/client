@@ -12,13 +12,13 @@
       "publicClient": true,
       "rootUrl": "http://localhost:5173",
       "baseUrl": "http://localhost:5173",
-      "redirectUris": ["http://localhost:5173/*"],
-      "webOrigins": ["http://localhost:5173"],
+      "redirectUris": ["http://localhost:5173/*", "http://localhost:5174/*"],
+      "webOrigins": ["http://localhost:5173", "http://localhost:5174"],
       "standardFlowEnabled": true,
       "directAccessGrantsEnabled": true,
       "attributes": {
         "pkce.code.challenge.method": "S256",
-        "post.logout.redirect.uris": "http://localhost:5173/*"
+        "post.logout.redirect.uris": "http://localhost:5173/*##http://localhost:5174/*"
       }
     },
     {
@@ -39,12 +39,28 @@
   ],
   "users": [
     {
-      "username": "testuser",
+      "username": "testuser1",
       "enabled": true,
-      "email": "test@example.com",
+      "email": "test1@example.com",
       "emailVerified": true,
-      "firstName": "Test",
-      "lastName": "User",
+      "firstName": "Test1",
+      "lastName": "User1",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "test123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["user"]
+    },
+    {
+      "username": "testuser2",
+      "enabled": true,
+      "email": "test2@example.com",
+      "emailVerified": true,
+      "firstName": "Test2",
+      "lastName": "User2",
       "credentials": [
         {
           "type": "password",
