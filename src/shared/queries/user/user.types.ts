@@ -17,8 +17,8 @@ export interface UserFullInfo extends UserBasicInfo {
   last_name: string
 }
 
-// Settings
-export interface Setting {
+// User settings
+export interface UserSettings {
   sub: string
   theme: string
   lang: string
@@ -33,7 +33,7 @@ export interface UpdateUserRequest {
   description?: string
 }
 
-export interface UpdateSettingRequest {
+export interface UpdateUserSettingsRequest {
   theme?: string
   lang?: string
 }

@@ -6,7 +6,7 @@ import {
   updateCurrentUserSettings,
   getUserBySub,
 } from "./user.api"
-import type { UpdateUserRequest, UpdateSettingRequest } from "./user.types"
+import type { UpdateUserRequest, UpdateUserSettingsRequest } from "./user.types"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 
 export const userKeys = {
@@ -54,7 +54,7 @@ export const useUpdateCurrentUserSettings = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (data: UpdateSettingRequest) => updateCurrentUserSettings(accessToken!, data),
+    mutationFn: (data: UpdateUserSettingsRequest) => updateCurrentUserSettings(accessToken!, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.settings() })
     },

@@ -3,8 +3,8 @@ import type {
   UserBasicInfo,
   UserFullInfo,
   UpdateUserRequest,
-  Setting,
-  UpdateSettingRequest,
+  UserSettings,
+  UpdateUserSettingsRequest,
   FullInfoQuery,
 } from "./user.types"
 
@@ -33,13 +33,13 @@ export const updateCurrentUser = (accessToken: string, data: UpdateUserRequest) 
 // GET /users/me/settings
 export const getCurrentUserSettings = (accessToken: string) => {
   const api = createUserApi(accessToken)
-  return api.get("users/me/settings").json<Setting>()
+  return api.get("users/me/settings").json<UserSettings>()
 }
 
 // PUT /users/me/settings
-export const updateCurrentUserSettings = (accessToken: string, data: UpdateSettingRequest) => {
+export const updateCurrentUserSettings = (accessToken: string, data: UpdateUserSettingsRequest) => {
   const api = createUserApi(accessToken)
-  return api.put("users/me/settings", { json: data }).json<Setting>()
+  return api.put("users/me/settings", { json: data }).json<UserSettings>()
 }
 
 // GET /users/:sub
