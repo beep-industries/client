@@ -123,47 +123,106 @@ This command will format all TypeScript, JavaScript, JSON, and CSS files in the 
 
 ## Authentication with Keycloak
 
-> **⚠️ Work in Progress**: Keycloak integration is currently under development. Keycloak is not yet available in our infrastructure. The configuration below is for local development and testing purposes only.
+This project uses **Keycloak** for authentication and a **User Service** backend for user profile management.
 
-This project uses **Keycloak** for authentication and authorization. The Keycloak instance is automatically configured when you start the Docker Compose stack.
+### Prerequisites
+
+You need to clone both repositories:
+
+```bash
+# Clone the client (this repo)
+git clone https://github.com/beep-industries/client
+
+# Clone the user service
+git clone https://github.com/beep-industries/user
+```
+
+### Environment Setup
+
+1. **Client setup**:
+   ```bash
+   cd client
+   cp .env.example .env
+   pnpm install
+   ```
+
+2. **User service setup**:
+   ```bash
+   cd user
+   cp .env.example .env
+   ```
+
+### Starting the Full Stack
+
+1. **Start Keycloak & PostgreSQL** (from the client directory):
+   ```bash
+   docker compose up -d
+   ```
+   Wait for Keycloak to be ready (~30 seconds).
+
+2. **Start the User Service** (from the user directory):
+   ```bash
+   docker compose up -d postgres              # Start database only
+   docker compose run --rm user-api migrate   # Run migrations
+   docker compose up -d user-api              # Start the API
+   ```
+   The user service runs on `http://localhost:3000`.
+
+3. **Start the Client** (from the client directory):
+   ```bash
+   pnpm dev
+   ```
+   The client runs on `http://localhost:5173`.
 
 ### Test User Credentials
 
-A test user is automatically created with the following credentials:
+Two test users are automatically created:
 
-- **Username**: `testuser`
-- **Password**: `test123`
+| Username    | Password  | Email              |
+|-------------|-----------|-------------------|
+| `testuser1` | `test123` | test1@example.com |
+| `testuser2` | `test123` | test2@example.com |
 
 ### Testing the Authentication Flow
 
-1. **Start Keycloak**:
-   ```bash
-   docker-compose up -d
-   ```
+1. Open your browser and go to `http://localhost:5173`
+2. Click on **"Sign in with Keycloak"**
+3. You will be redirected to the Keycloak login page
+4. Enter credentials (e.g., `testuser1` / `test123`)
+5. After successful authentication, you will be redirected to `/discover`
 
-2. **Access the application**:
-   - Open your browser and go to `http://localhost:5173`
-   - Click on the "Se connecter" (Login) button
-   - You will be redirected to the Keycloak login page
+### Access Keycloak Admin Console
 
-3. **Login with the test user**:
-   - Enter username: `testuser`
-   - Enter password: `test123`
-   - After successful authentication, you will be redirected to `/discover`
-
-4. **Access Keycloak Admin Console** (optional):
-   - Go to `http://localhost:8080`
-   - Use the admin credentials from your `.env` file
-   - You can manage users, clients, and realm settings
+- URL: `http://localhost:8080`
+- Username: `admin` (or value of `KEYCLOAK_ADMIN` in `.env`)
+- Password: `password` (or value of `KEYCLOAK_ADMIN_PASSWORD` in `.env`)
 
 ### Realm Configuration
 
-The Keycloak realm (`myrealm`) and client (`frontend`) are automatically imported on startup from the `keycloak-config/realm-export.json` file. The configuration includes:
+The Keycloak realm (`myrealm`) and client (`frontend`) are automatically imported on startup from `keycloak-config/realm-export.json`. The configuration includes:
 
 - **Client ID**: `frontend`
-- **Redirect URIs**: `http://localhost:5173/*`
-- **Web Origins**: `http://localhost:5173`
+- **Redirect URIs**: `http://localhost:5173/*`, `http://localhost:5174/*`
+- **Web Origins**: `http://localhost:5173`, `http://localhost:5174`
 - **PKCE**: Enabled (S256)
+
+### Architecture Overview
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Client    │────▶│  Keycloak   │     │  PostgreSQL │
+│  (React)    │     │   (Auth)    │────▶│  (Keycloak) │
+│ :5173/5174  │     │   :8080     │     │   :5432     │
+└─────────────┘     └─────────────┘     └─────────────┘
+       │
+       │ Bearer Token
+       ▼
+┌─────────────┐     ┌─────────────┐
+│ User Service│────▶│  PostgreSQL │
+│   (Rust)    │     │   (Users)   │
+│   :3000     │     │             │
+└─────────────┘     └─────────────┘
+```
 
 ---
 
