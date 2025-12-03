@@ -1,10 +1,9 @@
 // User basic info (from user service DB only)
 export interface UserBasicInfo {
-  id: string
-  keycloak_id: string
-  display_name: string | null
-  profile_picture: string | null
-  description: string | null
+  sub: string
+  display_name: string
+  profile_picture: string
+  description: string
   status: string
   created_at: string
   updated_at: string
@@ -20,8 +19,7 @@ export interface UserFullInfo extends UserBasicInfo {
 
 // Settings
 export interface Setting {
-  id: string
-  user_id: string
+  sub: string
   theme: string
   lang: string
   created_at: string
@@ -30,9 +28,9 @@ export interface Setting {
 
 // Request types
 export interface UpdateUserRequest {
-  display_name?: string | null
-  profile_picture?: string | null
-  description?: string | null
+  display_name?: string
+  profile_picture?: string
+  description?: string
 }
 
 export interface UpdateSettingRequest {

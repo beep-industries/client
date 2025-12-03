@@ -4,7 +4,7 @@ import {
   updateCurrentUser,
   getCurrentUserSettings,
   updateCurrentUserSettings,
-  getUserById,
+  getUserBySub,
 } from "./user.api"
 import type { UpdateUserRequest, UpdateSettingRequest } from "./user.types"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
@@ -61,12 +61,12 @@ export const useUpdateCurrentUserSettings = () => {
   })
 }
 
-export const useUserById = (userId: string) => {
+export const useUserBySub = (sub: string) => {
   const { accessToken } = useAuth()
 
   return useQuery({
-    queryKey: userKeys.detail(userId),
-    queryFn: () => getUserById(accessToken!, userId),
-    enabled: !!accessToken && !!userId,
+    queryKey: userKeys.detail(sub),
+    queryFn: () => getUserBySub(accessToken!, sub),
+    enabled: !!accessToken && !!sub,
   })
 }

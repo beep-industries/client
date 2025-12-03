@@ -42,8 +42,8 @@ export const updateCurrentUserSettings = (accessToken: string, data: UpdateSetti
   return api.put("users/me/settings", { json: data }).json<Setting>()
 }
 
-// GET /users/:id
-export const getUserById = (accessToken: string, userId: string) => {
+// GET /users/:sub
+export const getUserBySub = (accessToken: string, sub: string) => {
   const api = createUserApi(accessToken)
-  return api.get(`users/${userId}`).json<UserBasicInfo>()
+  return api.get(`users/${sub}`).json<UserBasicInfo>()
 }

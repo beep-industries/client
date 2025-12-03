@@ -27,9 +27,9 @@ function RouteComponent() {
   useEffect(() => {
     if (userProfile) {
       setFormData({
-        display_name: userProfile.display_name ?? "",
-        profile_picture: userProfile.profile_picture ?? "",
-        description: userProfile.description ?? "",
+        display_name: userProfile.display_name,
+        profile_picture: userProfile.profile_picture,
+        description: userProfile.description,
       })
     }
   }, [userProfile])
@@ -81,7 +81,7 @@ function RouteComponent() {
                 <Label htmlFor="display_name">Nom d'affichage</Label>
                 <Input
                   id="display_name"
-                  value={formData.display_name ?? ""}
+                  value={formData.display_name}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, display_name: e.target.value }))
                   }
@@ -93,7 +93,7 @@ function RouteComponent() {
                 <Label htmlFor="profile_picture">URL de la photo de profil</Label>
                 <Input
                   id="profile_picture"
-                  value={formData.profile_picture ?? ""}
+                  value={formData.profile_picture}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, profile_picture: e.target.value }))
                   }
@@ -105,7 +105,7 @@ function RouteComponent() {
                 <Label htmlFor="description">Description</Label>
                 <Input
                   id="description"
-                  value={formData.description ?? ""}
+                  value={formData.description}
                   onChange={(e) =>
                     setFormData((prev) => ({ ...prev, description: e.target.value }))
                   }
