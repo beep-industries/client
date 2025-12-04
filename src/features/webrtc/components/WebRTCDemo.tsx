@@ -26,7 +26,8 @@ export default function WebRTCDemo() {
   const streams = useMemo(() => {
     const tracks = remoteTracks.map((track) => {
       return {
-        username: track.username,
+        userId: track.userId,
+        username: track.userId,
         tracks: { audio: track.tracks.audio, video: track.tracks.video },
         video: track.video,
         audio: track.audio,
@@ -56,7 +57,7 @@ export default function WebRTCDemo() {
           disabled={joined}
           style={{ color: "black", padding: 4 }}
         />
-        <Button onClick={() => join(session, username)} disabled={joined}>
+        <Button onClick={() => join(session)} disabled={joined}>
           Join
         </Button>
         <Button onClick={() => leave()} disabled={!joined}>
@@ -75,7 +76,7 @@ export default function WebRTCDemo() {
       <div style={{ marginTop: 8 }}>{channelStatus}</div>
       <div id="media" style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
         {streams.map((user) => (
-          <div key={user.username}>
+          <div key={user.userId}>
             <span style={{ fontSize: 12, opacity: 0.7 }}>{user.username}</span>
             {user.video ? <Video stream={user.tracks.video} /> : <span>No video</span>}
             {user.audio ? <Video stream={user.tracks.audio} /> : <span>No audio</span>}

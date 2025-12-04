@@ -4,14 +4,14 @@ import { Presence } from "phoenix"
 
 export interface PresenceDesc {
   id: number
-  username: string
+  user_id: string
   video: boolean
   audio: boolean
 }
 
 export interface RemoteState {
   id: number
-  username: string
+  userId: string
   tracks: { audio: MediaStream | null; video: MediaStream | null }
   audio: boolean
   video: boolean
@@ -28,7 +28,7 @@ export interface WebRTCState {
   // Media
   remoteTracks: RemoteState[]
   // Actions
-  join: (session: number, username: string) => Promise<void>
+  join: (session: number) => Promise<void>
   leave: () => Promise<void>
   startCam: () => Promise<void>
   stopCam: () => void
@@ -138,7 +138,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   )
 
   const join = useCallback(
-    async (sess: number, username: string) => {
+    async (sess: number) => {
       setSession(sess)
       const rtc = ensureRtc()
       setChannelStatus(`Joining session ${sess} as endpoint`)
@@ -164,7 +164,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       // Join Phoenix channel topic and perform initial offer/answer via channel
       const topic = `voice-channel:${sess}`
       channelTopicRef.current = topic
-      const channel = joinTopic(topic, { username: username })
+      const channel = joinTopic(topic)
       presenceRef.current = new Presence(channel)
 
       presenceRef.current.onSync(() => {
@@ -175,13 +175,14 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
         setRemoteTracks((prev) => {
           return tracks.map((user) => {
-            const updated = prev.find((value) => value.username === user.username)
+            const updated = prev.find((value) => value.userId === user.user_id)
             if (updated) {
               return { ...updated, video: user.video, audio: user.audio }
             }
             return {
               ...user,
               tracks: { audio: null, video: null },
+              userId: user.user_id,
             }
           })
         })

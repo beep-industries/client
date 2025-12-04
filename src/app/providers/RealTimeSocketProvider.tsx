@@ -28,7 +28,7 @@ export interface RealTimeSocketProviderProps {
 const SocketContext = createContext<RealTimeSocketState | undefined>(undefined)
 
 export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocketProviderProps) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, accessToken } = useAuth()
   const [connected, setConnected] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const channelsRef = useRef<Map<string, Channel>>(new Map())
@@ -38,8 +38,9 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
 
   // Connect / disconnect the socket based on auth state
   useEffect(() => {
-    if (!socketRef.current) {
+    if (!socketRef.current || !socketRef.current.isConnected()) {
       const socket = new PhoenixSocket(socketUrl, {
+        params: { token: accessToken },
         heartbeatIntervalMs: 30000,
         reconnectAfterMs: (tries: number) => Math.min(tries * 1000 + 1000, 10000),
       })
@@ -66,7 +67,7 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
       socket.disconnect(() => void 0)
       setConnected(false)
     }
-  }, [isAuthenticated, socketUrl])
+  }, [accessToken, isAuthenticated, socketUrl])
 
   const join = useCallback((topic: string, params?: ChannelParams) => {
     const socket = socketRef.current
