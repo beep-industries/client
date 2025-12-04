@@ -1,27 +1,41 @@
-import { createRootRouteWithContext, Outlet, redirect } from "@tanstack/react-router"
+import {
+  createRootRouteWithContext,
+  Outlet,
+  Navigate,
+  useRouterState,
+} from "@tanstack/react-router"
 import { ModeToggle } from "@/features/init/components/ModeToggle"
 import { LanguageToggle } from "@/features/init/components/LanguageToggle"
 import type { AuthState } from "@/app/providers/KeycloakAuthProvider"
+import { useAuth } from "@/app/providers/KeycloakAuthProvider"
+import { Loader2 } from "lucide-react"
 
 interface AppContext {
-  auth: AuthState // Placeholder for future auth context
+  auth: AuthState
 }
 
 export const Route = createRootRouteWithContext<AppContext>()({
   component: RootComponent,
-  beforeLoad: ({ context, location }) => {
-    if (!context.auth.isAuthenticated && location.pathname !== "/signin") {
-      throw redirect({
-        to: "/signin",
-        search: {
-          redirect: location.href,
-        },
-      })
-    }
-  },
 })
 
 function RootComponent() {
+  const { isLoading, isAuthenticated } = useAuth()
+  const location = useRouterState({ select: (s) => s.location })
+
+  // Show loading while auth is being restored
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
+
+  // Redirect to signin if not authenticated (except on signin page)
+  if (!isAuthenticated && location.pathname !== "/signin") {
+    return <Navigate to="/signin" search={{ redirect: location.pathname }} />
+  }
+
   return (
     <div className="flex h-screen flex-col">
       <div className="flex flex-row justify-end gap-1 p-2">
