@@ -21,7 +21,6 @@ export default function WebRTCDemo() {
   } = useWebRTC()
 
   const [session, setSession] = useState<number>(10000000)
-  const [username, setUsername] = useState<string>("")
   const usersIn = useUsersBySubs(remoteTracks.map((track) => track.userId))
 
   // Map remote tracks to MediaStreams
@@ -49,14 +48,6 @@ export default function WebRTCDemo() {
           type="number"
           value={session}
           onChange={(e) => setSession(Number(e.target.value))}
-          disabled={joined}
-          style={{ color: "black", padding: 4 }}
-        />
-        <Input
-          id="username"
-          type="string"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
           disabled={joined}
           style={{ color: "black", padding: 4 }}
         />
