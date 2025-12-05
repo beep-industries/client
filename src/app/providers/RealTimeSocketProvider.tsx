@@ -28,7 +28,7 @@ export interface RealTimeSocketProviderProps {
 const SocketContext = createContext<RealTimeSocketState | undefined>(undefined)
 
 export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocketProviderProps) {
-  const { isAuthenticated, accessToken } = useAuth()
+  const { isAuthenticated, accessToken, user } = useAuth()
   const [connected, setConnected] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const channelsRef = useRef<Map<string, Channel>>(new Map())
@@ -54,6 +54,10 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
 
     if (isAuthenticated) {
       socket.connect()
+      const channel = join(`user:${user?.id}`)
+      channel.on("token_expired", () => {
+        channel.push("refresh_token", { token: accessToken })
+      })
     } else {
       // Leave all channels and disconnect
       channelsRef.current.forEach((ch) => {
