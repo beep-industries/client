@@ -121,112 +121,42 @@ This command will format all TypeScript, JavaScript, JSON, and CSS files in the 
 
 ---
 
-## Authentication with Keycloak
+## Environment Variables
 
-This project uses **Keycloak** for authentication and a **User Service** backend for user profile management.
+Copy the `.env.example` file to `.env` and configure the following variables:
 
-### Prerequisites
-
-You need to clone both repositories:
-
-```bash
-# Clone the client (this repo)
-git clone https://github.com/beep-industries/client
-
-# Clone the user service
-git clone https://github.com/beep-industries/user
-```
-
-### Environment Setup
-
-1. **Client setup**:
-   ```bash
-   cd client
-   cp .env.example .env
-   pnpm install
-   ```
-
-2. **User service setup**:
-   ```bash
-   cd user
-   cp .env.example .env
-   ```
-
-### Starting the Full Stack
-
-1. **Start Keycloak & PostgreSQL** (from the client directory):
-   ```bash
-   docker compose up -d
-   ```
-   Wait for Keycloak to be ready (~30 seconds).
-
-2. **Start the User Service** (from the user directory):
-   ```bash
-   docker compose up -d postgres              # Start database only
-   docker compose run --rm user-api migrate   # Run migrations
-   docker compose up -d user-api              # Start the API
-   ```
-   The user service runs on `http://localhost:3000`.
-
-3. **Start the Client** (from the client directory):
-   ```bash
-   pnpm dev
-   ```
-   The client runs on `http://localhost:5173`.
-
-### Test User Credentials
-
-Two test users are automatically created:
-
-| Username    | Password  | Email              |
-|-------------|-----------|-------------------|
-| `testuser1` | `test123` | test1@example.com |
-| `testuser2` | `test123` | test2@example.com |
-
-### Testing the Authentication Flow
-
-1. Open your browser and go to `http://localhost:5173`
-2. Click on **"Sign in with Keycloak"**
-3. You will be redirected to the Keycloak login page
-4. Enter credentials (e.g., `testuser1` / `test123`)
-5. After successful authentication, you will be redirected to `/discover`
-
-### Access Keycloak Admin Console
-
-- URL: `http://localhost:8080`
-- Username: `admin` (or value of `KEYCLOAK_ADMIN` in `.env`)
-- Password: `password` (or value of `KEYCLOAK_ADMIN_PASSWORD` in `.env`)
-
-### Realm Configuration
-
-The Keycloak realm (`myrealm`) and client (`frontend`) are automatically imported on startup from `keycloak-config/realm-export.json`. The configuration includes:
-
-- **Client ID**: `frontend`
-- **Redirect URIs**: `http://localhost:5173/*`, `http://localhost:5174/*`
-- **Web Origins**: `http://localhost:5173`, `http://localhost:5174`
-- **PKCE**: Enabled (S256)
-
-### Architecture Overview
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Client    │────▶│  Keycloak   │     │  PostgreSQL │
-│  (React)    │     │   (Auth)    │────▶│  (Keycloak) │
-│ :5173/5174  │     │   :8080     │     │   :5432     │
-└─────────────┘     └─────────────┘     └─────────────┘
-       │
-       │ Bearer Token
-       ▼
-┌─────────────┐     ┌─────────────┐
-│ User Service│────▶│  PostgreSQL │
-│   (Rust)    │     │   (Users)   │
-│   :3000     │     │             │
-└─────────────┘     └─────────────┘
-```
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_KEYCLOAK_CLIENT_ID` | Keycloak client ID | `frontend` |
+| `VITE_KEYCLOAK_AUTHORITY` | Keycloak realm URL | `http://localhost:8080/realms/myrealm` |
+| `VITE_USER_SERVICE_URL` | User service API URL | `http://localhost:3000` |
 
 ---
 
-## Build and run with docker
+## Getting Started
+
+### Development
+
+1. Copy the environment file:
+   ```bash
+   cp .env.example .env
+   ```
+
+2. Install dependencies:
+   ```bash
+   pnpm install
+   ```
+
+3. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+
+The client will be available at `http://localhost:5173`.
+
+---
+
+## Build and Run with Docker
 
 To build and run the Beep client application using Docker, follow these steps:
 1. **Build the Docker Image**

@@ -1,7 +1,7 @@
 import type { User } from "@/shared/models/user"
 import React, { createContext, useContext, useMemo } from "react"
 import { AuthProvider as OidcAuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
-import type { User as OidcUser } from "oidc-client-ts"
+import { WebStorageStateStore, type User as OidcUser } from "oidc-client-ts"
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -22,6 +22,17 @@ const oidcConfig = {
   post_logout_redirect_uri: window.location.origin,
   scope: "openid profile email",
   automaticSilentRenew: true,
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
+  onSigninCallback: () => {
+    // Remove OIDC params from URL after successful signin
+    // Use replaceState to clean up the URL without triggering navigation
+    const url = new URL(window.location.href)
+    url.searchParams.delete("code")
+    url.searchParams.delete("state")
+    url.searchParams.delete("session_state")
+    url.searchParams.delete("iss")
+    window.history.replaceState({}, document.title, url.pathname)
+  },
 }
 
 function mapOidcUserToUser(oidcUser: OidcUser | null | undefined): User | null {
