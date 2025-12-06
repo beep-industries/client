@@ -36,6 +36,23 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
 
+  const join = useCallback((topic: string, params?: ChannelParams) => {
+    const socket = socketRef.current
+    if (!socket) throw new Error("Socket not initialized yet")
+    const existing = channelsRef.current.get(topic)
+    if (existing) return existing
+
+    const channel = socket.channel(topic, params)
+    channel
+      .join()
+      .receive("ok", () => {})
+      .receive("error", (err) => {
+        console.error(`[RealTimeSocket] Failed to join channel ${topic}`, err)
+      })
+
+    channelsRef.current.set(topic, channel)
+    return channel
+  }, [])
   // Connect / disconnect the socket based on auth state
   useEffect(() => {
     if (!socketRef.current || !socketRef.current.isConnected()) {
@@ -71,25 +88,7 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
       socket.disconnect(() => void 0)
       setConnected(false)
     }
-  }, [accessToken, isAuthenticated, socketUrl])
-
-  const join = useCallback((topic: string, params?: ChannelParams) => {
-    const socket = socketRef.current
-    if (!socket) throw new Error("Socket not initialized yet")
-    const existing = channelsRef.current.get(topic)
-    if (existing) return existing
-
-    const channel = socket.channel(topic, params)
-    channel
-      .join()
-      .receive("ok", () => {})
-      .receive("error", (err) => {
-        console.error(`[RealTimeSocket] Failed to join channel ${topic}`, err)
-      })
-
-    channelsRef.current.set(topic, channel)
-    return channel
-  }, [])
+  }, [accessToken, isAuthenticated, join, socketUrl, user?.id])
 
   const leave = useCallback((topic: string) => {
     const ch = channelsRef.current.get(topic)
