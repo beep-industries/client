@@ -9,6 +9,7 @@ import { LanguageToggle } from "@/features/init/components/LanguageToggle"
 import type { AuthState } from "@/app/providers/KeycloakAuthProvider"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { Loader2 } from "lucide-react"
+import { RealTimeSocketProvider } from "@/app/providers/RealTimeSocketProvider.tsx"
 
 interface AppContext {
   auth: AuthState
@@ -38,13 +39,15 @@ function RootComponent() {
 
   return (
     <div className="flex h-screen flex-col">
-      <div className="flex flex-row justify-end gap-1 p-2">
-        <ModeToggle />
-        <LanguageToggle />
-      </div>
-      <div className="flex h-full flex-col">
-        <Outlet />
-      </div>
+      <RealTimeSocketProvider>
+        <div className="flex flex-row justify-end gap-1 p-2">
+          <ModeToggle />
+          <LanguageToggle />
+        </div>
+        <div className="flex h-full flex-col">
+          <Outlet />
+        </div>
+      </RealTimeSocketProvider>
     </div>
   )
 }

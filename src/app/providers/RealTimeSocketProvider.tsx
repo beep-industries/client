@@ -28,45 +28,13 @@ export interface RealTimeSocketProviderProps {
 const SocketContext = createContext<RealTimeSocketState | undefined>(undefined)
 
 export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocketProviderProps) {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, accessToken, user } = useAuth()
   const [connected, setConnected] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const channelsRef = useRef<Map<string, Channel>>(new Map())
 
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
-
-  // Connect / disconnect the socket based on auth state
-  useEffect(() => {
-    if (!socketRef.current) {
-      const socket = new PhoenixSocket(socketUrl, {
-        heartbeatIntervalMs: 30000,
-        reconnectAfterMs: (tries: number) => Math.min(tries * 1000 + 1000, 10000),
-      })
-      socket.onOpen(() => setConnected(true))
-      socket.onClose(() => setConnected(false))
-      socket.onError(() => setConnected(false))
-      socketRef.current = socket
-    }
-
-    const socket = socketRef.current!
-
-    if (isAuthenticated) {
-      socket.connect()
-    } else {
-      // Leave all channels and disconnect
-      channelsRef.current.forEach((ch) => {
-        try {
-          ch.leave()
-        } catch (err) {
-          console.error("[RealTimeSocket] Error on channel leave", err)
-        }
-      })
-      channelsRef.current.clear()
-      socket.disconnect(() => void 0)
-      setConnected(false)
-    }
-  }, [isAuthenticated, socketUrl])
 
   const join = useCallback((topic: string, params?: ChannelParams) => {
     const socket = socketRef.current
@@ -85,6 +53,42 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
     channelsRef.current.set(topic, channel)
     return channel
   }, [])
+  // Connect / disconnect the socket based on auth state
+  useEffect(() => {
+    if (!socketRef.current || !socketRef.current.isConnected()) {
+      const socket = new PhoenixSocket(socketUrl, {
+        params: { token: accessToken },
+        heartbeatIntervalMs: 30000,
+        reconnectAfterMs: (tries: number) => Math.min(tries * 1000 + 1000, 10000),
+      })
+      socket.onOpen(() => setConnected(true))
+      socket.onClose(() => setConnected(false))
+      socket.onError(() => setConnected(false))
+      socketRef.current = socket
+    }
+
+    const socket = socketRef.current!
+
+    if (isAuthenticated) {
+      socket.connect()
+      const channel = join(`user:${user?.id}`)
+      channel.on("token_expired", () => {
+        channel.push("refresh_token", { token: accessToken })
+      })
+    } else {
+      // Leave all channels and disconnect
+      channelsRef.current.forEach((ch) => {
+        try {
+          ch.leave()
+        } catch (err) {
+          console.error("[RealTimeSocket] Error on channel leave", err)
+        }
+      })
+      channelsRef.current.clear()
+      socket.disconnect(() => void 0)
+      setConnected(false)
+    }
+  }, [accessToken, isAuthenticated, join, socketUrl, user?.id])
 
   const leave = useCallback((topic: string) => {
     const ch = channelsRef.current.get(topic)
