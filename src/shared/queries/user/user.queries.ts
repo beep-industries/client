@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueries, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   getCurrentUser,
   updateCurrentUser,
@@ -68,5 +68,17 @@ export const useUserBySub = (sub: string) => {
     queryKey: userKeys.detail(sub),
     queryFn: () => getUserBySub(accessToken!, sub),
     enabled: !!accessToken && !!sub,
+  })
+}
+
+export const useUsersBySubs = (subs: string[]) => {
+  const { accessToken } = useAuth()
+
+  return useQueries({
+    queries: subs.map((sub) => ({
+      queryKey: userKeys.detail(sub),
+      queryFn: () => getUserBySub(accessToken!, sub),
+      enabled: !!accessToken && !!sub,
+    })),
   })
 }

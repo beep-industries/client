@@ -10,10 +10,10 @@ export interface RealTimeTopicProviderProps {
 
 export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProviderProps) {
   const { isAuthenticated, user } = useAuth()
-  const { join } = useRealTimeSocket()
+  const { join, connected } = useRealTimeSocket()
 
   useEffect(() => {
-    if (!isAuthenticated || !topics || topics.length === 0) return
+    if (!isAuthenticated || !topics || topics.length === 0 || !connected) return
 
     const cleanups: (() => void)[] = []
 
@@ -34,7 +34,7 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
     return () => {
       cleanups.forEach((fn) => fn())
     }
-  }, [isAuthenticated, topics, join, user])
+  }, [isAuthenticated, topics, join, user, connected])
 
   return <>{children}</>
 }
