@@ -2,8 +2,6 @@ export interface User {
   id: string
   email: string
   username: string
-  firstName: string
-  lastName: string
   profilePicture?: string
   totpAuthentication: boolean
   verifiedAt: Date | null
@@ -16,8 +14,6 @@ export interface JwtUser {
   sub: string
   email: string
   username: string
-  firstName: string
-  lastName: string
   profilePicture?: string
   totpAuthentication: boolean
   verifiedAt: Date | null
