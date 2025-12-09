@@ -43,8 +43,6 @@ function mapOidcUserToUser(oidcUser: OidcUser | null | undefined): User | null {
     id: profile.sub,
     email: profile.email ?? "",
     username: profile.preferred_username ?? profile.email ?? "",
-    firstName: profile.given_name ?? "",
-    lastName: profile.family_name ?? "",
     profilePicture: profile.picture,
     totpAuthentication: false,
     verifiedAt: profile.email_verified ? new Date() : null,
