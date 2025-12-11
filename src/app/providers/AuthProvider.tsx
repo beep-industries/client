@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Refresh tokens only on initial load and only if the user didn't log out
     if (isAuthenticated) return
     refreshMutation.mutate()
-  }, [])
+  }, [isAuthenticated, refreshMutation])
 
   // Auto-refresh tokens every 5 minutes
   useEffect(() => {
@@ -46,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     ) // 5 minutes in milliseconds
 
     return () => clearInterval(interval)
-  }, [])
+  }, [isAuthenticated, logoutMutation, refreshMutation])
 
   // Handle authentication state changes
   useEffect(() => {

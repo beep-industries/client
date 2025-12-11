@@ -1,6 +1,4 @@
-import {
-  createRootRouteWithContext,
-} from "@tanstack/react-router"
+import { createRootRouteWithContext } from "@tanstack/react-router"
 import type { AuthState } from "@/app/providers/KeycloakAuthProvider"
 import AppLayout from "@/layouts/app-layout"
 
