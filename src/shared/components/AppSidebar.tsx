@@ -1,4 +1,5 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "./ui/Sidebar"
+import { UserMediaControls } from "./UserMediaControls"
 import { UserNav } from "./UserNav"
 
 export function AppSidebar() {
@@ -17,7 +18,9 @@ export function AppSidebar() {
         <SidebarGroup />
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <UserMediaControls channelName={"Hey"} />
+      </SidebarFooter>
     </Sidebar>
   )
 }
