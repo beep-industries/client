@@ -148,3 +148,27 @@
     @apply bg-background text-foreground;
   }
 }
+
+@utility text-responsive-xl {
+  @apply text-lg md:text-xl;
+}
+
+@utility text-responsive-lg {
+  @apply text-base md:text-lg;
+}
+
+@utility text-responsive-md {
+  @apply text-sm md:text-base;
+}
+
+@utility text-responsive-base {
+  @apply text-xs md:text-sm;
+}
+
+@utility text-responsive-sm {
+  @apply text-[10px] md:text-xs;
+}
+
+@utility text-responsive-xs {
+  @apply text-[8px] md:text-[10px];
+}
