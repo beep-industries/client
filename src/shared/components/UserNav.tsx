@@ -1,4 +1,4 @@
-import { LogOut, Settings } from "lucide-react"
+import { ChevronsDownUp, LogOut, Settings } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import {
   DropdownMenu,
@@ -35,7 +35,7 @@ export function UserNav({
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <span className="text-responsive-md truncate font-medium">{user.name}</span>
-              {/* <IconDotsVertical className="ml-auto size-4" /> */}
+              <ChevronsDownUp className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
