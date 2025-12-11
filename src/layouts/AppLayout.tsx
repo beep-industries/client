@@ -1,5 +1,5 @@
 import NavServer from "@/components/nav-server"
-import { SidebarInset, SidebarProvider } from "@/shared/components/ui/sidebar"
+import { SidebarInset, SidebarProvider } from "@/shared/components/ui/Sidebar"
 import { Outlet } from "@tanstack/react-router"
 
 export default function AppLayout() {

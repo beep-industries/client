@@ -1,4 +1,4 @@
-import PageDiscover from "../ui/page-discover"
+import PageDiscover from "../ui/PageDiscover"
 
 export default function PageDiscoverFeature() {
   return <PageDiscover />
