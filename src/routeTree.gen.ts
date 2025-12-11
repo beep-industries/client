@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SigninRouteImport } from "./routes/signin"
+import { Route as ServersRouteImport } from "./routes/servers"
 import { Route as DiscoverRouteImport } from "./routes/discover"
 import { Route as AuthRouteImport } from "./routes/auth"
 import { Route as IndexRouteImport } from "./routes/index"
@@ -23,6 +24,11 @@ const WebrtcRoute = WebrtcRouteImport.update({
 const SigninRoute = SigninRouteImport.update({
   id: "/signin",
   path: "/signin",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServersRoute = ServersRouteImport.update({
+  id: "/servers",
+  path: "/servers",
   getParentRoute: () => rootRouteImport,
 } as any)
 const DiscoverRoute = DiscoverRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/servers": typeof ServersRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/servers": typeof ServersRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
@@ -60,21 +68,30 @@ export interface FileRoutesById {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
   "/discover": typeof DiscoverRoute
+  "/servers": typeof ServersRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
+  fullPaths: "/" | "/auth" | "/discover" | "/servers" | "/signin" | "/webrtc"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
-  id: "__root__" | "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
+  to: "/" | "/auth" | "/discover" | "/servers" | "/signin" | "/webrtc"
+  id:
+    | "__root__"
+    | "/"
+    | "/auth"
+    | "/discover"
+    | "/servers"
+    | "/signin"
+    | "/webrtc"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DiscoverRoute: typeof DiscoverRoute
+  ServersRoute: typeof ServersRoute
   SigninRoute: typeof SigninRoute
   WebrtcRoute: typeof WebrtcRoute
 }
@@ -93,6 +110,13 @@ declare module "@tanstack/react-router" {
       path: "/signin"
       fullPath: "/signin"
       preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/servers": {
+      id: "/servers"
+      path: "/servers"
+      fullPath: "/servers"
+      preLoaderRoute: typeof ServersRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/discover": {
@@ -123,6 +147,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DiscoverRoute: DiscoverRoute,
+  ServersRoute: ServersRoute,
   SigninRoute: SigninRoute,
   WebrtcRoute: WebrtcRoute,
 }
