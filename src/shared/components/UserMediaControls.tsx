@@ -73,7 +73,7 @@ export function UserMediaControls({
               type="button"
               onClick={onHangupClick}
               aria-label="Leave voice channel"
-              className="text-red-500 transition-colors hover:text-red-400"
+              className="text-primary hover:text-primary/80 transition-colors"
             >
               <PhoneOff className="h-5 w-5" />
             </button>
