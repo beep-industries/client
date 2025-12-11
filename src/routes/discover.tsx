@@ -66,6 +66,15 @@ function RouteComponent() {
 
       <p className="text-muted-foreground">Bienvenue, {authUser?.username || "utilisateur"} !</p>
 
+      <div className="mx-auto max-w-2xl space-y-6 p-8">
+        <div className="flex justify-between">
+          <h2 className="text-2xl font-semibold">Liens rapides</h2>
+          <a className="gap-2 underline" href="/servers">
+            Page des serveurs
+          </a>
+        </div>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>Modifier mon profil</CardTitle>
