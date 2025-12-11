@@ -48,13 +48,17 @@ export function UserMediaControls({
       >
         <div className={`flex gap-3`}>
           <button
+            type="button"
             onClick={onMicClick}
+            aria-label={isMicActive ? "Mute microphone" : "Unmute microphone"}
             className={`transition-colors ${isMicActive ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
           >
             {isMicActive ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
           </button>
           <button
+            type="button"
             onClick={onCameraClick}
+            aria-label={isCameraActive ? "Turn off camera" : "Turn on camera"}
             className={`transition-colors ${isCameraActive ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
           >
             {isCameraActive ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
@@ -66,7 +70,9 @@ export function UserMediaControls({
               <span className="text-muted-foreground text-responsive-md">{callDuration}</span>
             )}
             <button
+              type="button"
               onClick={onHangupClick}
+              aria-label="Leave voice channel"
               className="text-red-500 transition-colors hover:text-red-400"
             >
               <PhoneOff className="h-5 w-5" />
