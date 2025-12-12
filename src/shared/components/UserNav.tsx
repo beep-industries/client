@@ -1,4 +1,5 @@
 import { ChevronsDownUp, LogOut, Settings } from "lucide-react"
+import { Link } from "@tanstack/react-router"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import {
   DropdownMenu,
@@ -59,10 +60,13 @@ export function UserNav({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-responsive-base">
-              <Settings />
-              Settings
+            <DropdownMenuItem className="text-responsive-base" asChild>
+              <Link to="/settings">
+                <Settings />
+                Settings
+              </Link>
             </DropdownMenuItem>
+            <DropdownMenuSeparator />
             <DropdownMenuItem className="text-responsive-base">
               <LogOut />
               Log out

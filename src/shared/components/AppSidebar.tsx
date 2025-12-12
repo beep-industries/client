@@ -14,7 +14,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { label: "Messages", icon: Inbox, href: "/messages" },
   { label: "Notifications", icon: Bell, href: "/notifications" },
-  { label: "Explore", icon: Compass, href: "/discover" },
+  { label: "Explore", icon: Compass, href: "/explore" },
 ]
 
 export function AppSidebar() {

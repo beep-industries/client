@@ -11,7 +11,10 @@
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SigninRouteImport } from "./routes/signin"
-import { Route as DiscoverRouteImport } from "./routes/discover"
+import { Route as SettingsRouteImport } from "./routes/settings"
+import { Route as NotificationsRouteImport } from "./routes/notifications"
+import { Route as MessagesRouteImport } from "./routes/messages"
+import { Route as ExploreRouteImport } from "./routes/explore"
 import { Route as AuthRouteImport } from "./routes/auth"
 import { Route as IndexRouteImport } from "./routes/index"
 
@@ -25,9 +28,24 @@ const SigninRoute = SigninRouteImport.update({
   path: "/signin",
   getParentRoute: () => rootRouteImport,
 } as any)
-const DiscoverRoute = DiscoverRouteImport.update({
-  id: "/discover",
-  path: "/discover",
+const SettingsRoute = SettingsRouteImport.update({
+  id: "/settings",
+  path: "/settings",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: "/notifications",
+  path: "/notifications",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: "/messages",
+  path: "/messages",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExploreRoute = ExploreRouteImport.update({
+  id: "/explore",
+  path: "/explore",
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -44,14 +62,20 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
-  "/discover": typeof DiscoverRoute
+  "/explore": typeof ExploreRoute
+  "/messages": typeof MessagesRoute
+  "/notifications": typeof NotificationsRoute
+  "/settings": typeof SettingsRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
-  "/discover": typeof DiscoverRoute
+  "/explore": typeof ExploreRoute
+  "/messages": typeof MessagesRoute
+  "/notifications": typeof NotificationsRoute
+  "/settings": typeof SettingsRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
@@ -59,22 +83,53 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
   "/auth": typeof AuthRoute
-  "/discover": typeof DiscoverRoute
+  "/explore": typeof ExploreRoute
+  "/messages": typeof MessagesRoute
+  "/notifications": typeof NotificationsRoute
+  "/settings": typeof SettingsRoute
   "/signin": typeof SigninRoute
   "/webrtc": typeof WebrtcRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
+  fullPaths:
+    | "/"
+    | "/auth"
+    | "/explore"
+    | "/messages"
+    | "/notifications"
+    | "/settings"
+    | "/signin"
+    | "/webrtc"
   fileRoutesByTo: FileRoutesByTo
-  to: "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
-  id: "__root__" | "/" | "/auth" | "/discover" | "/signin" | "/webrtc"
+  to:
+    | "/"
+    | "/auth"
+    | "/explore"
+    | "/messages"
+    | "/notifications"
+    | "/settings"
+    | "/signin"
+    | "/webrtc"
+  id:
+    | "__root__"
+    | "/"
+    | "/auth"
+    | "/explore"
+    | "/messages"
+    | "/notifications"
+    | "/settings"
+    | "/signin"
+    | "/webrtc"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
-  DiscoverRoute: typeof DiscoverRoute
+  ExploreRoute: typeof ExploreRoute
+  MessagesRoute: typeof MessagesRoute
+  NotificationsRoute: typeof NotificationsRoute
+  SettingsRoute: typeof SettingsRoute
   SigninRoute: typeof SigninRoute
   WebrtcRoute: typeof WebrtcRoute
 }
@@ -95,11 +150,32 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof SigninRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/discover": {
-      id: "/discover"
-      path: "/discover"
-      fullPath: "/discover"
-      preLoaderRoute: typeof DiscoverRouteImport
+    "/settings": {
+      id: "/settings"
+      path: "/settings"
+      fullPath: "/settings"
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/notifications": {
+      id: "/notifications"
+      path: "/notifications"
+      fullPath: "/notifications"
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/messages": {
+      id: "/messages"
+      path: "/messages"
+      fullPath: "/messages"
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/explore": {
+      id: "/explore"
+      path: "/explore"
+      fullPath: "/explore"
+      preLoaderRoute: typeof ExploreRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/auth": {
@@ -122,7 +198,10 @@ declare module "@tanstack/react-router" {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
-  DiscoverRoute: DiscoverRoute,
+  ExploreRoute: ExploreRoute,
+  MessagesRoute: MessagesRoute,
+  NotificationsRoute: NotificationsRoute,
+  SettingsRoute: SettingsRoute,
   SigninRoute: SigninRoute,
   WebrtcRoute: WebrtcRoute,
 }

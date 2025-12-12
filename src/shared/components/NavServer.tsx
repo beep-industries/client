@@ -1,5 +1,11 @@
 import { Ellipsis } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/DropdownMenu"
 
 interface Server {
   id: number
@@ -20,11 +26,19 @@ export default function NavServer() {
   }
 
   return (
-    <nav className="bg-sidebar flex h-screen flex-col items-center gap-2 p-2">
+    <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
       {/* Carré Messages Privés */}
-      <button className="border-border hover:border-primary bg-border flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200">
-        <Ellipsis className="text-muted-foreground h-4 w-4" />
-      </button>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <button className="border-border hover:border-primary bg-border flex h-7 w-7 items-center justify-center rounded-md border transition-all duration-200">
+            <Ellipsis className="text-muted-foreground h-4 w-4" />
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>Create a server</DropdownMenuItem>
+          <DropdownMenuItem>Join a server</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Liste des serveurs */}
       <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent flex flex-1 flex-col gap-2 overflow-y-auto">

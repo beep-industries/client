@@ -1,7 +1,20 @@
 import { AppSidebar } from "@/shared/components/AppSidebar"
 import NavServer from "@/shared/components/NavServer"
-import { SidebarInset, SidebarProvider } from "@/shared/components/ui/Sidebar"
+import { SidebarInset, SidebarProvider, useSidebar } from "@/shared/components/ui/Sidebar"
 import { Outlet } from "@tanstack/react-router"
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { Button } from "@/shared/components/ui/Button"
+
+function SidebarTrigger() {
+  const { toggleSidebar, open } = useSidebar()
+
+  return (
+    <Button variant="ghost" size="icon" onClick={toggleSidebar} className="size-7">
+      {open ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+      <span className="sr-only">Toggle Sidebar</span>
+    </Button>
+  )
+}
 
 export default function AppLayout() {
   return (
@@ -11,8 +24,13 @@ export default function AppLayout() {
         <AppSidebar />
 
         {/* MIDDLE SECTION - Contenu principal */}
-        <SidebarInset className="flex-1 overflow-auto p-6 pt-8">
-          <Outlet />
+        <SidebarInset className="flex-1 overflow-auto">
+          <div className="bg-sidebar border-sidebar-border border-b p-2">
+            <SidebarTrigger />
+          </div>
+          <div className="p-2">
+            <Outlet />
+          </div>
         </SidebarInset>
 
         {/* RIGHT SECTION - Navigation serveurs */}
