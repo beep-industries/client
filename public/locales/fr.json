@@ -1,16 +1,19 @@
 {
-    "home": {
-        "title": "Bienvenue",
-        "description": "Ceci est une démo"
-    },
-    "about": {
-        "title": "À propos de nous",
-        "description": "En savoir plus sur nous sur cette page"
-    },
-    "common": {
-        "language": "Langue",
-        "switch": "Changer",
-        "logout": "Se déconnecter",
-        "signin": "Connexion"
-    }
+  "serverNav": {
+    "create_server": "Créer un serveur",
+    "join_server": "Rejoindre un serveur"
+  },
+  "userNav": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "french": "Français",
+    "english": "Anglais",
+    "settings": "Paramètres",
+    "log_out": "Se déconnecter"
+  },
+  "sidebar": {
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "explore": "Explorer"
+  }
 }

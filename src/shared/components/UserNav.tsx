@@ -1,5 +1,7 @@
-import { ChevronsDownUp, LogOut, Settings } from "lucide-react"
-import { Link } from "@tanstack/react-router"
+import { useState } from "react"
+import { ChevronsDownUp, ChevronsUpDown, Globe, LogOut, Moon, Settings, Sun } from "lucide-react"
+import { Link, useRouteContext } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import {
   DropdownMenu,
@@ -10,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/Sidebar"
+import { useTheme } from "@/app/providers/ThemeProvider"
 
 export function UserNav({
   user,
@@ -21,11 +24,24 @@ export function UserNav({
   }
 }) {
   const { isMobile } = useSidebar()
+  const { auth } = useRouteContext({ from: "__root__" })
+  const [isOpen, setIsOpen] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const { t, i18n } = useTranslation()
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark")
+  }
+
+  const toggleLanguage = () => {
+    const newLang = i18n.language === "en" ? "fr" : "en"
+    i18n.changeLanguage(newLang)
+  }
 
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
+        <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
@@ -33,23 +49,31 @@ export function UserNav({
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarFallback className="rounded-lg">
+                  {user.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <span className="text-responsive-md truncate font-medium">{user.name}</span>
-              <ChevronsDownUp className="ml-auto size-4" />
+              {isOpen ? (
+                <ChevronsDownUp className="ml-auto size-4" />
+              ) : (
+                <ChevronsUpDown className="ml-auto size-4" />
+              )}
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
             side={isMobile ? "bottom" : "right"}
-            align="end"
+            align="start"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {user.name.charAt(0).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left leading-tight">
                   <span className="text-responsive-base truncate font-medium">{user.name}</span>
@@ -60,16 +84,24 @@ export function UserNav({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-responsive-base" asChild>
-              <Link to="/settings">
+            <DropdownMenuItem onClick={toggleTheme} className="text-responsive-base!">
+              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
+              {theme === "dark" ? t("userNav.light") : t("userNav.dark")}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={toggleLanguage} className="text-responsive-base!">
+              <Globe className="size-4" />
+              {i18n.language === "en" ? t("userNav.french") : t("userNav.english")}
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/settings" className="text-responsive-base!">
                 <Settings />
-                Settings
+                {t("userNav.settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-responsive-base">
+            <DropdownMenuItem onClick={() => auth.logout()} className="text-responsive-base!">
               <LogOut />
-              Log out
+              {t("userNav.log_out")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

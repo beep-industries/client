@@ -1,9 +1,9 @@
 import { AppSidebar } from "@/shared/components/AppSidebar"
-import NavServer from "@/shared/components/NavServer"
 import { SidebarInset, SidebarProvider, useSidebar } from "@/shared/components/ui/Sidebar"
 import { Outlet } from "@tanstack/react-router"
 import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 import { Button } from "@/shared/components/ui/Button"
+import ServerNav from "@/shared/components/ServerNav"
 
 function SidebarTrigger() {
   const { toggleSidebar, open } = useSidebar()
@@ -34,7 +34,7 @@ export default function AppLayout() {
         </SidebarInset>
 
         {/* RIGHT SECTION - Navigation serveurs */}
-        <NavServer />
+        <ServerNav />
       </SidebarProvider>
     </div>
   )

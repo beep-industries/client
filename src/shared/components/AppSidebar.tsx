@@ -1,33 +1,38 @@
 import { Bell, Compass, Inbox, type LucideIcon } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "./ui/Sidebar"
 import { UserMediaControls } from "./UserMediaControls"
 import { UserNav } from "./UserNav"
 import { cn } from "@/shared/lib/utils"
+import { useCurrentUser } from "@/shared/queries/user/user.queries"
+import type { UserFullInfo } from "@/shared/queries/user/user.types"
 
 interface NavItem {
-  label: string
+  labelKey: string
   icon: LucideIcon
   href: string
 }
 
 const navItems: NavItem[] = [
-  { label: "Messages", icon: Inbox, href: "/messages" },
-  { label: "Notifications", icon: Bell, href: "/notifications" },
-  { label: "Explore", icon: Compass, href: "/explore" },
+  { labelKey: "sidebar.messages", icon: Inbox, href: "/messages" },
+  { labelKey: "sidebar.notifications", icon: Bell, href: "/notifications" },
+  { labelKey: "sidebar.explore", icon: Compass, href: "/explore" },
 ]
 
 export function AppSidebar() {
   const location = useLocation()
+  const { t } = useTranslation()
+  const { data: currentUser } = useCurrentUser(true) as { data: UserFullInfo | undefined }
 
   return (
     <Sidebar>
       <SidebarHeader>
         <UserNav
           user={{
-            name: "rapidement",
-            email: "dodo@gmail.com",
-            avatar: "",
+            name: currentUser?.display_name || currentUser?.username || "",
+            email: currentUser?.email ?? "",
+            avatar: currentUser?.profile_picture ?? "",
           }}
         />
       </SidebarHeader>
@@ -40,14 +45,14 @@ export function AppSidebar() {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  "flex w-full items-center justify-start gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors",
+                  "text-responsive-base! flex w-full items-center justify-start gap-3 rounded-md px-4 py-2 font-medium transition-colors",
                   isActive
                     ? "bg-accent text-accent-foreground"
                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                 )}
               >
                 <item.icon className={cn("h-4 w-4", isActive && "text-primary")} />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             )
           })}
