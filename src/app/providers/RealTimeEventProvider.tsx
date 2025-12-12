@@ -1,23 +1,10 @@
-import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
-import type { Channel } from "phoenix"
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
-import { useRealTimeSocket } from "./RealTimeSocketProvider"
-import type { EventContextValue, TopicName } from "@/shared/models/real-time.ts"
+import type { Channel } from "phoenix"
 
-export interface RealTimeEventProviderProps<TPayload, TState> {
-  children: React.ReactNode
-  topic: TopicName
-  event: string
-  // Optional explicit id for nested access; defaults to `${resolvedTopic}:${event}`
-  id?: string
-  // Optional local state sink for this event
-  state?: {
-    initial: TState
-    reducer: (prev: TState, msg: TPayload, event: string) => TState
-  }
-  // Optional side-effect handler invoked for every event message
-  onEvent?: (payload: TPayload, meta: { topic: string; channel: Channel; event: string }) => void
-}
+import { useRealTimeSocket } from "./RealTimeSocketProvider"
+import type { EventContextValue } from "@/shared/models/real-time.ts"
+import type { RealTimeEventProviderProps } from "./providers.types"
 
 const EventContext = createContext<EventContextValue<unknown> | undefined>(undefined)
 

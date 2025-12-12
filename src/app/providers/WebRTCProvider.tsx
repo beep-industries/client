@@ -1,40 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react"
 import { useRealTimeSocket } from "@/app/providers/RealTimeSocketProvider"
 import { Presence } from "phoenix"
-
-export interface PresenceDesc {
-  id: number
-  user_id: string
-  video: boolean
-  audio: boolean
-}
-
-export interface RemoteState {
-  id: number
-  userId: string
-  tracks: { audio: MediaStream | null; video: MediaStream | null }
-  audio: boolean
-  video: boolean
-}
-
-export interface WebRTCState {
-  // UI/status
-  session: number | null
-  iceStatus: RTCIceConnectionState
-  channelStatus: string
-  joined: boolean
-  camEnabled: boolean
-  micEnabled: boolean
-  // Media
-  remoteTracks: RemoteState[]
-  // Actions
-  join: (session: number) => Promise<void>
-  leave: () => Promise<void>
-  startCam: () => Promise<void>
-  stopCam: () => void
-  startMic: () => Promise<void>
-  stopMic: () => void
-}
+import type { PresenceDesc, RemoteState, WebRTCState } from "./providers.types"
 
 const WebRTCContext = createContext<WebRTCState | undefined>(undefined)
 

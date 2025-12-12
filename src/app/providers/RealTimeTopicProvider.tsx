@@ -1,12 +1,7 @@
-import React, { useEffect } from "react"
+import { useEffect } from "react"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useRealTimeSocket } from "./RealTimeSocketProvider"
-import type { TopicJoinSpec } from "@/shared/models/real-time.ts"
-
-export interface RealTimeTopicProviderProps {
-  children: React.ReactNode
-  topics?: TopicJoinSpec[]
-}
+import type { RealTimeTopicProviderProps } from "./providers.types"
 
 export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProviderProps) {
   const { isAuthenticated, user } = useAuth()

@@ -11,6 +11,7 @@ import type { Channel, Socket } from "phoenix"
 import { Socket as PhoenixSocket } from "phoenix"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import type { ChannelParams, RealTimeSocketState } from "@/shared/models/real-time.ts"
+import type { RealTimeSocketProviderProps } from "./providers.types"
 
 function buildSocketUrl(httpBase: string): string {
   const url = new URL(httpBase)
@@ -18,11 +19,6 @@ function buildSocketUrl(httpBase: string): string {
   const path = url.pathname.endsWith("/") ? url.pathname.slice(0, -1) : url.pathname
   url.pathname = `${path}/socket`
   return url.toString()
-}
-
-export interface RealTimeSocketProviderProps {
-  children: React.ReactNode
-  httpBaseUrl?: string
 }
 
 const SocketContext = createContext<RealTimeSocketState | undefined>(undefined)
