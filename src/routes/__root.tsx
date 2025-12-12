@@ -14,6 +14,12 @@ function RootComponent() {
   const hasTriedSignin = useRef(false)
 
   useEffect(() => {
+    if (auth.isAuthenticated) {
+      hasTriedSignin.current = false
+    }
+  }, [auth.isAuthenticated])
+
+  useEffect(() => {
     if (
       !hasAuthParams() &&
       !auth.isAuthenticated &&
