@@ -22,10 +22,10 @@ export function UserMediaControls({
   onHangupClick,
   isMicActive = true,
   isCameraActive = true,
-  isInVoiceChannel = true,
+  isInVoiceChannel = false,
 }: UserMediaControlsProps) {
   return (
-    <div className="border-border flex flex-col rounded-lg border-2">
+    <div className="border-border flex flex-col rounded-lg border">
       {/* Voice channel info - only visible when in a voice channel */}
       {isInVoiceChannel && (
         <div className="bg-secondary flex items-center gap-2 rounded-t-md p-3">
@@ -44,7 +44,7 @@ export function UserMediaControls({
 
       {/* Bottom row: controls */}
       <div
-        className={`flex items-center p-3 ${isInVoiceChannel ? "justify-between border-t-2" : "justify-start"}`}
+        className={`flex items-center p-3 ${isInVoiceChannel ? "justify-between border-t" : "justify-start"}`}
       >
         <div className={`flex gap-3`}>
           <button
