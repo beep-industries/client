@@ -94,13 +94,13 @@ export function UserNav({
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to="/settings" className="text-responsive-base!">
-                <Settings />
+                <Settings className="size-4" />
                 {t("userNav.settings")}
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => auth.logout()} className="text-responsive-base!">
-              <LogOut />
+              <LogOut className="size-4" />
               {t("userNav.log_out")}
             </DropdownMenuItem>
           </DropdownMenuContent>
