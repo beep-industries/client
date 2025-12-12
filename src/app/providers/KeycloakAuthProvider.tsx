@@ -1,7 +1,6 @@
 import type { User } from "@/shared/models/user"
-import React, { createContext, useContext, useMemo } from "react"
-import { AuthProvider as OidcAuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
-import { WebStorageStateStore, type User as OidcUser } from "oidc-client-ts"
+import { type User as OidcUser } from "oidc-client-ts"
+import { useRouteContext } from "@tanstack/react-router"
 
 export interface AuthState {
   isAuthenticated: boolean
@@ -11,31 +10,10 @@ export interface AuthState {
   login: () => void
   logout: () => void
   error: Error | null
+  activeNavigator: string | undefined
 }
 
-const AuthContext = createContext<AuthState | undefined>(undefined)
-
-const oidcConfig = {
-  authority: import.meta.env.VITE_KEYCLOAK_AUTHORITY,
-  client_id: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
-  redirect_uri: `${window.location.origin}/discover`,
-  post_logout_redirect_uri: window.location.origin,
-  scope: "openid profile email",
-  automaticSilentRenew: true,
-  userStore: new WebStorageStateStore({ store: window.localStorage }),
-  onSigninCallback: () => {
-    // Remove OIDC params from URL after successful signin
-    // Use replaceState to clean up the URL without triggering navigation
-    const url = new URL(window.location.href)
-    url.searchParams.delete("code")
-    url.searchParams.delete("state")
-    url.searchParams.delete("session_state")
-    url.searchParams.delete("iss")
-    window.history.replaceState({}, document.title, url.pathname)
-  },
-}
-
-function mapOidcUserToUser(oidcUser: OidcUser | null | undefined): User | null {
+export function mapOidcUserToUser(oidcUser: OidcUser | null | undefined): User | null {
   if (!oidcUser?.profile) return null
 
   const profile = oidcUser.profile
@@ -49,39 +27,7 @@ function mapOidcUserToUser(oidcUser: OidcUser | null | undefined): User | null {
   }
 }
 
-function KeycloakAuthContextProvider({ children }: { children: React.ReactNode }) {
-  const oidcAuth = useOidcAuth()
-
-  const authState = useMemo<AuthState>(() => {
-    return {
-      isAuthenticated: oidcAuth.isAuthenticated,
-      isLoading: oidcAuth.isLoading,
-      user: mapOidcUserToUser(oidcAuth.user),
-      accessToken: oidcAuth.user?.access_token ?? null,
-      login: () => oidcAuth.signinRedirect(),
-      logout: () =>
-        oidcAuth.signoutRedirect({
-          post_logout_redirect_uri: window.location.origin,
-        }),
-      error: oidcAuth.error ?? null,
-    }
-  }, [oidcAuth])
-
-  return <AuthContext.Provider value={authState}>{children}</AuthContext.Provider>
-}
-
-export function KeycloakAuthProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <OidcAuthProvider {...oidcConfig}>
-      <KeycloakAuthContextProvider>{children}</KeycloakAuthContextProvider>
-    </OidcAuthProvider>
-  )
-}
-
 export function useAuth() {
-  const context = useContext(AuthContext)
-  if (context === undefined) {
-    throw new Error("useAuth must be used within a KeycloakAuthProvider")
-  }
-  return context
+  const { auth } = useRouteContext({ from: "__root__" })
+  return auth
 }

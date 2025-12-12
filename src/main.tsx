@@ -6,7 +6,9 @@ import { createRouter, RouterProvider } from "@tanstack/react-router"
 import { routeTree } from "@/routeTree.gen"
 import { ThemeProvider } from "@/app/providers/ThemeProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { KeycloakAuthProvider, useAuth } from "@/app/providers/KeycloakAuthProvider.tsx"
+import { AuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
+import { WebStorageStateStore } from "oidc-client-ts"
+import { type AuthState, mapOidcUserToUser } from "@/app/providers/KeycloakAuthProvider"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,6 +18,18 @@ const queryClient = new QueryClient({
     },
   },
 })
+
+const oidcConfig = {
+  authority: import.meta.env.VITE_KEYCLOAK_AUTHORITY,
+  client_id: import.meta.env.VITE_KEYCLOAK_CLIENT_ID,
+  redirect_uri: `${window.location.origin}/explore`,
+  post_logout_redirect_uri: window.location.origin,
+  scope: "openid profile email",
+  userStore: new WebStorageStateStore({ store: window.localStorage }),
+  onSigninCallback: () => {
+    window.history.replaceState({}, document.title, window.location.pathname)
+  },
+}
 
 // Set up a Router instance
 const router = createRouter({
@@ -36,17 +50,35 @@ declare module "@tanstack/react-router" {
 const rootElement = document.getElementById("root")!
 
 function AuthenticatedRouter() {
-  const auth = useAuth()
-  return <RouterProvider router={router} context={{ auth }} />
+  const oidcAuth = useOidcAuth()
+
+  const auth: AuthState = {
+    isAuthenticated: oidcAuth.isAuthenticated,
+    isLoading: oidcAuth.isLoading,
+    user: mapOidcUserToUser(oidcAuth.user),
+    accessToken: oidcAuth.user?.access_token ?? null,
+    login: () => oidcAuth.signinRedirect(),
+    logout: () => oidcAuth.signoutRedirect(),
+    error: oidcAuth.error ?? null,
+    activeNavigator: oidcAuth.activeNavigator,
+  }
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{ auth }}
+      key={`${oidcAuth.isLoading}-${oidcAuth.isAuthenticated}`}
+    />
+  )
 }
 
 function BaseProvider() {
   return (
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
-        <KeycloakAuthProvider>
+        <AuthProvider {...oidcConfig}>
           <AuthenticatedRouter />
-        </KeycloakAuthProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   )

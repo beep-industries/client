@@ -5,6 +5,6 @@ export const Route = createFileRoute("/")({
 })
 
 function RouteComponent() {
-  // Redirect to /discover as the main authenticated page
-  return <Navigate to="/discover" />
+  // Redirect to /explore as the main authenticated page
+  return <Navigate to="/explore" />
 }
