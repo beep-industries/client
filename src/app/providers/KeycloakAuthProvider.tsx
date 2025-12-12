@@ -2,16 +2,7 @@ import type { User } from "@/shared/models/user"
 import React, { createContext, useContext, useMemo } from "react"
 import { AuthProvider as OidcAuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
 import { WebStorageStateStore, type User as OidcUser } from "oidc-client-ts"
-
-export interface AuthState {
-  isAuthenticated: boolean
-  isLoading: boolean
-  user: User | null
-  accessToken: string | null
-  login: () => void
-  logout: () => void
-  error: Error | null
-}
+import type { AuthState } from "./providers.types"
 
 const AuthContext = createContext<AuthState | undefined>(undefined)
 
