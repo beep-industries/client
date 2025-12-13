@@ -11,6 +11,7 @@ import type { CreateServerRequest } from "./community.types"
 
 export const communityKeys = {
   all: [] as const,
+  server: (serverId: string) => [...communityKeys.all, `server-${serverId}`],
   servers: (page: number, limit: number) => [...communityKeys.all, `servers-${page}-${limit}`],
 }
 
@@ -18,7 +19,7 @@ export const useServerById = (serverId: string) => {
   const { accessToken } = useAuth()
 
   return useQuery({
-    queryKey: [...communityKeys.all, `server-${serverId}`],
+    queryKey: communityKeys.server(serverId),
     queryFn: () => getServerById(accessToken!, serverId),
     enabled: !!accessToken,
   })
