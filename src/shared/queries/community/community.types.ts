@@ -21,3 +21,19 @@ export interface GetServersResponse {
   page: number
   total: number
 }
+
+export interface CreateServerRequest {
+  name: string
+  picture_url?: string
+  banner_url?: string
+  description?: string
+  visibility: "Public" | "Private"
+}
+
+export interface UpdateServerRequest {
+  name?: string
+  picture_url?: string
+  banner_url?: string
+  description?: string
+  visibility?: "Public" | "Private"
+}
