@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from "react"
 
 interface SidebarContentContextProps {
+  header: ReactNode | null
+  setHeader: (header: ReactNode | null) => void
   content: ReactNode | null
   setContent: (content: ReactNode | null) => void
 }
@@ -8,10 +10,11 @@ interface SidebarContentContextProps {
 const SidebarContentContext = createContext<SidebarContentContextProps | null>(null)
 
 export function SidebarContentProvider({ children }: { children: ReactNode }) {
+  const [header, setHeader] = useState<ReactNode | null>(null)
   const [content, setContent] = useState<ReactNode | null>(null)
 
   return (
-    <SidebarContentContext.Provider value={{ content, setContent }}>
+    <SidebarContentContext.Provider value={{ header, setHeader, content, setContent }}>
       {children}
     </SidebarContentContext.Provider>
   )

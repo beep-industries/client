@@ -8,7 +8,7 @@ import SidebarTrigger from "./SidebarTrigger"
 export default function TopBar() {
   const location = useLocation()
   const { t } = useTranslation()
-  const showUsersButton = location.pathname === "/messages"
+  const showUsersButton = location.pathname.startsWith("/servers")
 
   return (
     <div className="bg-sidebar border-sidebar-border flex flex-row justify-between border-b p-2">

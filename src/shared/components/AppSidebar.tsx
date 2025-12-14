@@ -7,11 +7,11 @@ import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 
 export function AppSidebar() {
   const { data: currentUser } = useCurrentUser(true) as { data: UserFullInfo | undefined }
-  const { content: sidebarContent } = useSidebarContent()
+  const { header: sidebarHeader, content: sidebarContent } = useSidebarContent()
 
   return (
     <Sidebar>
-      <SidebarHeader></SidebarHeader>
+      <SidebarHeader>{sidebarHeader}</SidebarHeader>
       <SidebarContent className="px-4">{sidebarContent}</SidebarContent>
       <SidebarFooter>
         <UserMediaControls channelName={"Hey"} isInVoiceChannel={true} />
