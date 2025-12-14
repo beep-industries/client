@@ -47,21 +47,22 @@ function NavLinkButton({ to, icon: Icon, tooltip }: NavLinkButtonProps) {
 
 interface ServerButtonProps {
   server: Server
-  onClick: () => void
 }
 
-function ServerButton({ server, onClick }: ServerButtonProps) {
+function ServerButton({ server }: ServerButtonProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <Button variant="nav" size="icon-sm" onClick={onClick} className="bg-transparent">
-          <Avatar className="h-7 w-7 rounded-sm">
-            <AvatarImage src={server.image ?? undefined} alt={server.name} />
-            <AvatarFallback className="text-sm">
-              {server.name.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-        </Button>
+        <Link to="/servers/$id" params={{ id: String(server.id) }}>
+          <Button variant="nav" size="icon-sm" className="bg-transparent">
+            <Avatar className="h-7 w-7 rounded-sm">
+              <AvatarImage src={server.image ?? undefined} alt={server.name} />
+              <AvatarFallback className="text-sm">
+                {server.name.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </Link>
       </TooltipTrigger>
       <TooltipContent side="right">{server.name}</TooltipContent>
     </Tooltip>
@@ -70,10 +71,6 @@ function ServerButton({ server, onClick }: ServerButtonProps) {
 
 export default function ServerNav() {
   const { t } = useTranslation()
-
-  const handleServerClick = (serverId: number) => {
-    console.log("Server clicked:", serverId)
-  }
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
@@ -103,11 +100,7 @@ export default function ServerNav() {
 
       <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent flex flex-1 flex-col gap-2 overflow-y-auto">
         {mockServers.map((server) => (
-          <ServerButton
-            key={server.id}
-            server={server}
-            onClick={() => handleServerClick(server.id)}
-          />
+          <ServerButton key={server.id} server={server} />
         ))}
       </div>
     </nav>

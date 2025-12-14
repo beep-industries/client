@@ -1,4 +1,4 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "./ui/Sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from "./ui/Sidebar"
 import { UserMediaControls } from "./UserMediaControls"
 import { UserNav } from "./UserNav"
 import { useCurrentUser } from "@/shared/queries/user/user.queries"
@@ -12,10 +12,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader></SidebarHeader>
-      <SidebarContent className="px-4">
-        <SidebarGroup className="p-0"></SidebarGroup>
-        {sidebarContent}
-      </SidebarContent>
+      <SidebarContent className="px-4">{sidebarContent}</SidebarContent>
       <SidebarFooter>
         <UserMediaControls channelName={"Hey"} isInVoiceChannel={true} />
         <UserNav
