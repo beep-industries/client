@@ -1,7 +1,10 @@
 {
   "serverNav": {
     "create_server": "Créer un serveur",
-    "join_server": "Rejoindre un serveur"
+    "join_server": "Rejoindre un serveur",
+    "messages": "Messages",
+    "explore": "Explorer",
+    "more_options": "Plus d'options"
   },
   "userNav": {
     "light": "Clair",
@@ -15,5 +18,9 @@
     "messages": "Messages",
     "notifications": "Notifications",
     "explore": "Explorer"
+  },
+  "topBar": {
+    "show_users": "Afficher les utilisateurs",
+    "notifications": "Notifications"
   }
 }
