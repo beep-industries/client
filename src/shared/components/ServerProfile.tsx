@@ -1,5 +1,13 @@
 import { useState } from "react"
-import { ChevronsDownUp, ChevronsUpDown, IdCard, Settings } from "lucide-react"
+import {
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Folder,
+  IdCard,
+  Plus,
+  Settings,
+  UserPlus,
+} from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
@@ -11,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/Sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
 
 export function ServerProfile({
   server,
@@ -22,7 +30,6 @@ export function ServerProfile({
     image: string | null
   }
 }) {
-  const { isMobile } = useSidebar()
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
@@ -51,7 +58,7 @@ export function ServerProfile({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side="bottom"
             align="start"
             sideOffset={4}
           >
@@ -70,12 +77,29 @@ export function ServerProfile({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
+              <Plus className="size-4" />
+              {t("serverProfile.create_channel")}
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Folder className="size-4" />
+              {t("serverProfile.create_folder")}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
               <IdCard className="size-4" />
               {t("serverProfile.copy_server_id")}
             </DropdownMenuItem>
+            <DropdownMenuItem>
+              <UserPlus className="size-4" />
+              {t("serverProfile.user_plus")}
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem asChild>
-              <Link to="/servers/settings" className="text-responsive-base!">
+              <Link
+                to="/servers/$id/settings"
+                params={{ id: String(server.id) }}
+                className="text-responsive-base!"
+              >
                 <Settings className="size-4" />
                 {t("serverProfile.settings")}
               </Link>

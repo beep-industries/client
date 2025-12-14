@@ -15,8 +15,11 @@
     "log_out": "Log out"
   },
   "serverProfile": {
+    "create_folder": "Create folder",
+    "create_channel": "Create channel",
     "copy_server_id": "Copy server ID",
-    "settings": "Server settings"
+    "settings": "Server settings",
+    "user_plus": "Invite a friend"
   },
   "sidebar": {
     "messages": "Messages",

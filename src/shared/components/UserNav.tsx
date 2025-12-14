@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "./ui/Sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
 import { useTheme } from "@/app/providers/ThemeProvider"
 
 export function UserNav({
@@ -23,7 +23,6 @@ export function UserNav({
     avatar: string
   }
 }) {
-  const { isMobile } = useSidebar()
   const { auth } = useRouteContext({ from: "__root__" })
   const [isOpen, setIsOpen] = useState(false)
   const { theme, setTheme } = useTheme()
@@ -63,7 +62,7 @@ export function UserNav({
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side="top"
             align="start"
             sideOffset={4}
           >
