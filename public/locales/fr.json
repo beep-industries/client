@@ -14,6 +14,10 @@
     "settings": "Paramètres",
     "log_out": "Se déconnecter"
   },
+  "serverProfile": {
+    "copy_server_id": "Copier l'ID du serveur",
+    "settings": "Paramètres du serveur"
+  },
   "sidebar": {
     "messages": "Messages",
     "notifications": "Notifications",
