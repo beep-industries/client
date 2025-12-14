@@ -54,9 +54,9 @@ export default function ServerNav() {
                 onClick={() => handleServerClick(server.id)}
                 className="border-border hover:border-primary flex h-8 w-8 items-center justify-center rounded-md border bg-transparent transition-all duration-200"
               >
-                <Avatar className="h-7 w-7 rounded-md">
+                <Avatar className="h-7 w-7 rounded-sm">
                   <AvatarImage src={server.image ?? undefined} alt={server.name} />
-                  <AvatarFallback className="rounded-md text-sm">
+                  <AvatarFallback className="text-sm">
                     {server.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>

@@ -1,7 +1,14 @@
 import { Bell, Compass, Inbox, type LucideIcon } from "lucide-react"
 import { Link, useLocation } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader } from "./ui/Sidebar"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarSeparator,
+} from "./ui/Sidebar"
 import { UserMediaControls } from "./UserMediaControls"
 import { UserNav } from "./UserNav"
 import { cn } from "@/shared/lib/utils"
@@ -36,8 +43,8 @@ export function AppSidebar() {
           }}
         />
       </SidebarHeader>
-      <SidebarContent className="px-2">
-        <SidebarGroup>
+      <SidebarContent className="px-4">
+        <SidebarGroup className="p-0">
           {navItems.map((item) => {
             const isActive = location.pathname === item.href
             return (
@@ -57,7 +64,7 @@ export function AppSidebar() {
             )
           })}
         </SidebarGroup>
-        <SidebarGroup />
+        <SidebarSeparator className="my-3" />
       </SidebarContent>
       <SidebarFooter>
         <UserMediaControls channelName={"Hey"} />
