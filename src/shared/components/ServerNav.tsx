@@ -132,7 +132,7 @@ export default function ServerNav() {
     if (!isCreateServerModalOpen) {
       addServerForm.reset()
     }
-  }, [isCreateServerModalOpen, addServerForm])
+  }, [isCreateServerModalOpen, addServerForm.reset])
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
