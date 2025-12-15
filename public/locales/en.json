@@ -5,7 +5,19 @@
     "messages": "Messages",
     "explore": "Explore",
     "more_options": "More options",
-    "error_loading_servers": "An error occurred while loading servers"
+    "error_loading_servers": "An error occurred while loading servers",
+    "modal": {
+      "title": "Create a server",
+      "name": "Name",
+      "description": "Description (optional)",
+      "image_url": "Image URL (optional)",
+      "banner_url": "Banner URL (optional)",
+      "visibility": "Visibility",
+      "public": "Public",
+      "private": "Private",
+      "cancel": "Cancel",
+      "create": "Create server"
+    }
   },
   "userNav": {
     "light": "Light",

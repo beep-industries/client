@@ -11,9 +11,16 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
-import { useEffect } from "react"
-import { useServers } from "../queries/community/community.queries"
+import { useEffect, useState } from "react"
+import { useCreateServer, useServers } from "../queries/community/community.queries"
 import { useInView } from "react-intersection-observer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
+import { AddServerForm } from "../forms/AddServer"
+import { useForm } from "react-hook-form"
+import type z from "zod"
+import { addServerFormSchema } from "../zod/add-server"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface NavLinkButtonProps {
   to: string
@@ -62,8 +69,11 @@ function ServerButton({ server }: ServerButtonProps) {
 
 export default function ServerNav() {
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
 
   const { ref, inView } = useInView()
+  const [isCreateServerModalOpen, setIsCreateServerModalOpen] = useState<boolean>(false)
+  const [loadings, setLoadings] = useState<{ create: boolean }>({ create: false })
 
   const {
     data: servers,
@@ -72,6 +82,7 @@ export default function ServerNav() {
     isFetchingNextPage,
     fetchNextPage,
   } = useServers()
+  const { mutate: createServer } = useCreateServer()
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -85,6 +96,43 @@ export default function ServerNav() {
       alert(t("serverNav.error_loading_servers"))
     }
   }, [serversError, t])
+
+  const addServerForm = useForm<z.infer<typeof addServerFormSchema>>({
+    resolver: zodResolver(addServerFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      picture_url: "",
+      banner_url: "",
+      visibility: "Public",
+    },
+  })
+
+  const onSubmitAddServer = async (values: z.infer<typeof addServerFormSchema>) => {
+    setLoadings((prev) => ({ ...prev, create: true }))
+    try {
+      await createServer({
+        name: values.name,
+        description: values.description,
+        picture_url: values.picture_url,
+        banner_url: values.banner_url,
+        visibility: values.visibility,
+      })
+
+      await queryClient.invalidateQueries({ queryKey: ["servers"] })
+      setIsCreateServerModalOpen(false)
+    } catch (error) {
+      console.error("Error creating server:", error)
+    } finally {
+      setLoadings((prev) => ({ ...prev, create: false }))
+    }
+  }
+
+  useEffect(() => {
+    if (!isCreateServerModalOpen) {
+      addServerForm.reset()
+    }
+  }, [isCreateServerModalOpen, addServerForm])
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
@@ -102,7 +150,13 @@ export default function ServerNav() {
           </TooltipTrigger>
           <TooltipContent side="right">{t("serverNav.more_options")}</TooltipContent>
           <DropdownMenuContent side="left" align="start" sideOffset={4}>
-            <DropdownMenuItem className="text-responsive-base!">
+            <DropdownMenuItem
+              className="text-responsive-base!"
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsCreateServerModalOpen(true)
+              }}
+            >
               {t("serverNav.create_server")}
             </DropdownMenuItem>
             <DropdownMenuItem className="text-responsive-base!">
@@ -124,6 +178,21 @@ export default function ServerNav() {
           disabled={!hasNextPage || isFetchingNextPage}
         ></button>
       </div>
+
+      <Dialog open={isCreateServerModalOpen} onOpenChange={setIsCreateServerModalOpen}>
+        <form>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("serverNav.modal.title")}</DialogTitle>
+            </DialogHeader>
+            <AddServerForm
+              form={addServerForm}
+              loading={loadings.create}
+              onSubmit={onSubmitAddServer}
+            />
+          </DialogContent>
+        </form>
+      </Dialog>
     </nav>
   )
 }

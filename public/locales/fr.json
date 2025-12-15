@@ -5,7 +5,19 @@
     "messages": "Messages",
     "explore": "Explorer",
     "more_options": "Plus d'options",
-    "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs"
+    "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs",
+    "modal": {
+      "title": "Créer un serveur",
+      "name": "Nom",
+      "description": "Description (optionnel)",
+      "image_url": "URL de l'image (optionnel)",
+      "banner_url": "URL de la bannière (optionnel)",
+      "visibility": "Visibilité",
+      "public": "Public",
+      "private": "Privé",
+      "cancel": "Annuler",
+      "create": "Créer le serveur"
+    }
   },
   "userNav": {
     "light": "Clair",
