@@ -12,7 +12,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>{sidebarHeader}</SidebarHeader>
-      <SidebarContent className="px-4">{sidebarContent}</SidebarContent>
+      <SidebarContent className="no-scrollbar px-4">{sidebarContent}</SidebarContent>
       <SidebarFooter>
         <UserMediaControls channelName={"Hey"} isInVoiceChannel={true} />
         <UserNav

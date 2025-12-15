@@ -130,6 +130,7 @@ Copy the `.env.example` file to `.env` and configure the following variables:
 | `VITE_KEYCLOAK_CLIENT_ID` | Keycloak client ID                         | `frontend` |
 | `VITE_KEYCLOAK_AUTHORITY` | Keycloak realm URL                         | `http://localhost:8080/realms/myrealm` |
 | `VITE_USER_SERVICE_URL` | User service API URL                       | `http://localhost:3000` |
+| `VITE_COMMUNITY_SERVICE_URL` | Community service API URL                       | `http://localhost:3003` |
 | `VITE_REAL_TIME_URL` | Real-time service URL for WebRTC signaling | `http://localhost:4000` |
 | `VITE_WEBRTC_BASE=http://localhost:8080` | Base URL for WebRTC media server           | `http://localhost:8080` |
 

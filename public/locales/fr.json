@@ -4,7 +4,8 @@
     "join_server": "Rejoindre un serveur",
     "messages": "Messages",
     "explore": "Explorer",
-    "more_options": "Plus d'options"
+    "more_options": "Plus d'options",
+    "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs"
   },
   "userNav": {
     "light": "Clair",
@@ -31,10 +32,10 @@
     "notifications": "Notifications",
     "explore": "Explorer"
   },
-  "channel":{
-    "move_to_folder":"Déplacer vers le dossier",
-    "extract_from_folder":"Extraire du dossier",
-    "delete_channel":"Supprimer le salon"
+  "channel": {
+    "move_to_folder": "Déplacer vers le dossier",
+    "extract_from_folder": "Extraire du dossier",
+    "delete_channel": "Supprimer le salon"
   },
   "topBar": {
     "show_users": "Afficher les utilisateurs",

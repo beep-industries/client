@@ -167,3 +167,7 @@
 @utility text-responsive-xs {
   @apply text-[8px] md:text-[10px];
 }
+
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}

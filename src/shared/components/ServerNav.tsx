@@ -9,20 +9,11 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
+import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
-
-interface Server {
-  id: number
-  name: string
-  image: string | null
-}
-
-const mockServers: Server[] = [
-  { id: 1, name: "General", image: null },
-  { id: 2, name: "Gaming", image: null },
-  { id: 3, name: "Music", image: null },
-  { id: 4, name: "Development", image: null },
-]
+import { useEffect } from "react"
+import { useServers } from "../queries/community/community.queries"
+import { useInView } from "react-intersection-observer"
 
 interface NavLinkButtonProps {
   to: string
@@ -35,7 +26,7 @@ function NavLinkButton({ to, icon: Icon, tooltip }: NavLinkButtonProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Link to={to}>
-          <Button variant="nav" size="icon-sm" aria-label={tooltip}>
+          <Button variant="nav" size="icon-sm" aria-label={tooltip} className="cursor-pointer">
             <Icon className="text-muted-foreground h-4 w-4" />
           </Button>
         </Link>
@@ -54,9 +45,9 @@ function ServerButton({ server }: ServerButtonProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Link to="/servers/$id" params={{ id: String(server.id) }}>
-          <Button variant="nav" size="icon-sm" className="bg-transparent">
+          <Button variant="nav" size="icon-sm" className="cursor-pointer bg-transparent">
             <Avatar className="h-7 w-7 rounded-sm">
-              <AvatarImage src={server.image ?? undefined} alt={server.name} />
+              <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
               <AvatarFallback className="text-sm">
                 {server.name.charAt(0).toUpperCase()}
               </AvatarFallback>
@@ -72,6 +63,29 @@ function ServerButton({ server }: ServerButtonProps) {
 export default function ServerNav() {
   const { t } = useTranslation()
 
+  const { ref, inView } = useInView()
+
+  const {
+    data: servers,
+    isError: serversError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useServers()
+
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
+
+  // Handle errors (Could be replaced with a toast notification)
+  useEffect(() => {
+    if (serversError) {
+      alert(t("serverNav.error_loading_servers"))
+    }
+  }, [serversError, t])
+
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
       <NavLinkButton to="/messages" icon={Inbox} tooltip={t("serverNav.messages")} />
@@ -81,7 +95,7 @@ export default function ServerNav() {
         <DropdownMenu>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button variant="nav" size="icon-sm">
+              <Button variant="nav" size="icon-sm" className="cursor-pointer">
                 <Ellipsis className="text-muted-foreground h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -98,10 +112,17 @@ export default function ServerNav() {
         </DropdownMenu>
       </Tooltip>
 
-      <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent flex flex-1 flex-col gap-2 overflow-y-auto">
-        {mockServers.map((server) => (
-          <ServerButton key={server.id} server={server} />
-        ))}
+      <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
+        {servers?.pages
+          .flatMap((page) => page.data)
+          .map((server) => (
+            <ServerButton key={server.id} server={server} />
+          ))}
+        <button
+          ref={ref}
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        ></button>
       </div>
     </nav>
   )
