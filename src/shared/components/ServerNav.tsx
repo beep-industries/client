@@ -35,7 +35,7 @@ function NavLinkButton({ to, icon: Icon, tooltip }: NavLinkButtonProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Link to={to}>
-          <Button variant="nav" size="icon-sm">
+          <Button variant="nav" size="icon-sm" aria-label={tooltip}>
             <Icon className="text-muted-foreground h-4 w-4" />
           </Button>
         </Link>
