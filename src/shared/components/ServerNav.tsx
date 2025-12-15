@@ -11,6 +11,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
+import { useEffect } from "react"
+import { useServers } from "../queries/community/community.queries"
+import { useInView } from "react-intersection-observer"
 
 interface NavLinkButtonProps {
   to: string
@@ -23,7 +26,7 @@ function NavLinkButton({ to, icon: Icon, tooltip }: NavLinkButtonProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Link to={to}>
-          <Button variant="nav" size="icon-sm" aria-label={tooltip}>
+          <Button variant="nav" size="icon-sm" aria-label={tooltip} className="cursor-pointer">
             <Icon className="text-muted-foreground h-4 w-4" />
           </Button>
         </Link>
@@ -42,7 +45,7 @@ function ServerButton({ server }: ServerButtonProps) {
     <Tooltip>
       <TooltipTrigger asChild>
         <Link to="/servers/$id" params={{ id: String(server.id) }}>
-          <Button variant="nav" size="icon-sm" className="bg-transparent">
+          <Button variant="nav" size="icon-sm" className="cursor-pointer bg-transparent">
             <Avatar className="h-7 w-7 rounded-sm">
               <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
               <AvatarFallback className="text-sm">
@@ -86,10 +89,6 @@ export default function ServerNav() {
     }
   }, [serversError, t])
 
-  const handleServerClick = (serverId: string) => {
-    console.log("Server clicked:", serverId)
-  }
-
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
       <NavLinkButton to="/messages" icon={Inbox} tooltip={t("serverNav.messages")} />
@@ -99,7 +98,7 @@ export default function ServerNav() {
         <DropdownMenu>
           <TooltipTrigger asChild>
             <DropdownMenuTrigger asChild>
-              <Button variant="nav" size="icon-sm">
+              <Button variant="nav" size="icon-sm" className="cursor-pointer">
                 <Ellipsis className="text-muted-foreground h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -124,22 +123,7 @@ export default function ServerNav() {
         {servers?.pages
           .flatMap((page) => page.data)
           .map((server) => (
-            <Tooltip key={server.id}>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => handleServerClick(server.id)}
-                  className="border-border hover:border-primary flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border bg-transparent transition-all duration-200"
-                >
-                  <Avatar className="h-7 w-7 rounded-md">
-                    <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
-                    <AvatarFallback className="rounded-md text-sm">
-                      {server.name.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{server.name}</TooltipContent>
-            </Tooltip>
+            <ServerButton key={server.id} server={server} />
           ))}
         <button
           ref={ref}
