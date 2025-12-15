@@ -1,7 +1,10 @@
 {
   "serverNav": {
     "create_server": "Créer un serveur",
-    "join_server": "Rejoindre un serveur"
+    "join_server": "Rejoindre un serveur",
+    "messages": "Messages",
+    "explore": "Explorer",
+    "more_options": "Plus d'options"
   },
   "userNav": {
     "light": "Clair",
@@ -11,9 +14,30 @@
     "settings": "Paramètres",
     "log_out": "Se déconnecter"
   },
+  "serverProfile": {
+    "create_folder": "Créer un dossier",
+    "create_channel": "Créer un salon",
+    "copy_server_id": "Copier l'ID du serveur",
+    "settings": "Paramètres du serveur",
+    "user_plusw": "Inviter un ami"
+  },
+  "serverChannels": {
+    "create_channel": "Créer un salon",
+    "create_folder": "Créer un dossier",
+    "delete_folder": "Supprimer le dossier"
+  },
   "sidebar": {
     "messages": "Messages",
     "notifications": "Notifications",
     "explore": "Explorer"
+  },
+  "channel":{
+    "move_to_folder":"Déplacer vers le dossier",
+    "extract_from_folder":"Extraire du dossier",
+    "delete_channel":"Supprimer le salon"
+  },
+  "topBar": {
+    "show_users": "Afficher les utilisateurs",
+    "notifications": "Notifications"
   }
 }

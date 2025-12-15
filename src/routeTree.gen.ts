@@ -15,6 +15,9 @@ import { Route as NotificationsRouteImport } from "./routes/notifications"
 import { Route as MessagesRouteImport } from "./routes/messages"
 import { Route as ExploreRouteImport } from "./routes/explore"
 import { Route as IndexRouteImport } from "./routes/index"
+import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
+import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
+import { Route as ServersIdSettingsRouteImport } from "./routes/servers/$id/settings"
 
 const WebrtcRoute = WebrtcRouteImport.update({
   id: "/webrtc",
@@ -46,6 +49,21 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServersIdRouteRoute = ServersIdRouteRouteImport.update({
+  id: "/servers/$id",
+  path: "/servers/$id",
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServersIdIndexRoute = ServersIdIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => ServersIdRouteRoute,
+} as any)
+const ServersIdSettingsRoute = ServersIdSettingsRouteImport.update({
+  id: "/settings",
+  path: "/settings",
+  getParentRoute: () => ServersIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
@@ -54,6 +72,9 @@ export interface FileRoutesByFullPath {
   "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
+  "/servers/$id": typeof ServersIdRouteRouteWithChildren
+  "/servers/$id/settings": typeof ServersIdSettingsRoute
+  "/servers/$id/": typeof ServersIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -62,6 +83,8 @@ export interface FileRoutesByTo {
   "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
+  "/servers/$id/settings": typeof ServersIdSettingsRoute
+  "/servers/$id": typeof ServersIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +94,9 @@ export interface FileRoutesById {
   "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
+  "/servers/$id": typeof ServersIdRouteRouteWithChildren
+  "/servers/$id/settings": typeof ServersIdSettingsRoute
+  "/servers/$id/": typeof ServersIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,6 +107,9 @@ export interface FileRouteTypes {
     | "/notifications"
     | "/settings"
     | "/webrtc"
+    | "/servers/$id"
+    | "/servers/$id/settings"
+    | "/servers/$id/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -89,6 +118,8 @@ export interface FileRouteTypes {
     | "/notifications"
     | "/settings"
     | "/webrtc"
+    | "/servers/$id/settings"
+    | "/servers/$id"
   id:
     | "__root__"
     | "/"
@@ -97,6 +128,9 @@ export interface FileRouteTypes {
     | "/notifications"
     | "/settings"
     | "/webrtc"
+    | "/servers/$id"
+    | "/servers/$id/settings"
+    | "/servers/$id/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -106,6 +140,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   SettingsRoute: typeof SettingsRoute
   WebrtcRoute: typeof WebrtcRoute
+  ServersIdRouteRoute: typeof ServersIdRouteRouteWithChildren
 }
 
 declare module "@tanstack/react-router" {
@@ -152,8 +187,43 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    "/servers/$id": {
+      id: "/servers/$id"
+      path: "/servers/$id"
+      fullPath: "/servers/$id"
+      preLoaderRoute: typeof ServersIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    "/servers/$id/": {
+      id: "/servers/$id/"
+      path: "/"
+      fullPath: "/servers/$id/"
+      preLoaderRoute: typeof ServersIdIndexRouteImport
+      parentRoute: typeof ServersIdRouteRoute
+    }
+    "/servers/$id/settings": {
+      id: "/servers/$id/settings"
+      path: "/settings"
+      fullPath: "/servers/$id/settings"
+      preLoaderRoute: typeof ServersIdSettingsRouteImport
+      parentRoute: typeof ServersIdRouteRoute
+    }
   }
 }
+
+interface ServersIdRouteRouteChildren {
+  ServersIdSettingsRoute: typeof ServersIdSettingsRoute
+  ServersIdIndexRoute: typeof ServersIdIndexRoute
+}
+
+const ServersIdRouteRouteChildren: ServersIdRouteRouteChildren = {
+  ServersIdSettingsRoute: ServersIdSettingsRoute,
+  ServersIdIndexRoute: ServersIdIndexRoute,
+}
+
+const ServersIdRouteRouteWithChildren = ServersIdRouteRoute._addFileChildren(
+  ServersIdRouteRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -162,6 +232,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   SettingsRoute: SettingsRoute,
   WebrtcRoute: WebrtcRoute,
+  ServersIdRouteRoute: ServersIdRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

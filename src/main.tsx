@@ -9,6 +9,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
 import { WebStorageStateStore } from "oidc-client-ts"
 import { type AuthState, mapOidcUserToUser } from "@/app/providers/KeycloakAuthProvider"
+import { SidebarContentProvider } from "@/app/providers/SidebarContentProvider"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,7 +78,9 @@ function BaseProvider() {
     <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
         <AuthProvider {...oidcConfig}>
-          <AuthenticatedRouter />
+          <SidebarContentProvider>
+            <AuthenticatedRouter />
+          </SidebarContentProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
