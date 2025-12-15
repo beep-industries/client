@@ -70,9 +70,6 @@ export default function ServerNav() {
     isError: serversError,
     hasNextPage,
     isFetchingNextPage,
-    fetchPreviousPage,
-    isFetchingPreviousPage,
-    hasPreviousPage,
     fetchNextPage,
   } = useServers()
 
@@ -115,11 +112,7 @@ export default function ServerNav() {
         </DropdownMenu>
       </Tooltip>
 
-      <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent flex flex-1 flex-col gap-2 overflow-y-auto">
-        <button
-          onClick={() => fetchPreviousPage()}
-          disabled={!hasPreviousPage || isFetchingPreviousPage}
-        ></button>
+      <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
         {servers?.pages
           .flatMap((page) => page.data)
           .map((server) => (
