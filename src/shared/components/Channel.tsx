@@ -32,20 +32,15 @@ export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) 
         </SidebarMenuItem>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        {isChildren && (
-          <>
-            <ContextMenuSub>
-              <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
-              <ContextMenuSubContent className="w-44">
-                {foldersMock.map((folder) => (
-                  <ContextMenuItem key={folder.id}>{folder.name}</ContextMenuItem>
-                ))}
-              </ContextMenuSubContent>
-            </ContextMenuSub>
-
-            <ContextMenuItem>{t("channel.extract_from_folder")}</ContextMenuItem>
-          </>
-        )}
+        <ContextMenuSub>
+          <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
+          <ContextMenuSubContent className="w-44">
+            {foldersMock.map((folder) => (
+              <ContextMenuItem key={folder.id}>{folder.name}</ContextMenuItem>
+            ))}
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+        {isChildren && <ContextMenuItem>{t("channel.extract_from_folder")}</ContextMenuItem>}
         <ContextMenuItem>{t("channel.delete_channel")}</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
