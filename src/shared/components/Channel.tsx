@@ -9,14 +9,13 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/ContextMenu"
+import { foldersMock } from "./ServerChannels"
 
 interface ChannelProps {
   icon: LucideIcon
   name: string
   isChildren?: boolean
 }
-
-const foldersMock = ["Information", "Text Channels", "Voice Channels", "Gaming"]
 
 export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) {
   return (
@@ -36,7 +35,7 @@ export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) 
               <ContextMenuSubTrigger>Move to folder</ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-44">
                 {foldersMock.map((folder) => (
-                  <ContextMenuItem key={folder}>{folder}</ContextMenuItem>
+                  <ContextMenuItem key={folder.id}>{folder.name}</ContextMenuItem>
                 ))}
               </ContextMenuSubContent>
             </ContextMenuSub>

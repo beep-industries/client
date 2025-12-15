@@ -29,7 +29,7 @@ interface Folder {
   name: string
 }
 
-const foldersMock: Folder[] = [
+export const foldersMock: Folder[] = [
   { id: "1", name: "Information" },
   { id: "2", name: "Text Channels" },
   { id: "3", name: "Voice Channels" },
