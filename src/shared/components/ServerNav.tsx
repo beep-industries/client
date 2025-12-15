@@ -10,7 +10,6 @@ import {
 } from "./ui/DropdownMenu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
-import { MAXIMUM_SERVERS_PER_API_CALL } from "../constants/community.contants"
 import { Button } from "./ui/Button"
 
 interface NavLinkButtonProps {
@@ -61,21 +60,24 @@ function ServerButton({ server }: ServerButtonProps) {
 export default function ServerNav() {
   const { t } = useTranslation()
 
-  const [servers, setServers] = useState<Server[]>([])
-  const [page, setPage] = useState<number>(1)
+  const { ref, inView } = useInView()
 
-  const { data: serversData, isError: serversError } = useServers(
-    page,
-    MAXIMUM_SERVERS_PER_API_CALL
-  )
+  const {
+    data: servers,
+    isError: serversError,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchPreviousPage,
+    isFetchingPreviousPage,
+    hasPreviousPage,
+    fetchNextPage,
+  } = useServers()
 
-  // Format servers data when fetched
   useEffect(() => {
-    if (serversData) {
-      const data: GetServersResponse = serversData as GetServersResponse
-      setServers((prevServers) => [...prevServers, ...data.data])
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
     }
-  }, [serversData, page])
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
   // Handle errors (Could be replaced with a toast notification)
   useEffect(() => {
@@ -83,8 +85,6 @@ export default function ServerNav() {
       alert(t("serverNav.error_loading_servers"))
     }
   }, [serversError, t])
-
-  const total = (serversData as GetServersResponse)?.total ?? 0
 
   const handleServerClick = (serverId: string) => {
     console.log("Server clicked:", serverId)
@@ -117,35 +117,35 @@ export default function ServerNav() {
       </Tooltip>
 
       <div className="scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent flex flex-1 flex-col gap-2 overflow-y-auto">
-        {servers.map((server) => (
-          <Tooltip key={server.id}>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => handleServerClick(server.id)}
-                className="border-border hover:border-primary flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border bg-transparent transition-all duration-200"
-              >
-                <Avatar className="h-7 w-7 rounded-md">
-                  <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
-                  <AvatarFallback className="rounded-md text-sm">
-                    {server.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right">{server.name}</TooltipContent>
-          </Tooltip>
-        ))}
-        {page * MAXIMUM_SERVERS_PER_API_CALL < total && (
-          <>
-            <hr className="border-border" />
-            <button
-              onClick={() => setPage((prev) => prev + 1)}
-              className="border-border hover:border-primary bg-border flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border transition-all duration-200"
-            >
-              <Plus className="text-muted-foreground h-4 w-4" />
-            </button>
-          </>
-        )}
+        <button
+          onClick={() => fetchPreviousPage()}
+          disabled={!hasPreviousPage || isFetchingPreviousPage}
+        ></button>
+        {servers?.pages
+          .flatMap((page) => page.data)
+          .map((server) => (
+            <Tooltip key={server.id}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleServerClick(server.id)}
+                  className="border-border hover:border-primary flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border bg-transparent transition-all duration-200"
+                >
+                  <Avatar className="h-7 w-7 rounded-md">
+                    <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
+                    <AvatarFallback className="rounded-md text-sm">
+                      {server.name.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{server.name}</TooltipContent>
+            </Tooltip>
+          ))}
+        <button
+          ref={ref}
+          onClick={() => fetchNextPage()}
+          disabled={!hasNextPage || isFetchingNextPage}
+        ></button>
       </div>
     </nav>
   )
