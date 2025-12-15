@@ -8,6 +8,7 @@ import {
 import { SidebarMenu } from "./ui/Sidebar"
 import TextChannel from "./TextChannel"
 import VoiceChannel from "./VoiceChannel"
+import { useTranslation } from "react-i18next"
 
 export const ChannelType = {
   TEXT: "text",
@@ -57,6 +58,7 @@ const channelsMock: Channel[] = [
 ]
 
 export default function ServerChannels() {
+  const { t } = useTranslation()
   const channelsWithoutFolder = channelsMock.filter((c) => c.folderId === null)
 
   return (
@@ -87,14 +89,14 @@ export default function ServerChannels() {
             ))}
           </ContextMenuTrigger>
           <ContextMenuContent>
-            <ContextMenuItem>Create a channel</ContextMenuItem>
-            <ContextMenuItem>Delete the folder</ContextMenuItem>
+            <ContextMenuItem>{t("serverChannels.create_channel")}</ContextMenuItem>
+            <ContextMenuItem>{t("serverChannels.delete_folder")}</ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem>Create a channel</ContextMenuItem>
-        <ContextMenuItem>Create a folder</ContextMenuItem>
+        <ContextMenuItem>{t("serverChannels.create_channel")}</ContextMenuItem>
+        <ContextMenuItem>{t("serverChannels.create_folder")}</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   )

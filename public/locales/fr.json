@@ -19,7 +19,12 @@
     "create_channel": "Créer un salon",
     "copy_server_id": "Copier l'ID du serveur",
     "settings": "Paramètres du serveur",
-    "user_plus": "Inviter un ami"
+    "user_plusw": "Inviter un ami"
+  },
+  "serverChannels": {
+    "create_channel": "Créer un salon",
+    "create_folder": "Créer un dossier",
+    "delete_folder": "Supprimer le dossier"
   },
   "sidebar": {
     "messages": "Messages",

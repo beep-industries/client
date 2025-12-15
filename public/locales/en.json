@@ -1,7 +1,7 @@
 {
   "serverNav": {
-    "create_server": "Create server",
-    "join_server": "Join server",
+    "create_server": "Create a server",
+    "join_server": "Join a server",
     "messages": "Messages",
     "explore": "Explore",
     "more_options": "More options"
@@ -15,11 +15,16 @@
     "log_out": "Log out"
   },
   "serverProfile": {
-    "create_folder": "Create folder",
-    "create_channel": "Create channel",
+    "create_folder": "Create a folder",
+    "create_channel": "Create a channel",
     "copy_server_id": "Copy server ID",
     "settings": "Server settings",
     "user_plus": "Invite a friend"
+  },
+  "serverChannels": {
+    "create_channel": "Create a channel",
+    "create_folder": "Create a folder",
+    "delete_folder": "Delete the folder"
   },
   "sidebar": {
     "messages": "Messages",
