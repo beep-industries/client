@@ -31,6 +31,11 @@
     "notifications": "Notifications",
     "explore": "Explore"
   },
+  "channel":{
+    "move_to_folder":"Move to folder",
+    "extract_from_folder":"Extract from folder",
+    "delete_channel":"Delete the channel"
+  },
   "topBar": {
     "show_users": "Show users",
     "notifications": "Notifications"

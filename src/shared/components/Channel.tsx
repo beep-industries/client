@@ -10,6 +10,7 @@ import {
   ContextMenuTrigger,
 } from "./ui/ContextMenu"
 import { foldersMock } from "./ServerChannels"
+import { useTranslation } from "react-i18next"
 
 interface ChannelProps {
   icon: LucideIcon
@@ -18,6 +19,8 @@ interface ChannelProps {
 }
 
 export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) {
+  const { t } = useTranslation()
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
@@ -32,7 +35,7 @@ export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) 
         {isChildren && (
           <>
             <ContextMenuSub>
-              <ContextMenuSubTrigger>Move to folder</ContextMenuSubTrigger>
+              <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-44">
                 {foldersMock.map((folder) => (
                   <ContextMenuItem key={folder.id}>{folder.name}</ContextMenuItem>
@@ -40,10 +43,10 @@ export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) 
               </ContextMenuSubContent>
             </ContextMenuSub>
 
-            <ContextMenuItem>Extract from folder</ContextMenuItem>
+            <ContextMenuItem>{t("channel.extract_from_folder")}</ContextMenuItem>
           </>
         )}
-        <ContextMenuItem>Delete the channel</ContextMenuItem>
+        <ContextMenuItem>{t("channel.delete_channel")}</ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   )

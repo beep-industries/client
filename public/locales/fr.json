@@ -31,6 +31,11 @@
     "notifications": "Notifications",
     "explore": "Explorer"
   },
+  "channel":{
+    "move_to_folder":"Déplacer vers le dossier",
+    "extract_from_folder":"Extraire du dossier",
+    "delete_channel":"Supprimer le salon"
+  },
   "topBar": {
     "show_users": "Afficher les utilisateurs",
     "notifications": "Notifications"
