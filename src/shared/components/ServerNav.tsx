@@ -21,6 +21,7 @@ import type z from "zod"
 import { addServerFormSchema } from "../zod/add-server"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 interface NavLinkButtonProps {
   to: string
@@ -97,7 +98,7 @@ export default function ServerNav() {
   // Handle errors (Could be replaced with a toast notification)
   useEffect(() => {
     if (serversError) {
-      alert(t("serverNav.error_loading_servers"))
+      toast.error(t("serverNav.error_loading_servers"))
     }
   }, [serversError, t])
 
@@ -126,8 +127,9 @@ export default function ServerNav() {
     if (isCreateServerSuccess) {
       queryClient.invalidateQueries({ queryKey: ["servers"] })
       setIsCreateServerModalOpen(false)
+      toast.success(t("serverNav.success_creating_server"))
     } else if (isCreateServerError) {
-      alert(t("serverNav.error_creating_server"))
+      toast.error(t("serverNav.error_creating_server"))
     }
   }, [isCreateServerError, isCreateServerSuccess, t, queryClient])
 
