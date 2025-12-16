@@ -1,6 +1,6 @@
 import { Compass, Ellipsis, Inbox, type LucideIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip"
 import {
   DropdownMenu,
@@ -71,6 +71,7 @@ function ServerButton({ server }: ServerButtonProps) {
 export default function ServerNav() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const { ref, inView } = useInView()
   const [isCreateServerModalOpen, setIsCreateServerModalOpen] = useState<boolean>(false)
@@ -87,6 +88,7 @@ export default function ServerNav() {
     isPending: isCreatingServer,
     isError: isCreateServerError,
     isSuccess: isCreateServerSuccess,
+    data: createdServer,
   } = useCreateServer()
 
   useEffect(() => {
@@ -127,11 +129,12 @@ export default function ServerNav() {
     if (isCreateServerSuccess) {
       queryClient.invalidateQueries({ queryKey: ["servers"] })
       setIsCreateServerModalOpen(false)
+      navigate({ to: `/servers/${(createdServer as Server).id}` })
       toast.success(t("serverNav.success_creating_server"))
     } else if (isCreateServerError) {
       toast.error(t("serverNav.error_creating_server"))
     }
-  }, [isCreateServerError, isCreateServerSuccess, t, queryClient])
+  }, [isCreateServerError, isCreateServerSuccess, createdServer, t, queryClient, navigate])
 
   useEffect(() => {
     if (!isCreateServerModalOpen) {
