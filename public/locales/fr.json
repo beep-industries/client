@@ -6,6 +6,7 @@
     "explore": "Explorer",
     "more_options": "Plus d'options",
     "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs",
+    "error_creating_server": "Une erreur est survenue lors de la création du serveur",
     "modal": {
       "title": "Créer un serveur",
       "name": "Nom",

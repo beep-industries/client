@@ -73,7 +73,6 @@ export default function ServerNav() {
 
   const { ref, inView } = useInView()
   const [isCreateServerModalOpen, setIsCreateServerModalOpen] = useState<boolean>(false)
-  const [loadings, setLoadings] = useState<{ create: boolean }>({ create: false })
 
   const {
     data: servers,
@@ -82,7 +81,12 @@ export default function ServerNav() {
     isFetchingNextPage,
     fetchNextPage,
   } = useServers()
-  const { mutate: createServer } = useCreateServer()
+  const {
+    mutateAsync: createServer,
+    isPending: isCreatingServer,
+    isError: isCreateServerError,
+    isSuccess: isCreateServerSuccess,
+  } = useCreateServer()
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -109,30 +113,29 @@ export default function ServerNav() {
   })
 
   const onSubmitAddServer = async (values: z.infer<typeof addServerFormSchema>) => {
-    setLoadings((prev) => ({ ...prev, create: true }))
-    try {
-      await createServer({
-        name: values.name,
-        description: values.description,
-        picture_url: values.picture_url,
-        banner_url: values.banner_url,
-        visibility: values.visibility,
-      })
-
-      await queryClient.invalidateQueries({ queryKey: ["servers"] })
-      setIsCreateServerModalOpen(false)
-    } catch (error) {
-      console.error("Error creating server:", error)
-    } finally {
-      setLoadings((prev) => ({ ...prev, create: false }))
-    }
+    createServer({
+      name: values.name,
+      description: values.description,
+      picture_url: values.picture_url,
+      banner_url: values.banner_url,
+      visibility: values.visibility,
+    })
   }
+
+  useEffect(() => {
+    if (isCreateServerSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["servers"] })
+      setIsCreateServerModalOpen(false)
+    } else if (isCreateServerError) {
+      alert(t("serverNav.error_creating_server"))
+    }
+  }, [isCreateServerError, isCreateServerSuccess, t, queryClient])
 
   useEffect(() => {
     if (!isCreateServerModalOpen) {
       addServerForm.reset()
     }
-  }, [isCreateServerModalOpen, addServerForm.reset])
+  }, [isCreateServerModalOpen, addServerForm])
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
@@ -187,7 +190,7 @@ export default function ServerNav() {
             </DialogHeader>
             <AddServerForm
               form={addServerForm}
-              loading={loadings.create}
+              loading={isCreatingServer}
               onSubmit={onSubmitAddServer}
             />
           </DialogContent>

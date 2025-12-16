@@ -6,6 +6,7 @@
     "explore": "Explore",
     "more_options": "More options",
     "error_loading_servers": "An error occurred while loading servers",
+    "error_creating_server": "An error occurred while creating the server",
     "modal": {
       "title": "Create a server",
       "name": "Name",

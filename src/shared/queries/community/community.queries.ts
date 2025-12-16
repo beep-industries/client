@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import {
   createServer,
   deleteServer,
@@ -75,12 +75,11 @@ export const useServers = () => {
 export const useCreateServer = () => {
   const { accessToken } = useAuth()
 
-  return {
-    mutate: (body: CreateServerRequest) => {
+  return useMutation({
+    mutationFn: (body: CreateServerRequest) => {
       return createServer(accessToken!, body)
     },
-    isLoading: !!accessToken,
-  }
+  })
 }
 
 export const useUpdateServer = (serverId: string) => {

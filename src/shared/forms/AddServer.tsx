@@ -87,7 +87,9 @@ export function AddServerForm({ form, loading, onSubmit }: AddServerFormProps) {
                       disabled={field.disabled}
                     />
                   </FormControl>
-                  <label htmlFor="visibility">{t(`serverNav.modal.${field.value.toLowerCase()}`)}</label>
+                  <label htmlFor="visibility">
+                    {t(`serverNav.modal.${field.value.toLowerCase()}`)}
+                  </label>
                 </div>
               </FormItem>
             )}
