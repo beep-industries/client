@@ -7,6 +7,12 @@
     "more_options": "Plus d'options",
     "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs",
     "error_creating_server": "Une erreur est survenue lors de la création du serveur",
+    "validation": {
+      "name_required": "Le nom est requis",
+      "name_too_long": "Le nom est trop long",
+      "picture_url_too_long": "L'URL de l'image est trop longue",
+      "banner_url_too_long": "L'URL de la bannière est trop longue"
+    },
     "modal": {
       "title": "Créer un serveur",
       "name": "Nom",

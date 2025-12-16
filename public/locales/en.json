@@ -7,6 +7,12 @@
     "more_options": "More options",
     "error_loading_servers": "An error occurred while loading servers",
     "error_creating_server": "An error occurred while creating the server",
+    "validation": {
+      "name_required": "Name is required",
+      "name_too_long": "Name is too long",
+      "picture_url_too_long": "Image URL is too long",
+      "banner_url_too_long": "Banner URL is too long"
+    },
     "modal": {
       "title": "Create a server",
       "name": "Name",
