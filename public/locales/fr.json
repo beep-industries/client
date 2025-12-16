@@ -5,7 +5,27 @@
     "messages": "Messages",
     "explore": "Explorer",
     "more_options": "Plus d'options",
-    "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs"
+    "success_creating_server": "Serveur créé avec succès",
+    "error_loading_servers": "Une erreur est survenue lors du chargement des serveurs",
+    "error_creating_server": "Une erreur est survenue lors de la création du serveur",
+    "validation": {
+      "name_required": "Le nom est requis",
+      "name_too_long": "Le nom est trop long",
+      "picture_url_too_long": "L'URL de l'image est trop longue",
+      "banner_url_too_long": "L'URL de la bannière est trop longue"
+    },
+    "modal": {
+      "title": "Créer un serveur",
+      "name": "Nom",
+      "description": "Description (optionnel)",
+      "image_url": "URL de l'image (optionnel)",
+      "banner_url": "URL de la bannière (optionnel)",
+      "visibility": "Visibilité",
+      "public": "Public",
+      "private": "Privé",
+      "cancel": "Annuler",
+      "create": "Créer le serveur"
+    }
   },
   "userNav": {
     "light": "Clair",
@@ -20,7 +40,7 @@
     "create_channel": "Créer un salon",
     "copy_server_id": "Copier l'ID du serveur",
     "settings": "Paramètres du serveur",
-    "user_plusw": "Inviter un ami"
+    "user_plus": "Inviter un ami"
   },
   "serverChannels": {
     "create_channel": "Créer un salon",

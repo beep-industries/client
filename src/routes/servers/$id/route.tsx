@@ -3,20 +3,7 @@ import { useEffect } from "react"
 import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { ServerProfile } from "@/shared/components/ServerProfile"
 import ServerChannels from "@/shared/components/ServerChannels"
-
-interface Server {
-  id: number
-  name: string
-  image: string | null
-}
-
-// Mock data - will be replaced with actual data fetching
-const mockServers: Server[] = [
-  { id: 1, name: "General", image: null },
-  { id: 2, name: "Gaming", image: null },
-  { id: 3, name: "Music", image: null },
-  { id: 4, name: "Development", image: null },
-]
+import { useServerById } from "@/shared/queries/community/community.queries"
 
 export const Route = createFileRoute("/servers/$id")({
   component: ServerLayout,
@@ -25,8 +12,7 @@ export const Route = createFileRoute("/servers/$id")({
 function ServerLayout() {
   const { id } = Route.useParams()
   const { setHeader, setContent } = useSidebarContent()
-
-  const server = mockServers.find((s) => s.id === Number(id))
+  const { data: server } = useServerById(id)
 
   useEffect(() => {
     if (server) {

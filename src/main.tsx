@@ -10,6 +10,7 @@ import { AuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
 import { WebStorageStateStore } from "oidc-client-ts"
 import { type AuthState, mapOidcUserToUser } from "@/app/providers/KeycloakAuthProvider"
 import { SidebarContentProvider } from "@/app/providers/SidebarContentProvider"
+import { Toaster } from "./shared/components/ui/Sonner"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -80,6 +81,7 @@ function BaseProvider() {
         <AuthProvider {...oidcConfig}>
           <SidebarContentProvider>
             <AuthenticatedRouter />
+            <Toaster theme="system" position="bottom-right" closeButton={true} />
           </SidebarContentProvider>
         </AuthProvider>
       </QueryClientProvider>

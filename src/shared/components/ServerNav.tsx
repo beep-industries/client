@@ -1,6 +1,6 @@
 import { Compass, Ellipsis, Inbox, type LucideIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip"
 import {
   DropdownMenu,
@@ -11,9 +11,17 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
-import { useEffect } from "react"
-import { useServers } from "../queries/community/community.queries"
+import { useEffect, useState } from "react"
+import { useCreateServer, useServers } from "../queries/community/community.queries"
 import { useInView } from "react-intersection-observer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
+import { AddServerForm } from "../forms/AddServer"
+import { useForm } from "react-hook-form"
+import type z from "zod"
+import { addServerFormSchema } from "../zod/add-server"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 interface NavLinkButtonProps {
   to: string
@@ -62,8 +70,11 @@ function ServerButton({ server }: ServerButtonProps) {
 
 export default function ServerNav() {
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const { ref, inView } = useInView()
+  const [isCreateServerModalOpen, setIsCreateServerModalOpen] = useState<boolean>(false)
 
   const {
     data: servers,
@@ -72,6 +83,13 @@ export default function ServerNav() {
     isFetchingNextPage,
     fetchNextPage,
   } = useServers()
+  const {
+    mutateAsync: createServer,
+    isPending: isCreatingServer,
+    isError: isCreateServerError,
+    isSuccess: isCreateServerSuccess,
+    data: createdServer,
+  } = useCreateServer()
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -82,9 +100,47 @@ export default function ServerNav() {
   // Handle errors (Could be replaced with a toast notification)
   useEffect(() => {
     if (serversError) {
-      alert(t("serverNav.error_loading_servers"))
+      toast.error(t("serverNav.error_loading_servers"))
     }
   }, [serversError, t])
+
+  const addServerForm = useForm<z.infer<typeof addServerFormSchema>>({
+    resolver: zodResolver(addServerFormSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      picture_url: "",
+      banner_url: "",
+      visibility: "Public",
+    },
+  })
+
+  const onSubmitAddServer = async (values: z.infer<typeof addServerFormSchema>) => {
+    createServer({
+      name: values.name,
+      description: values.description,
+      picture_url: values.picture_url,
+      banner_url: values.banner_url,
+      visibility: values.visibility,
+    })
+  }
+
+  useEffect(() => {
+    if (isCreateServerSuccess) {
+      queryClient.invalidateQueries({ queryKey: ["servers"] })
+      setIsCreateServerModalOpen(false)
+      navigate({ to: `/servers/${(createdServer as Server).id}` })
+      toast.success(t("serverNav.success_creating_server"))
+    } else if (isCreateServerError) {
+      toast.error(t("serverNav.error_creating_server"))
+    }
+  }, [isCreateServerError, isCreateServerSuccess, createdServer, t, queryClient, navigate])
+
+  useEffect(() => {
+    if (!isCreateServerModalOpen) {
+      addServerForm.reset()
+    }
+  }, [isCreateServerModalOpen, addServerForm])
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
@@ -102,7 +158,13 @@ export default function ServerNav() {
           </TooltipTrigger>
           <TooltipContent side="right">{t("serverNav.more_options")}</TooltipContent>
           <DropdownMenuContent side="left" align="start" sideOffset={4}>
-            <DropdownMenuItem className="text-responsive-base!">
+            <DropdownMenuItem
+              className="text-responsive-base!"
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsCreateServerModalOpen(true)
+              }}
+            >
               {t("serverNav.create_server")}
             </DropdownMenuItem>
             <DropdownMenuItem className="text-responsive-base!">
@@ -124,6 +186,21 @@ export default function ServerNav() {
           disabled={!hasNextPage || isFetchingNextPage}
         ></button>
       </div>
+
+      <Dialog open={isCreateServerModalOpen} onOpenChange={setIsCreateServerModalOpen}>
+        <form>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("serverNav.modal.title")}</DialogTitle>
+            </DialogHeader>
+            <AddServerForm
+              form={addServerForm}
+              loading={isCreatingServer}
+              onSubmit={onSubmitAddServer}
+            />
+          </DialogContent>
+        </form>
+      </Dialog>
     </nav>
   )
 }

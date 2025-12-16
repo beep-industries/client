@@ -15,6 +15,7 @@ import {
 
 import { cn } from "@/shared/lib/utils"
 import { Label } from "@/shared/components/ui/Label"
+import { useTranslation } from "react-i18next"
 
 const Form = FormProvider
 
@@ -122,7 +123,8 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
   const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : props.children
+  const { t } = useTranslation()
+  const body = error ? String(t(error?.message ?? "")) : props.children
 
   if (!body) {
     return null

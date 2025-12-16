@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
-import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import {
   createServer,
   deleteServer,
@@ -7,7 +7,7 @@ import {
   getServers,
   updateServer,
 } from "./community.api"
-import type { CreateServerRequest, GetServersResponse } from "./community.types"
+import type { CreateServerRequest, GetServersResponse, Server } from "./community.types"
 import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
 
 export const communityKeys = {
@@ -20,31 +20,20 @@ export const useServerById = (serverId: string) => {
 
   return useQuery({
     queryKey: communityKeys.server(serverId),
-    queryFn: () => getServerById(accessToken!, serverId),
+    queryFn: async (): Promise<Server> => {
+      try {
+        const response = await getServerById(accessToken!, serverId)
+
+        return response as Server
+      } catch (error) {
+        console.error("Error fetching server by ID:", error)
+        throw new Error("Error fetching server by ID")
+      }
+    },
     enabled: !!accessToken,
   })
 }
 
-/**
- * Custom hook that fetches servers with infinite scrolling capability.
- *
- * This hook uses React Query's `useInfiniteQuery` to manage paginated server data.
- * The `hasNextPage` property is automatically calculated by React Query based on the return value
- * of `getNextPageParam`. If `getNextPageParam` returns `undefined`, `hasNextPage` will be `false`.
- * Otherwise, if it returns a valid page number (lastPage.page + 1), `hasNextPage` will be `true`.
- *
- * @returns An infinite query result object containing:
- * - `data`: The paginated server data organized by pages
- * - `hasNextPage`: Boolean indicating if more pages are available (computed from `getNextPageParam`)
- * - `fetchNextPage`: Function to load the next page
- * - `isFetching`: Loading state indicator
- * - Other standard React Query infinite query properties
- *
- * @remarks
- * - The query is only enabled when an access token is available
- * - Each page fetches up to `MAXIMUM_SERVERS_PER_API_CALL` servers
- * - Errors during fetching are logged and re-thrown
- */
 export const useServers = () => {
   const { accessToken } = useAuth()
 
@@ -75,12 +64,11 @@ export const useServers = () => {
 export const useCreateServer = () => {
   const { accessToken } = useAuth()
 
-  return {
-    mutate: (body: CreateServerRequest) => {
+  return useMutation({
+    mutationFn: (body: CreateServerRequest) => {
       return createServer(accessToken!, body)
     },
-    isLoading: !!accessToken,
-  }
+  })
 }
 
 export const useUpdateServer = (serverId: string) => {

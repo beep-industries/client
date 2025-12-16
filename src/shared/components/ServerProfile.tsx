@@ -20,16 +20,9 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
+import type { Server } from "../queries/community/community.types"
 
-export function ServerProfile({
-  server,
-}: {
-  server: {
-    id: number
-    name: string
-    image: string | null
-  }
-}) {
+export function ServerProfile({ server }: { server: Server }) {
   const [isOpen, setIsOpen] = useState(false)
   const { t } = useTranslation()
 
@@ -40,10 +33,10 @@ export function ServerProfile({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={server.image ?? undefined} alt={server.name} />
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
                 <AvatarFallback className="rounded-lg">
                   {server.name.charAt(0).toUpperCase()}
                 </AvatarFallback>
@@ -65,7 +58,7 @@ export function ServerProfile({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={server.image ?? undefined} alt={server.name} />
+                  <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
                   <AvatarFallback className="rounded-lg">
                     {server.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
