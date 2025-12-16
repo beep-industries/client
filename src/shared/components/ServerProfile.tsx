@@ -33,9 +33,9 @@ export function ServerProfile({ server }: { server: Server }) {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
             >
-              <Avatar className="h-8 w-8 rounded-lg grayscale">
+              <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={server.picture_url ?? undefined} alt={server.name} />
                 <AvatarFallback className="rounded-lg">
                   {server.name.charAt(0).toUpperCase()}
