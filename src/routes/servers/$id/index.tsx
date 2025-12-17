@@ -7,5 +7,5 @@ export const Route = createFileRoute("/servers/$id/")({
 
 function ServerIndexPage() {
   const { id } = Route.useParams()
-  return <PageServer id={id} />
+  return <PageServer id={id} /> //TODO: redirect to the first text channel
 }
