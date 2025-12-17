@@ -125,6 +125,11 @@
     "view_profile": "Voir le profil",
     "add_friend": "Ajouter en ami",
     "send_message": "Envoyer un message",
+    "profile": "Profil",
+    "notifications": "Notifications"
+  },
+  "sendingBar": {
+    "placeholder": "Envoyer un message",
     "profile": "Profil"
   },
   "videoConference": {

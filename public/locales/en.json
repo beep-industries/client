@@ -173,6 +173,10 @@
       "E_FRIEND_REQUEST_ALREADY_EXISTS": "A friend request already exists for this user",
       "E_FRIENDSHIP_ALREADY_EXISTS": "You are already friends with this user",
       "E_USER_NOT_FOUND": "User not found"
-    }
+    },
+    "notifications": "Notifications"
+  },
+  "sendingBar": {
+    "placeholder": "Envoyer un message"
   }
 }
