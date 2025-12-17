@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/friends/")({
-  component: RouteComponent,
+  component: FriendsIndexPage,
 })
 
-function RouteComponent() {
+function FriendsIndexPage() {
   return <div>Hello "/friends/"!</div>
 }
