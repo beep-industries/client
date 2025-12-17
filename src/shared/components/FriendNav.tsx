@@ -1,11 +1,12 @@
 import { Link, useLocation } from "@tanstack/react-router"
 import { UserRound } from "lucide-react"
 import { cn } from "@/shared/lib/utils"
-import { t } from "i18next"
+import { useTranslation } from "react-i18next"
 
 export function FriendNav() {
   const location = useLocation()
   const isActive = location.pathname === "/friends"
+  const { t } = useTranslation()
 
   return (
     <Link
