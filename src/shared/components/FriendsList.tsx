@@ -10,10 +10,10 @@ export interface Friend {
   avatarUrl: string
 }
 
-export default function FriendsList(friends: FriendsListProps) {
+export default function FriendsList({ friends }: FriendsListProps) {
   return (
     <>
-      {friends.friends.map((friend: Friend) => (
+      {friends.map((friend: Friend) => (
         <Friend key={friend.id} id={friend.id} name={friend.name} avatar={friend.avatarUrl} />
       ))}
     </>
