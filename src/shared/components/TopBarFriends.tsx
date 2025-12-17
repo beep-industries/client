@@ -14,7 +14,7 @@ export default function TopBarFriends() {
           <TooltipTrigger asChild>
             <Button variant="ghost" size="icon" className="size-7">
               <UserPlus />
-              <span className="sr-only">{t("topBar.show_users")}</span>
+              <span className="sr-only">{t("topBar.add_friends")}</span>
             </Button>
           </TooltipTrigger>
           <TooltipContent>{t("topBar.add_friends")}</TooltipContent>
