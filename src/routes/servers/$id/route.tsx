@@ -4,6 +4,7 @@ import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { ServerProfile } from "@/shared/components/ServerProfile"
 import ServerChannels from "@/shared/components/ServerChannels"
 import { useServerById } from "@/shared/queries/community/community.queries"
+import TopBarServers from "@/shared/components/TopBarServers"
 
 export const Route = createFileRoute("/servers/$id")({
   component: ServerLayout,
@@ -25,5 +26,10 @@ function ServerLayout() {
     }
   }, [setHeader, setContent, server])
 
-  return <Outlet />
+  return (
+    <>
+      <TopBarServers />
+      <Outlet />
+    </>
+  )
 }

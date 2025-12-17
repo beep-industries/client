@@ -59,6 +59,10 @@
   },
   "topBar": {
     "show_users": "Show users",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "add_friends": "Add a friend"
+  },
+  "friends": {
+    "nav": "Friends"
   }
 }
