@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from "./routes/__root"
 import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SettingsRouteImport } from "./routes/settings"
-import { Route as NotificationsRouteImport } from "./routes/notifications"
 import { Route as ExploreRouteImport } from "./routes/explore"
 import { Route as MessagesRouteRouteImport } from "./routes/messages/route"
 import { Route as FriendsRouteRouteImport } from "./routes/friends/route"
@@ -31,11 +30,6 @@ const WebrtcRoute = WebrtcRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
   path: "/settings",
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: "/notifications",
-  path: "/notifications",
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExploreRoute = ExploreRouteImport.update({
@@ -94,7 +88,6 @@ export interface FileRoutesByFullPath {
   "/friends": typeof FriendsRouteRouteWithChildren
   "/messages": typeof MessagesRouteRouteWithChildren
   "/explore": typeof ExploreRoute
-  "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
@@ -107,7 +100,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/explore": typeof ExploreRoute
-  "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
   "/messages/$id": typeof MessagesIdRoute
@@ -122,7 +114,6 @@ export interface FileRoutesById {
   "/friends": typeof FriendsRouteRouteWithChildren
   "/messages": typeof MessagesRouteRouteWithChildren
   "/explore": typeof ExploreRoute
-  "/notifications": typeof NotificationsRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
@@ -139,7 +130,6 @@ export interface FileRouteTypes {
     | "/friends"
     | "/messages"
     | "/explore"
-    | "/notifications"
     | "/settings"
     | "/webrtc"
     | "/servers/$id"
@@ -152,7 +142,6 @@ export interface FileRouteTypes {
   to:
     | "/"
     | "/explore"
-    | "/notifications"
     | "/settings"
     | "/webrtc"
     | "/messages/$id"
@@ -166,7 +155,6 @@ export interface FileRouteTypes {
     | "/friends"
     | "/messages"
     | "/explore"
-    | "/notifications"
     | "/settings"
     | "/webrtc"
     | "/servers/$id"
@@ -182,7 +170,6 @@ export interface RootRouteChildren {
   FriendsRouteRoute: typeof FriendsRouteRouteWithChildren
   MessagesRouteRoute: typeof MessagesRouteRouteWithChildren
   ExploreRoute: typeof ExploreRoute
-  NotificationsRoute: typeof NotificationsRoute
   SettingsRoute: typeof SettingsRoute
   WebrtcRoute: typeof WebrtcRoute
   ServersIdRouteRoute: typeof ServersIdRouteRouteWithChildren
@@ -202,13 +189,6 @@ declare module "@tanstack/react-router" {
       path: "/settings"
       fullPath: "/settings"
       preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    "/notifications": {
-      id: "/notifications"
-      path: "/notifications"
-      fullPath: "/notifications"
-      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     "/explore": {
@@ -329,7 +309,6 @@ const rootRouteChildren: RootRouteChildren = {
   FriendsRouteRoute: FriendsRouteRouteWithChildren,
   MessagesRouteRoute: MessagesRouteRouteWithChildren,
   ExploreRoute: ExploreRoute,
-  NotificationsRoute: NotificationsRoute,
   SettingsRoute: SettingsRoute,
   WebrtcRoute: WebrtcRoute,
   ServersIdRouteRoute: ServersIdRouteRouteWithChildren,
