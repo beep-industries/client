@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from "./routes/index"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
 import { Route as ServersIdSettingsRouteImport } from "./routes/servers/$id/settings"
+import { Route as ServersIdChannelIdIndexRouteImport } from "./routes/servers/$id/$channelId/index"
 
 const WebrtcRoute = WebrtcRouteImport.update({
   id: "/webrtc",
@@ -64,6 +65,11 @@ const ServersIdSettingsRoute = ServersIdSettingsRouteImport.update({
   path: "/settings",
   getParentRoute: () => ServersIdRouteRoute,
 } as any)
+const ServersIdChannelIdIndexRoute = ServersIdChannelIdIndexRouteImport.update({
+  id: "/$channelId/",
+  path: "/$channelId/",
+  getParentRoute: () => ServersIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -85,6 +92,7 @@ export interface FileRoutesByTo {
   "/webrtc": typeof WebrtcRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -97,6 +105,7 @@ export interface FileRoutesById {
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,6 +119,7 @@ export interface FileRouteTypes {
     | "/servers/$id"
     | "/servers/$id/settings"
     | "/servers/$id/"
+    | "/servers/$id/$channelId"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -120,6 +130,7 @@ export interface FileRouteTypes {
     | "/webrtc"
     | "/servers/$id/settings"
     | "/servers/$id"
+    | "/servers/$id/$channelId"
   id:
     | "__root__"
     | "/"
@@ -131,6 +142,7 @@ export interface FileRouteTypes {
     | "/servers/$id"
     | "/servers/$id/settings"
     | "/servers/$id/"
+    | "/servers/$id/$channelId/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -208,17 +220,26 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ServersIdSettingsRouteImport
       parentRoute: typeof ServersIdRouteRoute
     }
+    "/servers/$id/$channelId/": {
+      id: "/servers/$id/$channelId/"
+      path: "/$channelId"
+      fullPath: "/servers/$id/$channelId"
+      preLoaderRoute: typeof ServersIdChannelIdIndexRouteImport
+      parentRoute: typeof ServersIdRouteRoute
+    }
   }
 }
 
 interface ServersIdRouteRouteChildren {
   ServersIdSettingsRoute: typeof ServersIdSettingsRoute
   ServersIdIndexRoute: typeof ServersIdIndexRoute
+  ServersIdChannelIdIndexRoute: typeof ServersIdChannelIdIndexRoute
 }
 
 const ServersIdRouteRouteChildren: ServersIdRouteRouteChildren = {
   ServersIdSettingsRoute: ServersIdSettingsRoute,
   ServersIdIndexRoute: ServersIdIndexRoute,
+  ServersIdChannelIdIndexRoute: ServersIdChannelIdIndexRoute,
 }
 
 const ServersIdRouteRouteWithChildren = ServersIdRouteRoute._addFileChildren(

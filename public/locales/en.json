@@ -60,5 +60,8 @@
   "topBar": {
     "show_users": "Show users",
     "notifications": "Notifications"
+  },
+  "sendingBar": {
+    "placeholder": "Envoyer un message"
   }
 }
