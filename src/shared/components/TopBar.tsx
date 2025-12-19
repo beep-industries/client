@@ -12,7 +12,7 @@ export default function TopBar({ children }: TopBarProps) {
   const { t } = useTranslation()
 
   return (
-    <div className="bg-sidebar border-sidebar-border flex flex-row justify-between gap-2 border-b p-2">
+    <div className="bg-sidebar border-sidebar-border flex flex-row items-center justify-between gap-2 border-b p-2">
       <SidebarTrigger />
       {children}
       <Tooltip>

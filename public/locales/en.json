@@ -98,7 +98,19 @@
     "show_users": "Show users",
     "members": "Members",
     "notifications": "Notifications",
-    "add_friends": "Add a friend"
+    "add_friend": "Add a friend",
+    "friend_requests": "Friend requests",
+    "modal": {
+      "create_friend_request": {
+        "title": "Add a friend",
+        "user_id_invited": "User ID",
+        "user_id_invited_invalid": "The user ID is invalid",
+        "cancel": "Cancel",
+        "create": "Add a friend",
+        "success": "Friend request sent successfully",
+        "error": "An error occurred while sending the friend request"
+      }
+    }
   },
   "friends": {
     "nav": "Friends"

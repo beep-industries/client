@@ -224,18 +224,16 @@ export default function ServerNav() {
       </div>
 
       <Dialog open={isCreateServerModalOpen} onOpenChange={setIsCreateServerModalOpen}>
-        <form>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t("serverNav.modal.title")}</DialogTitle>
-            </DialogHeader>
-            <AddServerForm
-              form={addServerForm}
-              loading={isCreatingServer}
-              onSubmit={onSubmitAddServer}
-            />
-          </DialogContent>
-        </form>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("serverNav.modal.title")}</DialogTitle>
+          </DialogHeader>
+          <AddServerForm
+            form={addServerForm}
+            loading={isCreatingServer}
+            onSubmit={onSubmitAddServer}
+          />
+        </DialogContent>
       </Dialog>
     </nav>
   )

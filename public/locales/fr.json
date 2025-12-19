@@ -98,7 +98,19 @@
     "show_users": "Afficher les utilisateurs",
     "members": "Membres",
     "notifications": "Notifications",
-    "add_friends": "Ajouter un ami"
+    "add_friend": "Ajouter un ami",
+    "friend_requests": "Demandes d'amis",
+    "modal": {
+      "create_friend_request": {
+        "title": "Ajouter un ami",
+        "user_id_invited": "Identifiant de l'utilisateur",
+        "user_id_invited_invalid": "L'identifiant de l'utilisateur est invalide",
+        "cancel": "Annuler",
+        "create": "Ajouter un ami",
+        "success": "Demande d'ami envoyée avec succès",
+        "error": "Une erreur est survenue lors de l'envoi de la demande d'ami"
+      }
+    }
   },
   "friends": {
     "nav": "Amis"
