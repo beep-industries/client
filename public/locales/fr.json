@@ -59,6 +59,10 @@
   },
   "topBar": {
     "show_users": "Afficher les utilisateurs",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "add_friends": "Ajouter un ami"
+  },
+  "friends": {
+    "nav": "Amis"
   }
 }
