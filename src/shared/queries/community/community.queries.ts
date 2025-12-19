@@ -3,12 +3,21 @@ import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import {
   createServer,
   deleteServer,
+  getFriendRequests,
   getServerById,
   getServers,
   updateServer,
 } from "./community.api"
-import type { CreateServerRequest, GetServersResponse, Server } from "./community.types"
-import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
+import type {
+  CreateServerRequest,
+  GetFriendRequestsResponse,
+  GetServersResponse,
+  Server,
+} from "./community.types"
+import {
+  MAXIMUM_FRIEND_REQUESTS_PER_API_CALL,
+  MAXIMUM_SERVERS_PER_API_CALL,
+} from "@/shared/constants/community.contants"
 
 export const communityKeys = {
   all: [] as const,
@@ -91,4 +100,32 @@ export const useDeleteServer = (serverId: string) => {
     },
     isLoading: !!accessToken,
   }
+}
+
+export const useFriendRequests = () => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: ["friend-requests"],
+    queryFn: async ({ pageParam }): Promise<GetFriendRequestsResponse> => {
+      try {
+        const response = await getFriendRequests(accessToken!, {
+          page: pageParam,
+          limit: MAXIMUM_FRIEND_REQUESTS_PER_API_CALL,
+        })
+
+        return response as GetFriendRequestsResponse
+      } catch (error) {
+        console.error("Error fetching friend requests:", error)
+        throw new Error("Error fetching friend requests")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_FRIEND_REQUESTS_PER_API_CALL < lastPage.total)
+        return lastPage.page + 1
+    },
+    enabled: !!accessToken,
+  })
 }

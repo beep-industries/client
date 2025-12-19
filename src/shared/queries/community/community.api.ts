@@ -1,7 +1,12 @@
 import ky from "ky"
 import type {
+  AcceptFriendRequestRequest,
   CommunityPagination,
+  CreateFriendRequestRequest,
   CreateServerRequest,
+  DeclineFriendRequestRequest,
+  DeleteFriendRequest,
+  DeleteFriendRequestRequest,
   UpdateServerRequest,
 } from "./community.types"
 
@@ -41,4 +46,47 @@ export const updateServer = (accessToken: string, serverId: string, body: Update
 export const deleteServer = (accessToken: string, serverId: string) => {
   const api = createCommunityApi(accessToken)
   return api.delete(`servers/${serverId}`).json()
+}
+
+export const getFriendRequests = (accessToken: string, query: CommunityPagination) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get("friend-requests", { searchParams }).json()
+}
+
+export const createFriendRequest = (accessToken: string, body: CreateFriendRequestRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post("friend-requests", { json: body }).json()
+}
+
+export const acceptFriendRequest = (accessToken: string, body: AcceptFriendRequestRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post("friend-requests/accept", { json: body }).json()
+}
+
+export const declineFriendRequest = (accessToken: string, body: DeclineFriendRequestRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post("friend-requests/decline", { json: body }).json()
+}
+
+export const deleteFriendRequest = (accessToken: string, body: DeleteFriendRequestRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.delete("friend-requests", { json: body }).json()
+}
+
+export const getFriends = (accessToken: string, query: CommunityPagination) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get("friends", { searchParams }).json()
+}
+
+export const deleteFriend = (accessToken: string, body: DeleteFriendRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.delete("friends", { json: body }).json()
 }
