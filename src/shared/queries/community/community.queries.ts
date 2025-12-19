@@ -1,6 +1,7 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import {
+  createFriendRequest,
   createServer,
   deleteServer,
   getFriendRequests,
@@ -9,6 +10,7 @@ import {
   updateServer,
 } from "./community.api"
 import type {
+  CreateFriendRequestRequest,
   CreateServerRequest,
   GetFriendRequestsResponse,
   GetServersResponse,
@@ -127,5 +129,15 @@ export const useFriendRequests = () => {
         return lastPage.page + 1
     },
     enabled: !!accessToken,
+  })
+}
+
+export const useCreateFriendRequest = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: CreateFriendRequestRequest) => {
+      return createFriendRequest(accessToken!, body)
+    },
   })
 }
