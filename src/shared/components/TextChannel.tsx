@@ -1,11 +1,12 @@
 import { Hash } from "lucide-react"
 import Channel from "./Channel"
+import type { Channel as ChannelType } from "@/shared/queries/community/community.types.ts"
 
 interface TextChannelProps {
-  name: string
+  channel: ChannelType
   isChildren?: boolean
 }
 
-export default function TextChannel({ name, isChildren }: TextChannelProps) {
-  return <Channel icon={Hash} name={name} isChildren={isChildren} />
+export default function TextChannel({ channel, isChildren }: TextChannelProps) {
+  return <Channel icon={Hash} channel={channel} isChildren={isChildren} />
 }

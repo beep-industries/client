@@ -3,6 +3,8 @@ import type {
   CommunityPagination,
   CreateServerRequest,
   UpdateServerRequest,
+  CreateServerChannelRequest,
+  UpdateServerChannelRequest,
 } from "./community.types"
 
 const createCommunityApi = (accessToken: string) =>
@@ -41,4 +43,32 @@ export const updateServer = (accessToken: string, serverId: string, body: Update
 export const deleteServer = (accessToken: string, serverId: string) => {
   const api = createCommunityApi(accessToken)
   return api.delete(`servers/${serverId}`).json()
+}
+
+export const getChannels = (accessToken: string, serverId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.get(`servers/${serverId}/channels`).json()
+}
+
+export const createChannel = (
+  accessToken: string,
+  serverId: string,
+  body: CreateServerChannelRequest
+) => {
+  const api = createCommunityApi(accessToken)
+  return api.post(`servers/${serverId}/channels`, { json: body }).json()
+}
+
+export const deleteChannel = (accessToken: string, channelId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.delete(`channels/${channelId}`).json()
+}
+
+export const updateChannel = (
+  accessToken: string,
+  channelId: string,
+  body: UpdateServerChannelRequest
+) => {
+  const api = createCommunityApi(accessToken)
+  return api.put(`channels/${channelId}`, { json: body }).json()
 }

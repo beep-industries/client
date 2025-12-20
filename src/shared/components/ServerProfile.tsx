@@ -20,10 +20,13 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
-import type { Server } from "../queries/community/community.types"
+import { type Server } from "../queries/community/community.types"
+import { AddChannelForm } from "../forms/AddChannel"
 
 export function ServerProfile({ server }: { server: Server }) {
   const [isOpen, setIsOpen] = useState(false)
+  const [isCreateChannelModalOpen, setIsCreateChannelModalOpen] = useState(false)
+  const [isFolder, setIsFolder] = useState(false)
   const { t } = useTranslation()
 
   return (
@@ -69,11 +72,24 @@ export function ServerProfile({ server }: { server: Server }) {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsCreateChannelModalOpen(true)
+                setIsOpen(false)
+              }}
+            >
               <Plus className="size-4" />
               {t("serverProfile.create_channel")}
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                setIsFolder(true)
+                setIsCreateChannelModalOpen(true)
+                setIsOpen(false)
+              }}
+            >
               <Folder className="size-4" />
               {t("serverProfile.create_folder")}
             </DropdownMenuItem>
@@ -100,6 +116,13 @@ export function ServerProfile({ server }: { server: Server }) {
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+      <AddChannelForm
+        serverId={String(server.id)}
+        open={isCreateChannelModalOpen}
+        isFolder={isFolder}
+        setIsFolder={setIsFolder}
+        onOpenChange={setIsCreateChannelModalOpen}
+      />
     </SidebarMenu>
   )
 }
