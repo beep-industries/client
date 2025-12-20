@@ -3,7 +3,10 @@ import TopBar from "./TopBar"
 import { Button } from "./ui/Button"
 import { UserPlus } from "lucide-react"
 import { Badge } from "./ui/Badge"
-import { useCreateFriendRequest, useFriendRequests } from "../queries/community/community.queries"
+import {
+  useCreateFriendRequest,
+  useFriendInvitations,
+} from "../queries/community/community.queries"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { useEffect, useState } from "react"
 import { AddFriendRequestForm } from "../forms/AddFriendRequest"
@@ -12,11 +15,15 @@ import type z from "zod"
 import { addFriendRequestFormSchema } from "../zod/add-friend-request"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
+import { useNavigate } from "@tanstack/react-router"
+import { useQueryClient } from "@tanstack/react-query"
 
 export default function TopBarFriends() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
-  const { data: friendRequests } = useFriendRequests()
+  const { data: friendInvitations } = useFriendInvitations()
   const {
     mutateAsync: createFriendRequest,
     isPending: isCreatingFriendRequest,
@@ -50,11 +57,18 @@ export default function TopBarFriends() {
   useEffect(() => {
     if (isCreateFriendRequestSuccess) {
       setIsCreateFriendRequestModalOpen(false)
+      queryClient.invalidateQueries({ queryKey: ["friend-requests"] })
       toast.success(t("topBar.modal.create_friend_request.success"))
     } else if (isCreateFriendRequestError) {
       toast.error(t("topBar.modal.create_friend_request.error"))
     }
-  }, [isCreateFriendRequestError, isCreateFriendRequestSuccess, createdFriendRequest, t])
+  }, [
+    isCreateFriendRequestError,
+    isCreateFriendRequestSuccess,
+    createdFriendRequest,
+    queryClient,
+    t,
+  ])
 
   return (
     <>
@@ -71,15 +85,23 @@ export default function TopBarFriends() {
             <p>{t("topBar.add_friend")}</p>
           </Button>
           <div className="relative">
-            <Button variant="ghost">
+            <Button
+              variant="ghost"
+              onClick={(e) => {
+                e.preventDefault()
+                navigate({ to: "/friends/requests" })
+              }}
+            >
               <p>{t("topBar.friend_requests")}</p>
             </Button>
-            {friendRequests && friendRequests.pages[0]?.total > 0 && (
+            {friendInvitations && friendInvitations.pages[0]?.total > 0 && (
               <Badge
                 className="absolute -top-1 -right-1 h-5 min-w-5 rounded-full px-1 font-mono tabular-nums"
                 variant="destructive"
               >
-                {friendRequests.pages[0]?.total <= 99 ? friendRequests.pages[0]?.total : "99+"}
+                {friendInvitations.pages[0]?.total <= 99
+                  ? friendInvitations.pages[0]?.total
+                  : "99+"}
               </Badge>
             )}
           </div>

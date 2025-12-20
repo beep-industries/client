@@ -1,23 +1,35 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
 import {
+  acceptFriendRequest,
   createFriendRequest,
   createServer,
+  declineFriendRequest,
+  deleteFriendRequest,
   deleteServer,
+  getFriendInvitations,
   getFriendRequests,
+  getFriends,
   getServerById,
   getServers,
   updateServer,
 } from "./community.api"
 import type {
+  AcceptFriendRequestRequest,
   CreateFriendRequestRequest,
   CreateServerRequest,
+  DeclineFriendRequestRequest,
+  DeleteFriendRequestRequest,
+  GetFriendInvitationsResponse,
   GetFriendRequestsResponse,
+  GetFriendsResponse,
   GetServersResponse,
   Server,
 } from "./community.types"
 import {
+  MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
   MAXIMUM_FRIEND_REQUESTS_PER_API_CALL,
+  MAXIMUM_FRIENDS_PER_API_CALL,
   MAXIMUM_SERVERS_PER_API_CALL,
 } from "@/shared/constants/community.contants"
 
@@ -132,6 +144,34 @@ export const useFriendRequests = () => {
   })
 }
 
+export const useFriendInvitations = () => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: ["friend-invitations"],
+    queryFn: async ({ pageParam }): Promise<GetFriendInvitationsResponse> => {
+      try {
+        const response = await getFriendInvitations(accessToken!, {
+          page: pageParam,
+          limit: MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
+        })
+
+        return response as GetFriendInvitationsResponse
+      } catch (error) {
+        console.error("Error fetching friend invitations:", error)
+        throw new Error("Error fetching friend invitations")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL < lastPage.total)
+        return lastPage.page + 1
+    },
+    enabled: !!accessToken,
+  })
+}
+
 export const useCreateFriendRequest = () => {
   const { accessToken } = useAuth()
 
@@ -139,5 +179,63 @@ export const useCreateFriendRequest = () => {
     mutationFn: (body: CreateFriendRequestRequest) => {
       return createFriendRequest(accessToken!, body)
     },
+  })
+}
+
+export const useAcceptFriendRequest = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: AcceptFriendRequestRequest) => {
+      return acceptFriendRequest(accessToken!, body)
+    },
+  })
+}
+
+export const useDeclineFriendRequest = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: DeclineFriendRequestRequest) => {
+      return declineFriendRequest(accessToken!, body)
+    },
+  })
+}
+
+export const useDeleteFriendRequest = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: DeleteFriendRequestRequest) => {
+      return deleteFriendRequest(accessToken!, body)
+    },
+  })
+}
+
+export const useFriends = () => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: ["friends"],
+    queryFn: async ({ pageParam }): Promise<GetFriendsResponse> => {
+      try {
+        const response = await getFriends(accessToken!, {
+          page: pageParam,
+          limit: MAXIMUM_FRIENDS_PER_API_CALL,
+        })
+
+        return response as GetFriendsResponse
+      } catch (error) {
+        console.error("Error fetching friends:", error)
+        throw new Error("Error fetching friends")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_FRIEND_REQUESTS_PER_API_CALL < lastPage.total)
+        return lastPage.page + 1
+    },
+    enabled: !!accessToken,
   })
 }
