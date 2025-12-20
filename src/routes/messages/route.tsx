@@ -2,41 +2,27 @@ import { createFileRoute, Outlet } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { FriendNav } from "@/shared/components/FriendNav"
-import FriendsList, { type Friend } from "@/shared/components/FriendsList"
 import TopBar from "@/shared/components/TopBar"
+import FriendsList from "@/shared/components/FriendsList"
+import { useFriends } from "@/shared/queries/community/community.queries"
 
 export const Route = createFileRoute("/messages")({
   component: MessagesLayout,
 })
 
-const friendsMock: Friend[] = [
-  {
-    id: "1",
-    name: "Alice",
-    avatarUrl: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: "2",
-    name: "Bob",
-    avatarUrl: "https://i.pravatar.cc/150?img=2",
-  },
-  {
-    id: "3",
-    name: "Charlie",
-    avatarUrl: "https://i.pravatar.cc/150?img=3",
-  },
-]
-
 function MessagesLayout() {
   const { setHeader, setContent } = useSidebarContent()
+
+  const { data: friends } = useFriends()
+
   useEffect(() => {
     setHeader(<FriendNav />)
-    setContent(<FriendsList friends={friendsMock} />)
+    setContent(<FriendsList friends={friends?.pages.flatMap((page) => page.data) ?? []} />)
     return () => {
       setHeader(null)
       setContent(null)
     }
-  }, [setHeader, setContent])
+  }, [setHeader, setContent, friends])
 
   return (
     <>

@@ -18,6 +18,13 @@ export interface FriendRequest {
   created_at: string
 }
 
+export interface FriendInvitation {
+  user_id_invited: string
+  user_id_requested: string
+  status: number
+  created_at: string
+}
+
 export interface Friend {
   user_id_1: string
   user_id_2: string
@@ -85,6 +92,12 @@ export interface UpdateServerChannelRequest {
 
 export interface GetFriendRequestsResponse {
   data: FriendRequest[]
+  page: number
+  total: number
+}
+
+export interface GetFriendInvitationsResponse {
+  data: FriendInvitation[]
   page: number
   total: number
 }

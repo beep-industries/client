@@ -125,5 +125,18 @@
     "add_friend": "Ajouter en ami",
     "send_message": "Envoyer un message",
     "profile": "Profil"
+  },
+  "friendRequests": {
+    "invitations_received": "Invitations reçues",
+    "received_at": "Reçue le {{date}} à {{time}}",
+    "refused": "Refusée",
+    "requests_sent": "Demandes envoyées",
+    "sent_at": "Envoyée le {{date}} à {{time}}",
+    "decline_success": "Demande d'ami refusée",
+    "decline_error": "Une erreur est survenue lors du refus de la demande d'ami",
+    "accept_success": "Demande d'ami acceptée",
+    "accept_error": "Une erreur est survenue lors de l'acceptation de la demande d'ami",
+    "delete_request_success": "Demande d'ami supprimée avec succès",
+    "delete_request_error": "Une erreur est survenue lors de la suppression de la demande d'ami"
   }
 }

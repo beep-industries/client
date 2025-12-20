@@ -8,7 +8,7 @@
     "messages": "Messages",
     "explore": "Explore",
     "more_options": "More options",
-    "success_creating_server": "Server created successfully",
+    "success_creating_server": "Server created",
     "error_loading_servers": "An error occurred while loading servers",
     "error_creating_server": "An error occurred while creating the server",
     "validation": {
@@ -107,7 +107,7 @@
         "user_id_invited_invalid": "The user ID is invalid",
         "cancel": "Cancel",
         "create": "Add a friend",
-        "success": "Friend request sent successfully",
+        "success": "Friend request sent",
         "error": "An error occurred while sending the friend request"
       }
     }
@@ -125,5 +125,18 @@
     "add_friend": "Add friend",
     "send_message": "Send message",
     "profile": "Profile"
+  },
+  "friendRequests": {
+    "invitations_received": "Invitations received",
+    "received_at": "Received on {{date}} at {{time}}",
+    "refused": "Refused",
+    "requests_sent": "Requests sent",
+    "sent_at": "Sent on {{date}} at {{time}}",
+    "decline_success": "Friend request declined",
+    "decline_error": "An error occurred while declining the friend request",
+    "accept_success": "Friend request accepted",
+    "accept_error": "An error occurred while accepting the friend request",
+    "delete_request_success": "Friend request deleted",
+    "delete_request_error": "An error occurred while deleting the friend request"
   }
 }

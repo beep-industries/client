@@ -87,6 +87,15 @@ export const getFriendRequests = (accessToken: string, query: CommunityPaginatio
   return api.get("friend-requests", { searchParams }).json()
 }
 
+export const getFriendInvitations = (accessToken: string, query: CommunityPagination) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get("friend-invitations", { searchParams }).json()
+}
+
 export const createFriendRequest = (accessToken: string, body: CreateFriendRequestRequest) => {
   const api = createCommunityApi(accessToken)
   return api.post("friend-requests", { json: body }).json()
@@ -104,7 +113,7 @@ export const declineFriendRequest = (accessToken: string, body: DeclineFriendReq
 
 export const deleteFriendRequest = (accessToken: string, body: DeleteFriendRequestRequest) => {
   const api = createCommunityApi(accessToken)
-  return api.delete("friend-requests", { json: body }).json()
+  return api.delete(`friend-requests/${body.user_id_invited}`).json()
 }
 
 export const getFriends = (accessToken: string, query: CommunityPagination) => {

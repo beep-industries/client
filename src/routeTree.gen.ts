@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from "./routes/index"
 import { Route as MessagesIndexRouteImport } from "./routes/messages/index"
 import { Route as FriendsIndexRouteImport } from "./routes/friends/index"
 import { Route as MessagesIdRouteImport } from "./routes/messages/$id"
+import { Route as FriendsRequestsRouteImport } from "./routes/friends/requests"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
 import { Route as ServersIdSettingsRouteImport } from "./routes/servers/$id/settings"
@@ -67,6 +68,11 @@ const MessagesIdRoute = MessagesIdRouteImport.update({
   path: "/$id",
   getParentRoute: () => MessagesRouteRoute,
 } as any)
+const FriendsRequestsRoute = FriendsRequestsRouteImport.update({
+  id: "/requests",
+  path: "/requests",
+  getParentRoute: () => FriendsRouteRoute,
+} as any)
 const ServersIdRouteRoute = ServersIdRouteRouteImport.update({
   id: "/servers/$id",
   path: "/servers/$id",
@@ -91,6 +97,7 @@ export interface FileRoutesByFullPath {
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
+  "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
   "/messages/": typeof MessagesIndexRoute
@@ -102,6 +109,7 @@ export interface FileRoutesByTo {
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
+  "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends": typeof FriendsIndexRoute
   "/messages": typeof MessagesIndexRoute
@@ -117,6 +125,7 @@ export interface FileRoutesById {
   "/settings": typeof SettingsRoute
   "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
+  "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
   "/messages/": typeof MessagesIndexRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/webrtc"
     | "/servers/$id"
+    | "/friends/requests"
     | "/messages/$id"
     | "/friends/"
     | "/messages/"
@@ -144,6 +154,7 @@ export interface FileRouteTypes {
     | "/explore"
     | "/settings"
     | "/webrtc"
+    | "/friends/requests"
     | "/messages/$id"
     | "/friends"
     | "/messages"
@@ -158,6 +169,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/webrtc"
     | "/servers/$id"
+    | "/friends/requests"
     | "/messages/$id"
     | "/friends/"
     | "/messages/"
@@ -240,6 +252,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof MessagesIdRouteImport
       parentRoute: typeof MessagesRouteRoute
     }
+    "/friends/requests": {
+      id: "/friends/requests"
+      path: "/requests"
+      fullPath: "/friends/requests"
+      preLoaderRoute: typeof FriendsRequestsRouteImport
+      parentRoute: typeof FriendsRouteRoute
+    }
     "/servers/$id": {
       id: "/servers/$id"
       path: "/servers/$id"
@@ -265,10 +284,12 @@ declare module "@tanstack/react-router" {
 }
 
 interface FriendsRouteRouteChildren {
+  FriendsRequestsRoute: typeof FriendsRequestsRoute
   FriendsIndexRoute: typeof FriendsIndexRoute
 }
 
 const FriendsRouteRouteChildren: FriendsRouteRouteChildren = {
+  FriendsRequestsRoute: FriendsRequestsRoute,
   FriendsIndexRoute: FriendsIndexRoute,
 }
 
