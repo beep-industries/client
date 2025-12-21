@@ -14,7 +14,6 @@ import {
   useChannels,
   useDeleteChannel,
 } from "@/shared/queries/community/community.queries"
-import { useParams } from "@tanstack/react-router"
 import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
 import { AddChannelForm } from "@/shared/forms/AddChannel.tsx"
 import { useEffect, useState } from "react"
@@ -27,10 +26,13 @@ export interface Folder {
   name: string
 }
 
-export default function ServerChannels() {
+interface ServerChannelsProps {
+  serverId: string
+}
+
+export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { t } = useTranslation()
   const { setFolders, folders } = useFolder()
-  const { id: serverId } = useParams({ from: "/servers/$id" })
 
   const {
     mutateAsync: deleteChannel,
