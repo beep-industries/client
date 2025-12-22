@@ -4,6 +4,7 @@ import { Button } from "./ui/Button"
 import { UserPlus } from "lucide-react"
 import { Badge } from "./ui/Badge"
 import {
+  communityKeys,
   useCreateFriendRequest,
   useFriendInvitations,
 } from "../queries/community/community.queries"
@@ -57,7 +58,7 @@ export default function TopBarFriends() {
   useEffect(() => {
     if (isCreateFriendRequestSuccess) {
       setIsCreateFriendRequestModalOpen(false)
-      queryClient.invalidateQueries({ queryKey: ["friend-requests"] })
+      queryClient.invalidateQueries({ queryKey: communityKeys.friendRequests() })
       toast.success(t("topBar.modal.create_friend_request.success"))
     } else if (isCreateFriendRequestError) {
       toast.error(t("topBar.modal.create_friend_request.error"))

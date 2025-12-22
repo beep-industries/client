@@ -35,7 +35,11 @@ import {
 
 export const communityKeys = {
   all: [] as const,
-  server: (serverId: string) => [...communityKeys.all, `server-${serverId}`],
+  servers: () => [...communityKeys.all, "servers"] as const,
+  server: (serverId: string) => [...communityKeys.all, `server-${serverId}`] as const,
+  friends: () => [...communityKeys.all, "friends"] as const,
+  friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
+  friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
 }
 
 export const useServerById = (serverId: string) => {
@@ -61,7 +65,7 @@ export const useServers = () => {
   const { accessToken } = useAuth()
 
   return useInfiniteQuery({
-    queryKey: ["servers"],
+    queryKey: communityKeys.servers(),
     queryFn: async ({ pageParam }): Promise<GetServersResponse> => {
       try {
         const response = await getServers(accessToken!, {
@@ -120,7 +124,7 @@ export const useFriendRequests = () => {
   const { accessToken } = useAuth()
 
   return useInfiniteQuery({
-    queryKey: ["friend-requests"],
+    queryKey: communityKeys.friendRequests(),
     queryFn: async ({ pageParam }): Promise<GetFriendRequestsResponse> => {
       try {
         const response = await getFriendRequests(accessToken!, {
@@ -148,7 +152,7 @@ export const useFriendInvitations = () => {
   const { accessToken } = useAuth()
 
   return useInfiniteQuery({
-    queryKey: ["friend-invitations"],
+    queryKey: communityKeys.friendInvitations(),
     queryFn: async ({ pageParam }): Promise<GetFriendInvitationsResponse> => {
       try {
         const response = await getFriendInvitations(accessToken!, {
@@ -216,7 +220,7 @@ export const useFriends = () => {
   const { accessToken } = useAuth()
 
   return useInfiniteQuery({
-    queryKey: ["friends"],
+    queryKey: communityKeys.friends(),
     queryFn: async ({ pageParam }): Promise<GetFriendsResponse> => {
       try {
         const response = await getFriends(accessToken!, {
