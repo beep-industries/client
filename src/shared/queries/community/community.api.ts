@@ -127,5 +127,5 @@ export const getFriends = (accessToken: string, query: CommunityPagination) => {
 
 export const deleteFriend = (accessToken: string, body: DeleteFriendRequest) => {
   const api = createCommunityApi(accessToken)
-  return api.delete("friends", { json: body }).json()
+  return api.delete(`friends/${body.friend_id}`).json()
 }
