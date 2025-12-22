@@ -14,14 +14,14 @@ export interface Server {
 export interface FriendRequest {
   user_id_invited: string
   user_id_requested: string
-  status: number
+  status: 0 | 1
   created_at: string
 }
 
 export interface FriendInvitation {
   user_id_invited: string
   user_id_requested: string
-  status: number
+  status: 0 | 1
   created_at: string
 }
 
