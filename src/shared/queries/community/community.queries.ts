@@ -289,8 +289,7 @@ export const useFriends = () => {
     initialPageParam: 1,
     getPreviousPageParam: (firstPage) => firstPage.page - 1,
     getNextPageParam: (lastPage) => {
-      if (lastPage.page * MAXIMUM_FRIEND_REQUESTS_PER_API_CALL < lastPage.total)
-        return lastPage.page + 1
+      if (lastPage.page * MAXIMUM_FRIENDS_PER_API_CALL < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken,
   })
