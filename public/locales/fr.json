@@ -60,9 +60,34 @@
   "topBar": {
     "show_users": "Afficher les utilisateurs",
     "notifications": "Notifications",
-    "add_friends": "Ajouter un ami"
+    "add_friend": "Ajouter un ami",
+    "friend_requests": "Demandes d'amis",
+    "modal": {
+      "create_friend_request": {
+        "title": "Ajouter un ami",
+        "user_id_invited": "Identifiant de l'utilisateur",
+        "user_id_invited_invalid": "L'identifiant de l'utilisateur est invalide",
+        "cancel": "Annuler",
+        "create": "Ajouter un ami",
+        "success": "Demande d'ami envoyée avec succès",
+        "error": "Une erreur est survenue lors de l'envoi de la demande d'ami"
+      }
+    }
   },
   "friends": {
     "nav": "Amis"
+  },
+  "friendRequests": {
+    "invitations_received": "Invitations reçues",
+    "received_at": "Reçue le {{date}} à {{time}}",
+    "refused": "Refusée",
+    "requests_sent": "Demandes envoyées",
+    "sent_at": "Envoyée le {{date}} à {{time}}",
+    "decline_success": "Demande d'ami refusée",
+    "decline_error": "Une erreur est survenue lors du refus de la demande d'ami",
+    "accept_success": "Demande d'ami acceptée",
+    "accept_error": "Une erreur est survenue lors de l'acceptation de la demande d'ami",
+    "delete_request_success": "Demande d'ami supprimée avec succès",
+    "delete_request_error": "Une erreur est survenue lors de la suppression de la demande d'ami"
   }
 }
