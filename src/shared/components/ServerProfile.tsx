@@ -75,6 +75,7 @@ export function ServerProfile({ server }: { server: Server }) {
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault()
+                setIsFolder(false)
                 setIsCreateChannelModalOpen(true)
                 setIsOpen(false)
               }}

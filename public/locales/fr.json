@@ -51,19 +51,35 @@
     "delete_folder": "Supprimer le dossier",
     "success_creating_channel": "Salon créé avec succès",
     "error_creating_channel": "Une erreur est survenue lors de la création du salon",
-    "validation": {
-      "name_required": "Le nom est requis",
-      "name_too_long": "Le nom est trop long"
-    },
-    "modal": {
+    "success_creating_folder": "Dossier créé avec succès",
+    "error_creating_folder": "Une erreur est survenue lors de la création du dossier",
+    "success_deleting_folder": "Dossier supprimé avec succès",
+    "error_deleting_folder": "Une erreur est survenue lors de la suppression du dossier",
+    "success_moving_channel": "Salon déplacé avec succès",
+    "error_moving_channel": "Une erreur est survenue lors du déplacement du salon",
+    "success_deleting_channel": "Salon supprimé avec succès",
+    "error_deleting_channel": "Une erreur est survenue lors de la suppression du salon",
+    "createChannelModal": {
       "title": "Créer un salon",
       "name": "Nom du salon",
       "name_placeholder": "général",
       "type": "Type de salon",
       "ServerText": "Salon Textuel",
       "ServerVoice": "Salon Vocal",
-      "cancel": "Annuler",
       "create": "Créer le salon"
+    },
+    "createFolderModal": {
+      "title": "Créer un dossier",
+      "name": "Nom du dossier",
+      "name_placeholder": "Mes salons",
+      "create": "Créer le dossier"
+    },
+    "modal": {
+      "cancel": "Annuler"
+    },
+    "validation": {
+      "name_required": "Le nom est requis",
+      "name_too_long": "Le nom est trop long"
     }
   },
   "sidebar": {

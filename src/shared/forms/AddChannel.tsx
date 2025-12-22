@@ -92,6 +92,7 @@ export function AddChannelForm({
     await createChannel(values)
   }
 
+  //TODO: double call because of setIsFolder
   useEffect(() => {
     if (isCreateChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
@@ -111,13 +112,11 @@ export function AddChannelForm({
     successChannelTrad,
     errorFolderTrad,
     errorChannelTrad,
+    setIsFolder,
   ])
 
   useEffect(() => {
-    if (!open) {
-      if (setIsFolder) {
-        setIsFolder(false)
-      }
+    if (open) {
       if (setParentId) {
         setParentId("")
       }
@@ -188,10 +187,10 @@ export function AddChannelForm({
                           )}
                         </FormControl>
                         <FormMessage />
-                        <label htmlFor="type">
-                          {field.value === ChannelTypes.TEXT ? textChannelTrad : voiceChannelTrad}
-                        </label>
                       </div>
+                      <label htmlFor="type">
+                        {field.value === ChannelTypes.TEXT ? textChannelTrad : voiceChannelTrad}
+                      </label>
                     </div>
                   </FormItem>
                 )}

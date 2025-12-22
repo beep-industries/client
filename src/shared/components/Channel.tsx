@@ -46,18 +46,18 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
   useEffect(() => {
     if (isDeleteChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(channel.server_id) })
-      toast.success(t("serverChannels.success_creating_channel"))
+      toast.success(t("serverChannels.success_deleting_channel"))
     } else if (isDeleteChannelError) {
-      toast.error(t("serverChannels.error_creating_channel"))
+      toast.error(t("serverChannels.error_deleting_channel"))
     }
   }, [isDeleteChannelError, isDeleteChannelSuccess, t, queryClient, channel])
 
   useEffect(() => {
     if (isUpdateChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(channel.server_id) })
-      toast.success(t("serverChannels.success_creating_channel"))
+      toast.success(t("serverChannels.success_moving_channel"))
     } else if (isUpdateChannelError) {
-      toast.error(t("serverChannels.error_creating_channel"))
+      toast.error(t("serverChannels.error_moving_channel"))
     }
   }, [channel.server_id, isUpdateChannelError, isUpdateChannelSuccess, queryClient, t])
 
@@ -72,27 +72,26 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
         </SidebarMenuItem>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        {folders.length > 0 && (
+        {folders.filter((folder) => folder.id !== channel.parent_id).length > 0 && (
           <ContextMenuSub>
             <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-44">
-              {folders.map(
-                (folder) =>
-                  folder.id !== channel.parent_id && (
-                    <ContextMenuItem
-                      key={folder.id}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        updateChannel({
-                          channelId: channel.id,
-                          body: { name: channel.name, parent_id: folder.id },
-                        })
-                      }}
-                    >
-                      {folder.name}
-                    </ContextMenuItem>
-                  )
-              )}
+              {folders
+                .filter((folder) => folder.id !== channel.parent_id)
+                .map((folder) => (
+                  <ContextMenuItem
+                    key={folder.id}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      updateChannel({
+                        channelId: channel.id,
+                        body: { name: channel.name, parent_id: folder.id },
+                      })
+                    }}
+                  >
+                    {folder.name}
+                  </ContextMenuItem>
+                ))}
             </ContextMenuSubContent>
           </ContextMenuSub>
         )}

@@ -53,9 +53,9 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
   useEffect(() => {
     if (isDeleteChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
-      toast.success(t("serverChannels.success_creating_channel"))
+      toast.success(t("serverChannels.success_deleting_channel"))
     } else if (isDeleteChannelError) {
-      toast.error(t("serverChannels.error_creating_channel"))
+      toast.error(t("serverChannels.error_deleting_channel"))
     }
   }, [isDeleteChannelError, isDeleteChannelSuccess, t, queryClient, serverId])
 
@@ -123,7 +123,12 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
         ))}
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem onClick={() => setIsCreateChannelModalOpen(true)}>
+        <ContextMenuItem
+          onClick={() => {
+            setIsFolder(false)
+            setIsCreateChannelModalOpen(true)
+          }}
+        >
           {t("serverChannels.create_channel")}
         </ContextMenuItem>
         <ContextMenuItem
