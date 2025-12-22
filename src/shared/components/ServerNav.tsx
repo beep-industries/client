@@ -12,7 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
 import { useEffect, useState } from "react"
-import { useCreateServer, useServers } from "../queries/community/community.queries"
+import { communityKeys, useCreateServer, useServers } from "../queries/community/community.queries"
 import { useInView } from "react-intersection-observer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { AddServerForm } from "../forms/AddServer"
@@ -142,7 +142,7 @@ export default function ServerNav() {
 
   useEffect(() => {
     if (isCreateServerSuccess) {
-      queryClient.invalidateQueries({ queryKey: ["servers"] })
+      queryClient.invalidateQueries({ queryKey: communityKeys.servers() })
       setIsCreateServerModalOpen(false)
       navigate({ to: `/servers/${(createdServer as Server).id}` })
       toast.success(t("serverNav.success_creating_server"))

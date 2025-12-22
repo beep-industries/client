@@ -1,4 +1,5 @@
 import {
+  communityKeys,
   useAcceptFriendRequest,
   useDeclineFriendRequest,
   useDeleteFriendRequest,
@@ -42,7 +43,7 @@ function RouteComponent() {
   useEffect(() => {
     if (isDeleteFriendRequestSuccess) {
       toast.success(t("friendRequests.delete_request_success"))
-      queryClient.invalidateQueries({ queryKey: ["friend-requests"] })
+      queryClient.invalidateQueries({ queryKey: communityKeys.friendRequests() })
     }
     if (isDeleteFriendRequestError) {
       toast.error(t("friendRequests.delete_request_error"))
@@ -52,8 +53,8 @@ function RouteComponent() {
   useEffect(() => {
     if (isAcceptFriendRequestSuccess) {
       toast.success(t("friendRequests.accept_success"))
-      queryClient.invalidateQueries({ queryKey: ["friend-invitations"] })
-      queryClient.invalidateQueries({ queryKey: ["friends"] })
+      queryClient.invalidateQueries({ queryKey: communityKeys.friendInvitations() })
+      queryClient.invalidateQueries({ queryKey: communityKeys.friends() })
     }
     if (isAcceptFriendRequestError) {
       toast.error(t("friendRequests.accept_error"))
@@ -63,7 +64,7 @@ function RouteComponent() {
   useEffect(() => {
     if (isDeclineFriendRequestSuccess) {
       toast.success(t("friendRequests.decline_success"))
-      queryClient.invalidateQueries({ queryKey: ["friend-invitations"] })
+      queryClient.invalidateQueries({ queryKey: communityKeys.friendInvitations() })
     }
     if (isDeclineFriendRequestError) {
       toast.error(t("friendRequests.decline_error"))
