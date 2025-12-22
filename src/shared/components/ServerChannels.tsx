@@ -65,12 +65,10 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
       .map((channel) => {
         return { id: channel.id, name: channel.name } as Folder
       })
-    console.log("new folders", newFolders, folders)
     if (
       (folders.length !== newFolders.length || folders.every((val) => newFolders.includes(val))) &&
       (folders.length > 0 || newFolders.length > 0)
     ) {
-      console.log("folders changed", folders, newFolders)
       setFolders(newFolders)
     }
   }, [channelsData, setFolders, folders])

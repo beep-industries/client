@@ -121,7 +121,6 @@ export function AddChannelForm({
         setParentId("")
       }
       form.reset()
-      console.log("reset", form)
     }
   }, [open, form, isFolder, setIsFolder, setParentId])
 
@@ -175,10 +174,9 @@ export function AddChannelForm({
                               id="type"
                               defaultValue={ChannelTypes.TEXT}
                               checked={field.value === ChannelTypes.TEXT}
-                              onCheckedChange={(checked) => {
-                                console.log("check change")
+                              onCheckedChange={(checked) =>
                                 field.onChange(checked ? ChannelTypes.TEXT : ChannelTypes.VOICE)
-                              }}
+                              }
                               onBlur={field.onBlur}
                               name={field.name}
                               ref={field.ref}

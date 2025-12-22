@@ -5,7 +5,6 @@ export const useFolder = create<{ folders: Folder[]; setFolders: (folders: Folde
   (set) => ({
     folders: [] as Folder[],
     setFolders: (folders: Folder[]) => {
-      // console.log("setting state", folders)
       set({ folders: folders })
     },
   })
