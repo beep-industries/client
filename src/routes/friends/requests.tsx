@@ -99,7 +99,7 @@ function RouteComponent() {
             {request.status === 1 ? (
               <p className="text-muted-foreground">{t("friendRequests.refused")}</p>
             ) : (
-              <div className="glex-row flex gap-4">
+              <div className="flex flex-row gap-4">
                 <Check
                   className="text-muted-foreground h-5 w-5 cursor-pointer hover:text-green-500"
                   onClick={(e) => {
