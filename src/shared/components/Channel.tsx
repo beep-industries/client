@@ -65,7 +65,7 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
     <ContextMenu>
       <ContextMenuTrigger>
         <SidebarMenuItem>
-          <SidebarMenuButton>
+          <SidebarMenuButton className="cursor-pointer">
             <Icon />
             {channel.name}
           </SidebarMenuButton>

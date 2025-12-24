@@ -35,9 +35,9 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { setFolders, folders } = useFolder()
 
   const {
-    mutateAsync: deleteChannel,
-    isError: isDeleteChannelError,
-    isSuccess: isDeleteChannelSuccess,
+    mutateAsync: deleteFolder,
+    isError: isDeleteFolderError,
+    isSuccess: isDeleteFolderSuccess,
   } = useDeleteChannel()
   const queryClient = useQueryClient()
 
@@ -51,13 +51,13 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
   )
 
   useEffect(() => {
-    if (isDeleteChannelSuccess) {
+    if (isDeleteFolderSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
-      toast.success(t("serverChannels.success_deleting_channel"))
-    } else if (isDeleteChannelError) {
-      toast.error(t("serverChannels.error_deleting_channel"))
+      toast.success(t("serverChannels.success_deleting_folder"))
+    } else if (isDeleteFolderError) {
+      toast.error(t("serverChannels.error_deleting_folder"))
     }
-  }, [isDeleteChannelError, isDeleteChannelSuccess, t, queryClient, serverId])
+  }, [t, queryClient, serverId, isDeleteFolderSuccess, isDeleteFolderError])
 
   useEffect(() => {
     const newFolders = channelsData
@@ -111,7 +111,7 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
               <ContextMenuItem
                 onClick={(e) => {
                   e.preventDefault()
-                  deleteChannel(folder.id)
+                  deleteFolder(folder.id)
                 }}
               >
                 {t("serverChannels.delete_folder")}
