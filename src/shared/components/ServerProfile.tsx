@@ -77,7 +77,6 @@ export function ServerProfile({ server }: { server: Server }) {
                 e.preventDefault()
                 setIsFolder(false)
                 setIsCreateChannelModalOpen(true)
-                setIsOpen(false)
               }}
             >
               <Plus className="size-4" />
@@ -88,7 +87,6 @@ export function ServerProfile({ server }: { server: Server }) {
                 e.preventDefault()
                 setIsFolder(true)
                 setIsCreateChannelModalOpen(true)
-                setIsOpen(false)
               }}
             >
               <Folder className="size-4" />
