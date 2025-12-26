@@ -24,6 +24,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { Skeleton } from "./ui/Skeleton"
 import { useSkeletonLoading } from "../hooks/UseDelayedLoading"
+import { StaggerSlideIn } from "./ui/StaggerSlideIn"
 
 interface NavLinkButtonProps {
   to: string
@@ -157,42 +158,56 @@ export default function ServerNav() {
 
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
-      <NavLinkButton to="/messages" icon={Inbox} tooltip={t("serverNav.messages")} />
-      <NavLinkButton to="/explore" icon={Compass} tooltip={t("serverNav.explore")} />
+      <StaggerSlideIn index={0} direction="right">
+        <NavLinkButton to="/messages" icon={Inbox} tooltip={t("serverNav.messages")} />
+      </StaggerSlideIn>
+      <StaggerSlideIn index={1} direction="right">
+        <NavLinkButton to="/explore" icon={Compass} tooltip={t("serverNav.explore")} />
+      </StaggerSlideIn>
 
-      <Tooltip>
-        <DropdownMenu>
-          <TooltipTrigger asChild>
-            <DropdownMenuTrigger asChild>
-              <Button variant="nav" size="icon-sm" className="cursor-pointer">
-                <Ellipsis className="text-muted-foreground h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="right">{t("serverNav.more_options")}</TooltipContent>
-          <DropdownMenuContent side="left" align="start" sideOffset={4}>
-            <DropdownMenuItem
-              className="text-responsive-base!"
-              onSelect={(e) => {
-                e.preventDefault()
-                setIsCreateServerModalOpen(true)
-              }}
-            >
-              {t("serverNav.create_server")}
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-responsive-base!">
-              {t("serverNav.join_server")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </Tooltip>
+      <StaggerSlideIn index={2} direction="right">
+        <Tooltip>
+          <DropdownMenu>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button variant="nav" size="icon-sm" className="cursor-pointer">
+                  <Ellipsis className="text-muted-foreground h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="right">{t("serverNav.more_options")}</TooltipContent>
+            <DropdownMenuContent side="left" align="start" sideOffset={4}>
+              <DropdownMenuItem
+                className="text-responsive-base!"
+                onSelect={(e) => {
+                  e.preventDefault()
+                  setIsCreateServerModalOpen(true)
+                }}
+              >
+                {t("serverNav.create_server")}
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-responsive-base!">
+                {t("serverNav.join_server")}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Tooltip>
+      </StaggerSlideIn>
 
       <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
         {showSkeleton
-          ? Array.from({ length: 5 }).map((_, index) => <ServerButtonSkeleton key={index} />)
+          ? Array.from({ length: 5 }).map((_, index) => (
+              <StaggerSlideIn key={index} index={3 + index} direction="right">
+                <ServerButtonSkeleton />
+              </StaggerSlideIn>
+            ))
           : servers?.pages
               .flatMap((page) => page.data)
-              .map((server) => <ServerButton key={server.id} server={server} />)}
+              .map((server, index) => (
+                <StaggerSlideIn key={server.id} index={3 + index} direction="right">
+                  <ServerButton server={server} />
+                </StaggerSlideIn>
+              ))}
         <button
           ref={ref}
           onClick={() => fetchNextPage()}

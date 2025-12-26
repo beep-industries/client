@@ -28,8 +28,10 @@
     }
   },
   "userNav": {
+    "theme": "Theme",
     "light": "Light",
     "dark": "Dark",
+    "language": "Language",
     "french": "French",
     "english": "English",
     "settings": "Settings",
