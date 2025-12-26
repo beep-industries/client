@@ -92,7 +92,6 @@ export function AddChannelForm({
     await createChannel(values)
   }
 
-  //TODO: double call because of setIsFolder
   useEffect(() => {
     if (isCreateChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
@@ -116,7 +115,7 @@ export function AddChannelForm({
   ])
 
   useEffect(() => {
-    if (open) {
+    if (!open) {
       if (setParentId) {
         setParentId("")
       }
