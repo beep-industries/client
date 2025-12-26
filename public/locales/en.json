@@ -64,5 +64,10 @@
   },
   "friends": {
     "nav": "Friends"
+  },
+  "explore": {
+    "title": "Find your community on Beep",
+    "subtitle": "From studying to music, there's a place for you.",
+    "search_placeholder": "Find a server..."
   }
 }
