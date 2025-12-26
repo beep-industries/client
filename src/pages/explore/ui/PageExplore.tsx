@@ -5,6 +5,7 @@ import { Input } from "@/shared/components/ui/Input"
 import { useTranslation } from "react-i18next"
 import ServerCard from "@/shared/components/ServerCard"
 import type { Server } from "@/shared/queries/community/community.types"
+import { useMemo, useState } from "react"
 
 const serversMock: Server[] = [
   {
@@ -187,6 +188,15 @@ const serversMock: Server[] = [
 
 export default function PageExplore() {
   const { t } = useTranslation()
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredServers = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return serversMock
+    }
+    const query = searchQuery.toLowerCase()
+    return serversMock.filter((server) => server.name.toLowerCase().includes(query))
+  }, [searchQuery])
 
   const handleServerClick = (server: Server) => {
     console.log("Server clicked:", server.id, server.name)
@@ -223,6 +233,8 @@ export default function PageExplore() {
             <Input
               type="text"
               placeholder={t("explore.search_placeholder")}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="focus-visible:ring-0"
             />
             <Button variant="ghost" size="icon" className="hover:bg-accent/50 shrink-0">
@@ -230,7 +242,7 @@ export default function PageExplore() {
             </Button>
           </span>
           <div className="mt-[8dvh] grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {serversMock.map((server) => (
+            {filteredServers.map((server) => (
               <ServerCard key={server.id} server={server} onClick={handleServerClick} />
             ))}
           </div>
