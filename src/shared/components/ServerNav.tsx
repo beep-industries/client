@@ -22,6 +22,8 @@ import { addServerFormSchema } from "../zod/add-server"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { Skeleton } from "./ui/Skeleton"
+import { useSkeletonLoading } from "../hooks/UseDelayedLoading"
 
 interface NavLinkButtonProps {
   to: string
@@ -68,6 +70,14 @@ function ServerButton({ server }: ServerButtonProps) {
   )
 }
 
+function ServerButtonSkeleton() {
+  return (
+    <Button variant="nav" size="icon-sm" className="cursor-default bg-transparent">
+      <Skeleton className="h-7 w-7 rounded-sm" />
+    </Button>
+  )
+}
+
 export default function ServerNav() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
@@ -79,10 +89,13 @@ export default function ServerNav() {
   const {
     data: servers,
     isError: serversError,
+    isLoading: isLoadingServers,
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
   } = useServers()
+
+  const { showSkeleton, isTimeout } = useSkeletonLoading(isLoadingServers)
   const {
     mutateAsync: createServer,
     isPending: isCreatingServer,
@@ -97,12 +110,12 @@ export default function ServerNav() {
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage])
 
-  // Handle errors (Could be replaced with a toast notification)
+  // Handle errors and timeout
   useEffect(() => {
-    if (serversError) {
+    if (serversError || isTimeout) {
       toast.error(t("serverNav.error_loading_servers"))
     }
-  }, [serversError, t])
+  }, [serversError, isTimeout, t])
 
   const addServerForm = useForm<z.infer<typeof addServerFormSchema>>({
     resolver: zodResolver(addServerFormSchema),
@@ -175,11 +188,11 @@ export default function ServerNav() {
       </Tooltip>
 
       <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
-        {servers?.pages
-          .flatMap((page) => page.data)
-          .map((server) => (
-            <ServerButton key={server.id} server={server} />
-          ))}
+        {showSkeleton
+          ? Array.from({ length: 5 }).map((_, index) => <ServerButtonSkeleton key={index} />)
+          : servers?.pages
+              .flatMap((page) => page.data)
+              .map((server) => <ServerButton key={server.id} server={server} />)}
         <button
           ref={ref}
           onClick={() => fetchNextPage()}
