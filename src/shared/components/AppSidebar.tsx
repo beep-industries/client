@@ -15,10 +15,10 @@ export function AppSidebar() {
       <SidebarHeader>{sidebarHeader}</SidebarHeader>
       <SidebarContent className="no-scrollbar px-2">{sidebarContent}</SidebarContent>
       <SidebarFooter>
-        <StaggerSlideIn index={0} direction="up">
+        <StaggerSlideIn key="media-controls" index={0} direction="up">
           <UserMediaControls channelName={"Hey"} isInVoiceChannel={true} />
         </StaggerSlideIn>
-        <StaggerSlideIn index={1} direction="up">
+        <StaggerSlideIn key="user-nav" index={1} direction="up">
           <UserNav
             user={{
               name: currentUser?.display_name || currentUser?.username || "",

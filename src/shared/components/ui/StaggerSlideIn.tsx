@@ -1,5 +1,5 @@
 import { motion } from "motion/react"
-import type { ReactNode } from "react"
+import { type ReactNode, useRef } from "react"
 
 interface StaggerSlideInProps {
   children: ReactNode
@@ -18,6 +18,7 @@ const directionOffset = {
 
 /**
  * Wrapper component for staggered slide-in animations (wave effect).
+ * Only animates on initial mount, not on subsequent re-renders.
  *
  * @param index - Position in sequence (0, 1, 2...) for stagger effect
  * @param delay - Base delay between items in seconds (default: 0.05)
@@ -31,10 +32,17 @@ export function StaggerSlideIn({
   className,
 }: StaggerSlideInProps) {
   const offset = directionOffset[direction]
+  const hasAnimated = useRef(false)
+
+  // Only animate on first mount
+  const shouldAnimate = !hasAnimated.current
+  if (shouldAnimate) {
+    hasAnimated.current = true
+  }
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: offset.x, y: offset.y }}
+      initial={shouldAnimate ? { opacity: 0, x: offset.x, y: offset.y } : false}
       animate={{ opacity: 1, x: 0, y: 0 }}
       transition={{
         duration: 0.2,

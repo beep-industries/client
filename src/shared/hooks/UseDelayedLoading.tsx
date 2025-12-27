@@ -32,6 +32,12 @@ export function useSkeletonLoading(isLoading: boolean): UseSkeletonLoadingResult
       setShowSkeleton(true)
       setIsTimeout(false)
 
+      // Clear any pending minTimeout from previous loading cycle
+      if (minTimeoutRef.current) {
+        clearTimeout(minTimeoutRef.current)
+        minTimeoutRef.current = null
+      }
+
       // Set timeout for max loading time (1 minute)
       maxTimeoutRef.current = setTimeout(() => {
         setShowSkeleton(false)
@@ -64,9 +70,11 @@ export function useSkeletonLoading(isLoading: boolean): UseSkeletonLoadingResult
     return () => {
       if (minTimeoutRef.current) {
         clearTimeout(minTimeoutRef.current)
+        minTimeoutRef.current = null
       }
       if (maxTimeoutRef.current) {
         clearTimeout(maxTimeoutRef.current)
+        maxTimeoutRef.current = null
       }
     }
   }, [isLoading])
