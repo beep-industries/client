@@ -1,5 +1,14 @@
 import { useState } from "react"
-import { ChevronsDownUp, ChevronsUpDown, Globe, LogOut, Moon, Settings, Sun } from "lucide-react"
+import {
+  Check,
+  ChevronsDownUp,
+  ChevronsUpDown,
+  Globe,
+  LogOut,
+  Moon,
+  Settings,
+  Sun,
+} from "lucide-react"
 import { Link, useRouteContext } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
@@ -8,7 +17,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
@@ -27,15 +40,6 @@ export function UserNav({
   const [isOpen, setIsOpen] = useState(false)
   const { theme, setTheme } = useTheme()
   const { t, i18n } = useTranslation()
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark")
-  }
-
-  const toggleLanguage = () => {
-    const newLang = i18n.language === "en" ? "fr" : "en"
-    i18n.changeLanguage(newLang)
-  }
 
   return (
     <SidebarMenu>
@@ -83,14 +87,54 @@ export function UserNav({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={toggleTheme} className="text-responsive-base!">
-              {theme === "dark" ? <Sun className="size-4" /> : <Moon className="size-4" />}
-              {theme === "dark" ? t("userNav.light") : t("userNav.dark")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={toggleLanguage} className="text-responsive-base!">
-              <Globe className="size-4" />
-              {i18n.language === "en" ? t("userNav.french") : t("userNav.english")}
-            </DropdownMenuItem>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="text-responsive-base!">
+                {theme === "dark" ? <Moon className="size-4" /> : <Sun className="size-4" />}
+                {t("userNav.theme")}
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem
+                    onClick={() => setTheme("light")}
+                    className="text-responsive-base!"
+                  >
+                    {t("userNav.light")}
+                    {theme === "light" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => setTheme("dark")}
+                    className="text-responsive-base!"
+                  >
+                    {t("userNav.dark")}
+                    {theme === "dark" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger className="text-responsive-base!">
+                <Globe className="size-4" />
+                {t("userNav.language")}
+              </DropdownMenuSubTrigger>
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem
+                    onClick={() => i18n.changeLanguage("en")}
+                    className="text-responsive-base!"
+                  >
+                    {t("userNav.english")}
+                    {i18n.language === "en" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => i18n.changeLanguage("fr")}
+                    className="text-responsive-base!"
+                  >
+                    {t("userNav.french")}
+                    {i18n.language === "fr" && <Check className="ml-auto size-4" />}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
             <DropdownMenuItem asChild>
               <Link to="/settings" className="text-responsive-base!">
                 <Settings className="size-4" />
