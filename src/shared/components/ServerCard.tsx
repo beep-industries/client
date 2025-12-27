@@ -1,3 +1,4 @@
+import { useState } from "react"
 import type { Server } from "@/shared/queries/community/community.types"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 
@@ -7,24 +8,37 @@ interface ServerCardProps {
 }
 
 export default function ServerCard({ server, onClick }: ServerCardProps) {
+  const [bannerError, setBannerError] = useState(false)
+
   const handleClick = () => {
     if (onClick) {
       onClick(server)
     }
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault()
+      handleClick()
+    }
+  }
+
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={handleClick}
-      className="bg-card group relative flex h-52 cursor-pointer flex-col overflow-hidden rounded-lg shadow-md transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
+      onKeyDown={handleKeyDown}
+      className="bg-card group focus-visible:ring-ring relative flex h-52 cursor-pointer flex-col overflow-hidden rounded-lg shadow-md transition-all duration-200 hover:scale-[1.02] hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none"
     >
       {/* Banner */}
       <div className="bg-muted relative h-28 w-full overflow-hidden">
-        {server.banner_url ? (
+        {server.banner_url && !bannerError ? (
           <img
             src={server.banner_url}
             alt={`${server.name} banner`}
             className="h-full w-full object-cover transition-transform group-hover:scale-105"
+            onError={() => setBannerError(true)}
           />
         ) : (
           <div className="bg-primary/20 h-full w-full" />

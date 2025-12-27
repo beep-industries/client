@@ -1,6 +1,4 @@
 import TopBar from "@/shared/components/TopBar"
-import { Search } from "lucide-react"
-import { Button } from "@/shared/components/ui/Button"
 import { Input } from "@/shared/components/ui/Input"
 import { useTranslation } from "react-i18next"
 import ServerCard from "@/shared/components/ServerCard"
@@ -237,9 +235,6 @@ export default function PageExplore() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="focus-visible:ring-0"
             />
-            <Button variant="ghost" size="icon" className="hover:bg-accent/50 shrink-0">
-              <Search className="h-5 w-5" />
-            </Button>
           </span>
           <div className="mt-[8dvh] grid w-full max-w-5xl grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {filteredServers.map((server) => (
