@@ -59,10 +59,17 @@
   },
   "topBar": {
     "show_users": "Show users",
+    "members": "Members",
     "notifications": "Notifications",
     "add_friends": "Add a friend"
   },
   "friends": {
     "nav": "Friends"
+  },
+  "member": {
+    "view_profile": "View profile",
+    "add_friend": "Add friend",
+    "send_message": "Send message",
+    "profile": "Profile"
   }
 }
