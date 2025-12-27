@@ -119,7 +119,6 @@ export function ServerProfile({ server }: { server: Server }) {
         serverId={String(server.id)}
         open={isCreateChannelModalOpen}
         isFolder={isFolder}
-        setIsFolder={setIsFolder}
         onOpenChange={setIsCreateChannelModalOpen}
       />
     </SidebarMenu>

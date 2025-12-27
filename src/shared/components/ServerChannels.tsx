@@ -144,7 +144,6 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
         parentId={parentId}
         setParentId={setParentId}
         isFolder={isFolder}
-        setIsFolder={setIsFolder}
         onOpenChange={setIsCreateChannelModalOpen}
       />
     </ContextMenu>

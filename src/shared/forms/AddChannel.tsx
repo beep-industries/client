@@ -32,7 +32,6 @@ interface AddChannelFormProps {
   serverId: string
   isFolder?: boolean
   parentId?: string
-  setIsFolder?: (isFolder: boolean) => void
   setParentId?: (parentId: string) => void
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -43,27 +42,10 @@ export function AddChannelForm({
   open,
   onOpenChange,
   isFolder,
-  setIsFolder,
   parentId,
   setParentId,
 }: AddChannelFormProps) {
   const { t } = useTranslation()
-  const textChannelTrad = t(`serverChannels.createChannelModal.ServerText`)
-  const voiceChannelTrad = t(`serverChannels.createChannelModal.ServerVoice`)
-  const folderTitleTrad = t("serverChannels.createFolderModal.title")
-  const channelTitleTrad = t("serverChannels.createChannelModal.title")
-  const folderNameTrad = t("serverChannels.createFolderModal.name")
-  const channelNameTrad = t("serverChannels.createChannelModal.name")
-  const folderNamePlaceholderTrad = t("serverChannels.createFolderModal.name_placeholder")
-  const channelNamePlaceholderTrad = t("serverChannels.createChannelModal.name_placeholder")
-  const typeTrad = t("serverChannels.createChannelModal.type")
-  const cancelTrad = t("serverChannels.modal.cancel")
-  const createFolderTrad = t("serverChannels.createFolderModal.create")
-  const createChannelTrad = t("serverChannels.createChannelModal.create")
-  const successFolderTrad = t("serverChannels.success_creating_folder")
-  const successChannelTrad = t("serverChannels.success_creating_channel")
-  const errorFolderTrad = t("serverChannels.error_creating_folder")
-  const errorChannelTrad = t("serverChannels.error_creating_channel")
   const queryClient = useQueryClient()
 
   const {
@@ -71,6 +53,7 @@ export function AddChannelForm({
     isPending: isCreatingChannel,
     isError: isCreateChannelError,
     isSuccess: isCreateChannelSuccess,
+    reset: resetCreateChannel,
   } = useCreateChannel(serverId)
 
   const form = useForm<z.infer<typeof addChannelFormSchema>>({
@@ -96,22 +79,29 @@ export function AddChannelForm({
     if (isCreateChannelSuccess) {
       queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
       onOpenChange(false)
-      toast.success(isFolder ? successFolderTrad : successChannelTrad)
+      toast.success(
+        isFolder
+          ? t("serverChannels.success_creating_folder")
+          : t("serverChannels.success_creating_channel")
+      )
+      resetCreateChannel()
     } else if (isCreateChannelError) {
-      toast.error(isFolder ? errorFolderTrad : errorChannelTrad)
+      toast.error(
+        isFolder
+          ? t("serverChannels.error_creating_folder")
+          : t("serverChannels.error_creating_channel")
+      )
+      resetCreateChannel()
     }
   }, [
     isCreateChannelError,
     isCreateChannelSuccess,
-    queryClient,
-    serverId,
-    onOpenChange,
     isFolder,
-    successFolderTrad,
-    successChannelTrad,
-    errorFolderTrad,
-    errorChannelTrad,
-    setIsFolder,
+    onOpenChange,
+    queryClient,
+    resetCreateChannel,
+    serverId,
+    t,
   ])
 
   useEffect(() => {
@@ -121,13 +111,20 @@ export function AddChannelForm({
       }
       form.reset()
     }
-  }, [open, form, isFolder, setIsFolder, setParentId])
+    if (open) {
+      form.reset()
+    }
+  }, [open, form, setParentId])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isFolder ? folderTitleTrad : channelTitleTrad}</DialogTitle>
+          <DialogTitle>
+            {isFolder
+              ? t("serverChannels.createFolderModal.title")
+              : t("serverChannels.createChannelModal.title")}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -137,13 +134,19 @@ export function AddChannelForm({
                 name="name"
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormLabel>{isFolder ? folderNameTrad : channelNameTrad}</FormLabel>
+                    <FormLabel>
+                      {isFolder
+                        ? t("serverChannels.createFolderModal.name")
+                        : t("serverChannels.createChannelModal.name")}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="text"
                         id="name"
                         placeholder={
-                          isFolder ? folderNamePlaceholderTrad : channelNamePlaceholderTrad
+                          isFolder
+                            ? t("serverChannels.createFolderModal.name_placeholder")
+                            : t("serverChannels.createChannelModal.name_placeholder")
                         }
                         {...field}
                       />
@@ -158,7 +161,7 @@ export function AddChannelForm({
                 defaultValue={ChannelTypes.TEXT}
                 render={({ field }) => (
                   <FormItem style={isFolder ? { display: "none" } : {}}>
-                    <FormLabel>{typeTrad}</FormLabel>
+                    <FormLabel>{t("serverChannels.createChannelModal.type")}</FormLabel>
                     <div className="flex flex-row items-center gap-4">
                       <div>
                         <FormControl>
@@ -186,7 +189,9 @@ export function AddChannelForm({
                         <FormMessage />
                       </div>
                       <label htmlFor="type">
-                        {field.value === ChannelTypes.TEXT ? textChannelTrad : voiceChannelTrad}
+                        {field.value === ChannelTypes.TEXT
+                          ? t(`serverChannels.createChannelModal.ServerText`)
+                          : t(`serverChannels.createChannelModal.ServerVoice`)}
                       </label>
                     </div>
                   </FormItem>
@@ -195,10 +200,12 @@ export function AddChannelForm({
             </div>
             <DialogFooter className={isFolder ? "py-2" : ""}>
               <DialogClose asChild>
-                <Button variant="outline">{cancelTrad}</Button>
+                <Button variant="outline">{t("serverChannels.modal.cancel")}</Button>
               </DialogClose>
               <Button type="submit" disabled={isCreatingChannel} isLoading={isCreatingChannel}>
-                {isFolder ? createFolderTrad : createChannelTrad}
+                {isFolder
+                  ? t("serverChannels.createFolderModal.create")
+                  : t("serverChannels.createChannelModal.create")}
               </Button>
             </DialogFooter>
           </form>
