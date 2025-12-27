@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import { MessageSquare, UserPlus, User } from "lucide-react"
 import { Button } from "./ui/Button"
+import { cn } from "../lib/utils"
 
 export interface MemberData {
   id: string
@@ -35,7 +36,10 @@ function StatusIndicator({ status }: { status?: MemberData["status"] }) {
   if (!status) return null
   return (
     <span
-      className={`border-sidebar absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2 ${statusColors[status]}`}
+      className={cn(
+        "border-sidebar absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full border-2",
+        statusColors[status]
+      )}
     />
   )
 }
@@ -82,7 +86,9 @@ export default function Member({ member }: MemberProps) {
       <Dialog open={showProfile} onOpenChange={setShowProfile}>
         <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xs">
           <DialogHeader className="sr-only">
-            <DialogTitle>{t("member.profile")}</DialogTitle>
+            <DialogTitle>
+              {member.username} - {t("member.profile")}
+            </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col items-start justify-between gap-2 p-4">
             {/* Header with avatar and username */}
