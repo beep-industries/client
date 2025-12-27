@@ -96,6 +96,7 @@
   },
   "topBar": {
     "show_users": "Afficher les utilisateurs",
+    "members": "Membres",
     "notifications": "Notifications",
     "add_friends": "Ajouter un ami"
   },
@@ -106,5 +107,11 @@
     "title": "Trouve ta communauté sur Beep",
     "subtitle": "Des études à la musique, il y a une place pour toi.",
     "search_placeholder": "Rechercher un serveur..."
+  },
+  "member": {
+    "view_profile": "Voir le profil",
+    "add_friend": "Ajouter en ami",
+    "send_message": "Envoyer un message",
+    "profile": "Profil"
   }
 }
