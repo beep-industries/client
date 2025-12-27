@@ -1,9 +1,9 @@
 import { ChevronDown } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/Collapsible"
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "./ui/Sidebar"
-import { ChannelType, type Channel } from "./ServerChannels"
 import TextChannel from "./TextChannel"
 import VoiceChannel from "./VoiceChannel"
+import { type Channel, ChannelTypes } from "@/shared/queries/community/community.types.ts"
 
 interface FolderProps {
   id: string
@@ -14,7 +14,7 @@ interface FolderProps {
 export function Folder({ name, channels }: FolderProps) {
   return (
     <Collapsible defaultOpen className="group/collapsible">
-      <SidebarGroup className="px-0">
+      <SidebarGroup className="p-0">
         <SidebarGroupLabel asChild className="px-0">
           <CollapsibleTrigger>
             {name}
@@ -25,10 +25,10 @@ export function Folder({ name, channels }: FolderProps) {
           <SidebarGroupContent>
             <SidebarMenu>
               {channels.map((channel) =>
-                channel.type === ChannelType.TEXT ? (
-                  <TextChannel key={channel.id} name={channel.name} isChildren={true} />
+                channel.channel_type === ChannelTypes.TEXT ? (
+                  <TextChannel key={channel.id} channel={channel} isChildren={true} />
                 ) : (
-                  <VoiceChannel key={channel.id} name={channel.name} isChildren={true} />
+                  <VoiceChannel key={channel.id} channel={channel} isChildren={true} />
                 )
               )}
             </SidebarMenu>

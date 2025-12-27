@@ -18,13 +18,13 @@ function ServerLayout() {
   useEffect(() => {
     if (server) {
       setHeader(<ServerProfile server={server} />)
-      setContent(<ServerChannels />)
+      setContent(<ServerChannels serverId={id} />)
     }
     return () => {
       setHeader(null)
       setContent(null)
     }
-  }, [setHeader, setContent, server])
+  }, [setHeader, setContent, server, id])
 
   return (
     <>
