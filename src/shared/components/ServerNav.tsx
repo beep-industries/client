@@ -25,6 +25,7 @@ import { toast } from "sonner"
 import { Skeleton } from "./ui/Skeleton"
 import { useSkeletonLoading } from "../hooks/UseDelayedLoading"
 import { StaggerSlideIn } from "./ui/StaggerSlideIn"
+import { AnimatePresence } from "motion/react"
 
 interface NavLinkButtonProps {
   to: string
@@ -195,19 +196,26 @@ export default function ServerNav() {
       </StaggerSlideIn>
 
       <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
-        {showSkeleton
-          ? Array.from({ length: 5 }).map((_, index) => (
-              <StaggerSlideIn key={index} index={3 + index} direction="right">
-                <ServerButtonSkeleton />
-              </StaggerSlideIn>
-            ))
-          : servers?.pages
-              .flatMap((page) => page.data)
-              .map((server, index) => (
-                <StaggerSlideIn key={server.id} index={3 + index} direction="right">
-                  <ServerButton server={server} />
+        <AnimatePresence mode="wait">
+          {showSkeleton
+            ? Array.from({ length: 5 }).map((_, index) => (
+                <StaggerSlideIn
+                  key={`skeleton-${index}`}
+                  index={3 + index}
+                  direction="right"
+                  exitAnimation
+                >
+                  <ServerButtonSkeleton />
                 </StaggerSlideIn>
-              ))}
+              ))
+            : servers?.pages
+                .flatMap((page) => page.data)
+                .map((server, index) => (
+                  <StaggerSlideIn key={server.id} index={3 + index} direction="right">
+                    <ServerButton server={server} />
+                  </StaggerSlideIn>
+                ))}
+        </AnimatePresence>
         <button
           ref={ref}
           onClick={() => fetchNextPage()}

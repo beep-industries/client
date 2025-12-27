@@ -7,6 +7,7 @@ interface StaggerSlideInProps {
   delay?: number
   direction?: "left" | "right" | "up" | "down"
   className?: string
+  exitAnimation?: boolean
 }
 
 const directionOffset = {
@@ -23,6 +24,7 @@ const directionOffset = {
  * @param index - Position in sequence (0, 1, 2...) for stagger effect
  * @param delay - Base delay between items in seconds (default: 0.05)
  * @param direction - Slide direction: "left" | "right" | "up" | "down" (default: "right")
+ * @param exitAnimation - Enable exit animation in reverse direction (default: false)
  */
 export function StaggerSlideIn({
   children,
@@ -30,6 +32,7 @@ export function StaggerSlideIn({
   delay = 0.05,
   direction = "right",
   className,
+  exitAnimation = false,
 }: StaggerSlideInProps) {
   const offset = directionOffset[direction]
   const hasAnimated = useRef(false)
@@ -44,6 +47,7 @@ export function StaggerSlideIn({
     <motion.div
       initial={shouldAnimate ? { opacity: 0, x: offset.x, y: offset.y } : false}
       animate={{ opacity: 1, x: 0, y: 0 }}
+      exit={exitAnimation ? { opacity: 0, x: offset.x, y: offset.y } : undefined}
       transition={{
         duration: 0.2,
         delay: index * delay,
