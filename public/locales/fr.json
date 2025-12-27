@@ -64,5 +64,10 @@
   },
   "friends": {
     "nav": "Amis"
+  },
+  "explore": {
+    "title": "Trouve ta communauté sur Beep",
+    "subtitle": "Des études à la musique, il y a une place pour toi.",
+    "search_placeholder": "Rechercher un serveur..."
   }
 }
