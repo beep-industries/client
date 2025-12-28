@@ -6,13 +6,25 @@ import {
   getServerById,
   getServers,
   updateServer,
+  getChannels,
+  createChannel,
+  deleteChannel,
+  updateChannel,
 } from "./community.api"
-import type { CreateServerRequest, GetServersResponse, Server } from "./community.types"
+import type {
+  CreateServerRequest,
+  GetServersResponse,
+  Server,
+  Channel,
+  CreateServerChannelRequest,
+  UpdateServerChannelRequest,
+} from "./community.types"
 import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
 
 export const communityKeys = {
   all: [] as const,
   server: (serverId: string) => [...communityKeys.all, `server-${serverId}`],
+  channels: (serverId: string) => [...communityKeys.all, `channels-${serverId}`],
 }
 
 export const useServerById = (serverId: string) => {
@@ -91,4 +103,52 @@ export const useDeleteServer = (serverId: string) => {
     },
     isLoading: !!accessToken,
   }
+}
+
+export const useChannels = (serverId: string | undefined) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.channels(serverId!),
+    queryFn: async (): Promise<Channel[]> => {
+      try {
+        const response = await getChannels(accessToken!, serverId!)
+        return response as Channel[]
+      } catch (error) {
+        console.error("Error fetching channels:", error)
+        throw new Error("Error fetching channels")
+      }
+    },
+    enabled: !!accessToken && !!serverId,
+  })
+}
+
+export const useCreateChannel = (serverId: string) => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: CreateServerChannelRequest) => {
+      return createChannel(accessToken!, serverId, body)
+    },
+  })
+}
+
+export const useDeleteChannel = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (channelId: string) => {
+      return deleteChannel(accessToken!, channelId)
+    },
+  })
+}
+
+export const useUpdateChannel = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (payload: { channelId: string; body: UpdateServerChannelRequest }) => {
+      return updateChannel(accessToken!, payload.channelId, payload.body)
+    },
+  })
 }

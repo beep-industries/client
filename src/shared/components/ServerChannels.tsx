@@ -9,95 +9,143 @@ import { SidebarMenu } from "./ui/Sidebar"
 import TextChannel from "./TextChannel"
 import VoiceChannel from "./VoiceChannel"
 import { useTranslation } from "react-i18next"
+import {
+  communityKeys,
+  useChannels,
+  useDeleteChannel,
+} from "@/shared/queries/community/community.queries"
+import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { AddChannelForm } from "@/shared/forms/AddChannel.tsx"
+import { useEffect, useState } from "react"
+import { useFolder } from "@/shared/hooks/UseFolder.ts"
+import { toast } from "sonner"
+import { useQueryClient } from "@tanstack/react-query"
 
-export const ChannelType = {
-  TEXT: "text",
-  VOICE: "voice",
-} as const
-
-export type ChannelType = (typeof ChannelType)[keyof typeof ChannelType]
-
-export interface Channel {
-  id: string
-  name: string
-  type: ChannelType
-  folderId: string | null
-}
-
-interface Folder {
+export interface Folder {
   id: string
   name: string
 }
 
-export const foldersMock: Folder[] = [
-  { id: "1", name: "Information" },
-  { id: "2", name: "Text Channels" },
-  { id: "3", name: "Voice Channels" },
-  { id: "4", name: "Gaming" },
-]
+interface ServerChannelsProps {
+  serverId: string
+}
 
-const channelsMock: Channel[] = [
-  // Channels without folder (rendered at top)
-  { id: "1", name: "bienvenue", type: ChannelType.TEXT, folderId: null },
-  { id: "2", name: "règles", type: ChannelType.TEXT, folderId: null },
-  // Information folder
-  { id: "3", name: "annonces", type: ChannelType.TEXT, folderId: "1" },
-  { id: "4", name: "événements", type: ChannelType.TEXT, folderId: "1" },
-  // Text Channels folder
-  { id: "5", name: "général", type: ChannelType.TEXT, folderId: "2" },
-  { id: "6", name: "memes", type: ChannelType.TEXT, folderId: "2" },
-  { id: "7", name: "aide", type: ChannelType.TEXT, folderId: "2" },
-  // Voice Channels folder
-  { id: "8", name: "général", type: ChannelType.VOICE, folderId: "3" },
-  { id: "9", name: "musique", type: ChannelType.VOICE, folderId: "3" },
-  { id: "10", name: "afk", type: ChannelType.VOICE, folderId: "3" },
-  // Gaming folder
-  { id: "11", name: "minecraft", type: ChannelType.TEXT, folderId: "4" },
-  { id: "12", name: "valorant", type: ChannelType.TEXT, folderId: "4" },
-  { id: "13", name: "gaming-vocal", type: ChannelType.VOICE, folderId: "4" },
-]
-
-export default function ServerChannels() {
+export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { t } = useTranslation()
-  const channelsWithoutFolder = channelsMock.filter((c) => c.folderId === null)
+  const { setFolders, folders } = useFolder()
+
+  const {
+    mutateAsync: deleteFolder,
+    isError: isDeleteFolderError,
+    isSuccess: isDeleteFolderSuccess,
+  } = useDeleteChannel()
+  const queryClient = useQueryClient()
+
+  const { data: channelsData = [] } = useChannels(serverId)
+  const [isCreateChannelModalOpen, setIsCreateChannelModalOpen] = useState(false)
+  const [isFolder, setIsFolder] = useState(false)
+  const [parentId, setParentId] = useState<string | undefined>(undefined)
+
+  const channelsWithoutFolder = channelsData.filter(
+    (c) => c.parent_id === null && c.channel_type !== ChannelTypes.FOLDER
+  )
+
+  useEffect(() => {
+    if (isDeleteFolderSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.channels(serverId) })
+      toast.success(t("serverChannels.success_deleting_folder"))
+    } else if (isDeleteFolderError) {
+      toast.error(t("serverChannels.error_deleting_folder"))
+    }
+  }, [t, queryClient, serverId, isDeleteFolderSuccess, isDeleteFolderError])
+
+  useEffect(() => {
+    const newFolders = channelsData
+      .filter((c) => c.channel_type === ChannelTypes.FOLDER)
+      .map((channel) => {
+        return { id: channel.id, name: channel.name } as Folder
+      })
+    if (
+      (folders.length !== newFolders.length || folders.every((val) => newFolders.includes(val))) &&
+      (folders.length > 0 || newFolders.length > 0)
+    ) {
+      setFolders(newFolders)
+    }
+  }, [channelsData, setFolders, folders])
 
   return (
     <ContextMenu>
-      <ContextMenuTrigger className="h-full px-0">
-        <ContextMenu>
-          <ContextMenuTrigger>
-            {/* Channels without folder */}
-            {channelsWithoutFolder.length > 0 && (
-              <SidebarMenu>
-                {channelsWithoutFolder.map((channel) =>
-                  channel.type === ChannelType.TEXT ? (
-                    <TextChannel key={channel.id} name={channel.name} isChildren={false} />
-                  ) : (
-                    <VoiceChannel key={channel.id} name={channel.name} />
-                  )
-                )}
-              </SidebarMenu>
+      <ContextMenuTrigger className="flex h-full flex-col gap-2">
+        {/* Channels without folder */}
+        {channelsWithoutFolder.length > 0 && (
+          <SidebarMenu className="gap-2">
+            {channelsWithoutFolder.map((channel) =>
+              channel.channel_type === ChannelTypes.TEXT ? (
+                <TextChannel key={channel.id} channel={channel} isChildren={false} />
+              ) : (
+                <VoiceChannel key={channel.id} channel={channel} />
+              )
             )}
-            {/* Folders with their channels */}
-            {foldersMock.map((folder) => (
+          </SidebarMenu>
+        )}
+        {/* Folders with their channels */}
+        {folders.map((folder) => (
+          <ContextMenu key={folder.id}>
+            <ContextMenuTrigger>
               <FolderComponent
-                key={folder.id}
                 id={folder.id}
                 name={folder.name}
-                channels={channelsMock.filter((c) => c.folderId === folder.id)}
+                channels={channelsData.filter((c) => c.parent_id === folder.id)}
               />
-            ))}
-          </ContextMenuTrigger>
-          <ContextMenuContent>
-            <ContextMenuItem>{t("serverChannels.create_channel")}</ContextMenuItem>
-            <ContextMenuItem>{t("serverChannels.delete_folder")}</ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem
+                onClick={() => {
+                  setParentId(folder.id)
+                  setIsFolder(false)
+                  setIsCreateChannelModalOpen(true)
+                }}
+              >
+                {t("serverChannels.create_channel")}
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={(e) => {
+                  e.preventDefault()
+                  deleteFolder(folder.id)
+                }}
+              >
+                {t("serverChannels.delete_folder")}
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        ))}
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuItem>{t("serverChannels.create_channel")}</ContextMenuItem>
-        <ContextMenuItem>{t("serverChannels.create_folder")}</ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            setIsFolder(false)
+            setIsCreateChannelModalOpen(true)
+          }}
+        >
+          {t("serverChannels.create_channel")}
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            setIsFolder(true)
+            setIsCreateChannelModalOpen(true)
+          }}
+        >
+          {t("serverChannels.create_folder")}
+        </ContextMenuItem>
       </ContextMenuContent>
+      <AddChannelForm
+        serverId={serverId}
+        open={isCreateChannelModalOpen}
+        parentId={parentId}
+        setParentId={setParentId}
+        isFolder={isFolder}
+        onOpenChange={setIsCreateChannelModalOpen}
+      />
     </ContextMenu>
   )
 }

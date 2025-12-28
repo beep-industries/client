@@ -9,39 +9,113 @@ import {
   ContextMenuSubTrigger,
   ContextMenuTrigger,
 } from "./ui/ContextMenu"
-import { foldersMock } from "./ServerChannels"
 import { useTranslation } from "react-i18next"
+import { useFolder } from "@/shared/hooks/UseFolder.ts"
+import {
+  communityKeys,
+  useDeleteChannel,
+  useUpdateChannel,
+} from "@/shared/queries/community/community.queries.ts"
+import { useQueryClient } from "@tanstack/react-query"
+import { useEffect } from "react"
+import { toast } from "sonner"
+import type { Channel } from "@/shared/queries/community/community.types.ts"
 
 interface ChannelProps {
   icon: LucideIcon
-  name: string
+  channel: Channel
   isChildren?: boolean
 }
 
-export default function Channel({ icon: Icon, name, isChildren }: ChannelProps) {
+export default function Channel({ icon: Icon, channel, isChildren }: ChannelProps) {
   const { t } = useTranslation()
+  const { folders } = useFolder()
+  const {
+    mutateAsync: deleteChannel,
+    isError: isDeleteChannelError,
+    isSuccess: isDeleteChannelSuccess,
+  } = useDeleteChannel()
+
+  const {
+    mutateAsync: updateChannel,
+    isError: isUpdateChannelError,
+    isSuccess: isUpdateChannelSuccess,
+  } = useUpdateChannel()
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (isDeleteChannelSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.channels(channel.server_id) })
+      toast.success(t("serverChannels.success_deleting_channel"))
+    } else if (isDeleteChannelError) {
+      toast.error(t("serverChannels.error_deleting_channel"))
+    }
+  }, [isDeleteChannelError, isDeleteChannelSuccess, t, queryClient, channel])
+
+  useEffect(() => {
+    if (isUpdateChannelSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.channels(channel.server_id) })
+      toast.success(t("serverChannels.success_moving_channel"))
+    } else if (isUpdateChannelError) {
+      toast.error(t("serverChannels.error_moving_channel"))
+    }
+  }, [channel.server_id, isUpdateChannelError, isUpdateChannelSuccess, queryClient, t])
 
   return (
     <ContextMenu>
       <ContextMenuTrigger>
         <SidebarMenuItem>
-          <SidebarMenuButton>
+          <SidebarMenuButton className="cursor-pointer">
             <Icon />
-            {name}
+            {channel.name}
           </SidebarMenuButton>
         </SidebarMenuItem>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuSub>
-          <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
-          <ContextMenuSubContent className="w-44">
-            {foldersMock.map((folder) => (
-              <ContextMenuItem key={folder.id}>{folder.name}</ContextMenuItem>
-            ))}
-          </ContextMenuSubContent>
-        </ContextMenuSub>
-        {isChildren && <ContextMenuItem>{t("channel.extract_from_folder")}</ContextMenuItem>}
-        <ContextMenuItem>{t("channel.delete_channel")}</ContextMenuItem>
+        {folders.filter((folder) => folder.id !== channel.parent_id).length > 0 && (
+          <ContextMenuSub>
+            <ContextMenuSubTrigger>{t("channel.move_to_folder")}</ContextMenuSubTrigger>
+            <ContextMenuSubContent className="w-44">
+              {folders
+                .filter((folder) => folder.id !== channel.parent_id)
+                .map((folder) => (
+                  <ContextMenuItem
+                    key={folder.id}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      updateChannel({
+                        channelId: channel.id,
+                        body: { name: channel.name, parent_id: folder.id },
+                      })
+                    }}
+                  >
+                    {folder.name}
+                  </ContextMenuItem>
+                ))}
+            </ContextMenuSubContent>
+          </ContextMenuSub>
+        )}
+        {isChildren && (
+          <ContextMenuItem
+            onClick={(e) => {
+              e.preventDefault()
+              updateChannel({
+                channelId: channel.id,
+                body: { name: channel.name, parent_id: null },
+              })
+            }}
+          >
+            {t("channel.extract_from_folder")}
+          </ContextMenuItem>
+        )}
+        <ContextMenuItem
+          onClick={(e) => {
+            e.preventDefault()
+            deleteChannel(channel.id)
+          }}
+        >
+          {t("channel.delete_channel")}
+        </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
   )

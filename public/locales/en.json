@@ -1,4 +1,7 @@
 {
+  "common": {
+    "loading": "Loading..."
+  },
   "serverNav": {
     "create_server": "Create a server",
     "join_server": "Join a server",
@@ -45,7 +48,39 @@
   "serverChannels": {
     "create_channel": "Create a channel",
     "create_folder": "Create a folder",
-    "delete_folder": "Delete the folder"
+    "delete_folder": "Delete the folder",
+    "success_creating_channel": "Channel created successfully",
+    "error_creating_channel": "An error occurred while creating the channel",
+    "success_creating_folder": "Folder created successfully",
+    "error_creating_folder": "An error occurred while creating the folder",
+    "success_deleting_folder": "Folder deleted successfully",
+    "error_deleting_folder": "An error occurred while deleting the folder",
+    "success_moving_channel": "Channel moved successfully",
+    "error_moving_channel": "An error occurred while moving the channel",
+    "success_deleting_channel": "Channel deleted successfully",
+    "error_deleting_channel": "An error occurred while deleting the channel",
+    "validation": {
+      "name_required": "Name is required",
+      "name_too_long": "Name is too long"
+    },
+    "createChannelModal": {
+      "title": "Create a channel",
+      "name": "Channel name",
+      "name_placeholder": "general",
+      "type": "Channel type",
+      "ServerText": "Text Channel",
+      "ServerVoice": "Voice Channel",
+      "create": "Create channel"
+    },
+    "createFolderModal": {
+      "title": "Create a folder",
+      "name": "Folder name",
+      "name_placeholder": "folder",
+      "create": "Create folder"
+    },
+    "modal": {
+      "cancel": "Cancel"
+    }
   },
   "sidebar": {
     "messages": "Messages",
