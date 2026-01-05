@@ -31,8 +31,10 @@
     }
   },
   "userNav": {
+    "theme": "Thème",
     "light": "Clair",
     "dark": "Sombre",
+    "language": "Langue",
     "french": "Français",
     "english": "Anglais",
     "settings": "Paramètres",
