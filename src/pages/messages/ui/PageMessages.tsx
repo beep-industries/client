@@ -1,7 +1,8 @@
 import SendingBar from "@/shared/components/SendingBar"
+import { useMemo } from "react"
+import MessageFeature from "../feature/MessageFeature"
 import type { Message } from "../reducers/MessageReducer"
-import MessageComponent from "@/shared/components/Message"
-import type { CreateMessageRequest } from "@/shared/queries/message/message.queries"
+import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
 
 interface PageMessagesProps {
   messages: Message[]
@@ -9,19 +10,17 @@ interface PageMessagesProps {
 }
 
 export default function PageMessages({ messages, sendMessage }: PageMessagesProps) {
+  const sortedMessages = useMemo(() => {
+    return [...messages].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    )
+  }, [messages])
+
   return (
-    <div className="flex h-full flex-col justify-between">
+    <div className="bg-background flex h-full flex-col justify-between">
       <div id="messages-section" className="h-full overflow-scroll">
-        {messages.map((msg) => (
-          <MessageComponent
-            content={msg.content}
-            profilePictureUrl={msg.author_id}
-            authorId={msg.author_id}
-            date={msg.created_at}
-            edited={!!msg.updated_at}
-            replyTo={msg.reply_to_message_id || undefined}
-            key={msg._id}
-          />
+        {sortedMessages.map((msg) => (
+          <MessageFeature key={msg._id} {...msg} />
         ))}
       </div>
       <div className="flex justify-center p-4">

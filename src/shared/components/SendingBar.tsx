@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react"
 import { Button } from "./ui/Button"
 import { Plus, Send } from "lucide-react"
 import { useTranslation } from "react-i18next"
-import type { CreateMessageRequest, Message } from "../queries/message/message.queries"
+import type { CreateMessageRequest, Message } from "../queries/message/message.types"
 
 interface SendingBarProps {
   sendMessage: (messageData: Omit<CreateMessageRequest, "channel_id">) => Promise<Message>

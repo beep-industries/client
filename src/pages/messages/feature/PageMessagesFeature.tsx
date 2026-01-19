@@ -1,12 +1,10 @@
 import { useReducer, useCallback, useMemo, useEffect } from "react"
 import PageMessages from "../ui/PageMessages"
 import { messagesReducer, initialMessagesState } from "../reducers/MessageReducer"
-import {
-  listMessages,
-  createMessage,
-  type CreateMessageRequest,
-} from "@/shared/queries/message/message.queries"
+
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
+import { useCreateMessage, useMessages } from "@/shared/queries/message/message.queries"
+import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
 
 interface PageMessagesFeatureProps {
   channelId: string
@@ -22,34 +20,15 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
   }, [messagesState.fetchedMessages, messagesState.liveMessages])
 
   // Fetch messages from API
-  const fetchMessages = useCallback(
-    async (page: number, limit: number) => {
-      if (!accessToken) throw new Error("No access token available")
-      try {
-        const response = await listMessages(accessToken, page, limit)
-        dispatch({ type: "SET_FETCHED_MESSAGES", payload: response.data })
-        return response
-      } catch (error) {
-        console.error("Error fetching messages:", error)
-        throw error
-      }
-    },
-    [accessToken]
-  )
-
-  useEffect(() => {
-    // Initial fetch
-    fetchMessages(1, 50).catch((error) => {
-      console.error("Failed to fetch messages on mount:", error)
-    })
-  }, [fetchMessages])
+  const fetchMessages = useMessages(channelId)
+  const createMessageMutation = useCreateMessage()
 
   // Send a new message
   const sendMessage = useCallback(
     async (messageData: Omit<CreateMessageRequest, "channel_id">) => {
       if (!accessToken) throw new Error("No access token available")
       try {
-        const newMessage = await createMessage(accessToken, {
+        const newMessage = await createMessageMutation.mutateAsync({
           ...messageData,
           channel_id: channelId,
         })
@@ -60,8 +39,16 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
         throw error
       }
     },
-    [accessToken, channelId]
+    [accessToken, channelId, createMessageMutation]
   )
+
+  // Load fetched messages into state
+  useEffect(() => {
+    if (fetchMessages.data) {
+      const allFetchedMessages = fetchMessages.data.pages.flatMap((page) => page.data)
+      dispatch({ type: "SET_FETCHED_MESSAGES", payload: allFetchedMessages })
+    }
+  }, [fetchMessages.data])
 
   // TODO: Implement logic for websocket live messages
 
