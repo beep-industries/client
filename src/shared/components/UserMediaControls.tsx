@@ -1,4 +1,13 @@
-import { Mic, MicOff, PhoneOff, Volume2, Video, VideoOff } from "lucide-react"
+import {
+  Mic,
+  MicOff,
+  PhoneOff,
+  Volume2,
+  Video,
+  VideoOff,
+  ScreenShare,
+  ScreenShareOff,
+} from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/Avatar"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { useEffect } from "react"
@@ -20,8 +29,19 @@ export function UserMediaControls({
   channelName,
   callDuration,
 }: UserMediaControlsProps) {
-  const { stopCam, stopMic, camEnabled, startCam, startMic, micEnabled, leave, joined } =
-    useWebRTC()
+  const {
+    stopCam,
+    stopScreenShare,
+    screenShareEnabled,
+    startScreenShare,
+    stopMic,
+    camEnabled,
+    startCam,
+    startMic,
+    micEnabled,
+    leave,
+    joined,
+  } = useWebRTC()
 
   useEffect(() => {
     console.log("useWebRTC properties: ", camEnabled, micEnabled, joined)
@@ -65,6 +85,18 @@ export function UserMediaControls({
             className={`transition-colors ${camEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
           >
             {camEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
+          </button>
+          <button
+            type="button"
+            onClick={screenShareEnabled ? stopScreenShare : startScreenShare}
+            aria-label={screenShareEnabled ? "Turn off screen share" : "Turn on screen share"}
+            className={`transition-colors ${screenShareEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+          >
+            {screenShareEnabled ? (
+              <ScreenShare className="h-5 w-5" />
+            ) : (
+              <ScreenShareOff className="h-5 w-5" />
+            )}
           </button>
         </div>
         {joined && (
