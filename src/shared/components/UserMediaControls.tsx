@@ -1,5 +1,7 @@
 import { Mic, MicOff, PhoneOff, Volume2, Video, VideoOff } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/Avatar"
+import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
+import { useEffect } from "react"
 
 interface UserMediaControlsProps {
   serverProfileUrl?: string
@@ -17,17 +19,18 @@ export function UserMediaControls({
   serverProfileUrl,
   channelName,
   callDuration,
-  onMicClick,
-  onCameraClick,
-  onHangupClick,
-  isMicActive = true,
-  isCameraActive = true,
-  isInVoiceChannel = false,
 }: UserMediaControlsProps) {
+  const { stopCam, stopMic, camEnabled, startCam, startMic, micEnabled, leave, joined } =
+    useWebRTC()
+
+  useEffect(() => {
+    console.log("useWebRTC properties: ", camEnabled, micEnabled, joined)
+  })
+
   return (
     <div className="border-border flex flex-col rounded-lg border">
       {/* Voice channel info - only visible when in a voice channel */}
-      {isInVoiceChannel && (
+      {joined && (
         <div className="bg-secondary flex items-center gap-2 rounded-t-md p-3">
           <Avatar className="h-5 w-5">
             <AvatarImage src={serverProfileUrl} alt={channelName} />
@@ -44,34 +47,34 @@ export function UserMediaControls({
 
       {/* Bottom row: controls */}
       <div
-        className={`flex items-center p-3 ${isInVoiceChannel ? "justify-between border-t" : "justify-start"}`}
+        className={`flex items-center p-3 ${joined ? "justify-between border-t" : "justify-start"}`}
       >
         <div className={`flex gap-3`}>
           <button
             type="button"
-            onClick={onMicClick}
-            aria-label={isMicActive ? "Mute microphone" : "Unmute microphone"}
-            className={`transition-colors ${isMicActive ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+            onClick={micEnabled ? stopMic : startMic}
+            aria-label={micEnabled ? "Mute microphone" : "Unmute microphone"}
+            className={`transition-colors ${micEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
           >
-            {isMicActive ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
+            {micEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
           </button>
           <button
             type="button"
-            onClick={onCameraClick}
-            aria-label={isCameraActive ? "Turn off camera" : "Turn on camera"}
-            className={`transition-colors ${isCameraActive ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+            onClick={camEnabled ? stopCam : startCam}
+            aria-label={camEnabled ? "Turn off camera" : "Turn on camera"}
+            className={`transition-colors ${camEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
           >
-            {isCameraActive ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
+            {camEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
           </button>
         </div>
-        {isInVoiceChannel && (
+        {joined && (
           <div className="flex items-center gap-3">
             {callDuration && (
               <span className="text-muted-foreground text-responsive-md">{callDuration}</span>
             )}
             <button
               type="button"
-              onClick={onHangupClick}
+              onClick={leave}
               aria-label="Leave voice channel"
               className="text-primary hover:text-primary/80 transition-colors"
             >

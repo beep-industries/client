@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from "./routes/__root"
-import { Route as WebrtcRouteImport } from "./routes/webrtc"
 import { Route as SettingsRouteImport } from "./routes/settings"
 import { Route as ExploreRouteImport } from "./routes/explore"
 import { Route as MessagesRouteRouteImport } from "./routes/messages/route"
@@ -22,12 +21,8 @@ import { Route as FriendsRequestsRouteImport } from "./routes/friends/requests"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
 import { Route as ServersIdSettingsRouteImport } from "./routes/servers/$id/settings"
+import { Route as ServersIdChannelIdIndexRouteImport } from "./routes/servers/$id/$channelId/index"
 
-const WebrtcRoute = WebrtcRouteImport.update({
-  id: "/webrtc",
-  path: "/webrtc",
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
   path: "/settings",
@@ -88,6 +83,11 @@ const ServersIdSettingsRoute = ServersIdSettingsRouteImport.update({
   path: "/settings",
   getParentRoute: () => ServersIdRouteRoute,
 } as any)
+const ServersIdChannelIdIndexRoute = ServersIdChannelIdIndexRouteImport.update({
+  id: "/$channelId/",
+  path: "/$channelId/",
+  getParentRoute: () => ServersIdRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
@@ -95,7 +95,6 @@ export interface FileRoutesByFullPath {
   "/messages": typeof MessagesRouteRouteWithChildren
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
-  "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
@@ -103,18 +102,19 @@ export interface FileRoutesByFullPath {
   "/messages/": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
-  "/webrtc": typeof WebrtcRoute
   "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends": typeof FriendsIndexRoute
   "/messages": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -123,7 +123,6 @@ export interface FileRoutesById {
   "/messages": typeof MessagesRouteRouteWithChildren
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
-  "/webrtc": typeof WebrtcRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
   "/messages/$id": typeof MessagesIdRoute
@@ -131,6 +130,7 @@ export interface FileRoutesById {
   "/messages/": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
+  "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,7 +140,6 @@ export interface FileRouteTypes {
     | "/messages"
     | "/explore"
     | "/settings"
-    | "/webrtc"
     | "/servers/$id"
     | "/friends/requests"
     | "/messages/$id"
@@ -148,18 +147,19 @@ export interface FileRouteTypes {
     | "/messages/"
     | "/servers/$id/settings"
     | "/servers/$id/"
+    | "/servers/$id/$channelId"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
     | "/explore"
     | "/settings"
-    | "/webrtc"
     | "/friends/requests"
     | "/messages/$id"
     | "/friends"
     | "/messages"
     | "/servers/$id/settings"
     | "/servers/$id"
+    | "/servers/$id/$channelId"
   id:
     | "__root__"
     | "/"
@@ -167,7 +167,6 @@ export interface FileRouteTypes {
     | "/messages"
     | "/explore"
     | "/settings"
-    | "/webrtc"
     | "/servers/$id"
     | "/friends/requests"
     | "/messages/$id"
@@ -175,6 +174,7 @@ export interface FileRouteTypes {
     | "/messages/"
     | "/servers/$id/settings"
     | "/servers/$id/"
+    | "/servers/$id/$channelId/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -183,19 +183,11 @@ export interface RootRouteChildren {
   MessagesRouteRoute: typeof MessagesRouteRouteWithChildren
   ExploreRoute: typeof ExploreRoute
   SettingsRoute: typeof SettingsRoute
-  WebrtcRoute: typeof WebrtcRoute
   ServersIdRouteRoute: typeof ServersIdRouteRouteWithChildren
 }
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
-    "/webrtc": {
-      id: "/webrtc"
-      path: "/webrtc"
-      fullPath: "/webrtc"
-      preLoaderRoute: typeof WebrtcRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     "/settings": {
       id: "/settings"
       path: "/settings"
@@ -280,6 +272,13 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof ServersIdSettingsRouteImport
       parentRoute: typeof ServersIdRouteRoute
     }
+    "/servers/$id/$channelId/": {
+      id: "/servers/$id/$channelId/"
+      path: "/$channelId"
+      fullPath: "/servers/$id/$channelId"
+      preLoaderRoute: typeof ServersIdChannelIdIndexRouteImport
+      parentRoute: typeof ServersIdRouteRoute
+    }
   }
 }
 
@@ -314,11 +313,13 @@ const MessagesRouteRouteWithChildren = MessagesRouteRoute._addFileChildren(
 interface ServersIdRouteRouteChildren {
   ServersIdSettingsRoute: typeof ServersIdSettingsRoute
   ServersIdIndexRoute: typeof ServersIdIndexRoute
+  ServersIdChannelIdIndexRoute: typeof ServersIdChannelIdIndexRoute
 }
 
 const ServersIdRouteRouteChildren: ServersIdRouteRouteChildren = {
   ServersIdSettingsRoute: ServersIdSettingsRoute,
   ServersIdIndexRoute: ServersIdIndexRoute,
+  ServersIdChannelIdIndexRoute: ServersIdChannelIdIndexRoute,
 }
 
 const ServersIdRouteRouteWithChildren = ServersIdRouteRoute._addFileChildren(
@@ -331,7 +332,6 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRouteRoute: MessagesRouteRouteWithChildren,
   ExploreRoute: ExploreRoute,
   SettingsRoute: SettingsRoute,
-  WebrtcRoute: WebrtcRoute,
   ServersIdRouteRoute: ServersIdRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport

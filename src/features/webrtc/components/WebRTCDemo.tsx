@@ -1,26 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import { useWebRTC } from "@/app/providers/WebRTCProvider"
-import { Button } from "@/shared/components/ui/Button.tsx"
-import { Input } from "@/shared/components/ui/Input.tsx"
 import { useUsersBySubs } from "@/shared/queries/user/user.queries.ts"
 
 export default function WebRTCDemo() {
-  const {
-    iceStatus,
-    channelStatus,
-    joined,
-    camEnabled,
-    micEnabled,
-    remoteTracks,
-    join,
-    leave,
-    startCam,
-    stopCam,
-    startMic,
-    stopMic,
-  } = useWebRTC()
-
-  const [session, setSession] = useState<number>(10000000)
+  const { iceStatus, channelStatus, remoteTracks } = useWebRTC()
   const usersIn = useUsersBySubs(remoteTracks.map((track) => track.userId))
 
   // Map remote tracks to MediaStreams
@@ -28,8 +11,12 @@ export default function WebRTCDemo() {
     const tracks = remoteTracks.map((track) => {
       return {
         userId: track.userId,
-        username:
-          usersIn.find((user) => user?.data?.sub === track.userId)?.data?.display_name || "Unknown",
+        user: usersIn.find((user) => user?.data?.sub === track.userId)?.data || {
+          display_name: "unknown",
+          sub: track.userId,
+          profile_picture: "",
+          description: "",
+        },
         tracks: { audio: track.tracks.audio, video: track.tracks.video },
         video: track.video,
         audio: track.audio,
@@ -42,27 +29,6 @@ export default function WebRTCDemo() {
   return (
     <div>
       <div>
-        <label htmlFor="session">Session:</label>
-        <Input
-          id="session"
-          type="number"
-          value={session}
-          onChange={(e) => setSession(Number(e.target.value))}
-          disabled={joined}
-          style={{ color: "black", padding: 4 }}
-        />
-        <Button onClick={() => join(session)} disabled={joined}>
-          Join
-        </Button>
-        <Button onClick={() => leave()} disabled={!joined}>
-          Leave
-        </Button>
-        <Button onClick={camEnabled ? () => startCam() : () => stopCam()} disabled={!joined}>
-          {camEnabled ? "Cam" : "Mute Cam"}
-        </Button>
-        <Button onClick={micEnabled ? () => startMic() : () => stopMic()} disabled={!joined}>
-          {micEnabled ? "Mic" : "Mute Mic"}
-        </Button>
         <span>
           Status: <strong>{iceStatus}</strong>
         </span>
@@ -71,7 +37,7 @@ export default function WebRTCDemo() {
       <div id="media" style={{ display: "flex", gap: 12, marginTop: 16, flexWrap: "wrap" }}>
         {streams.map((user) => (
           <div key={user.userId}>
-            <span style={{ fontSize: 12, opacity: 0.7 }}>{user.username}</span>
+            <span style={{ fontSize: 12, opacity: 0.7 }}>{user.user.display_name}</span>
             {user.video ? <Video stream={user.tracks.video} /> : <span>No video</span>}
             {user.audio ? <Video stream={user.tracks.audio} /> : <span>No audio</span>}
           </div>
