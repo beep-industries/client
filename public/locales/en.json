@@ -127,6 +127,31 @@
     "send_message": "Send message",
     "profile": "Profile"
   },
+  "videoConference": {
+    "participants": "participant",
+    "participants_plural": "participants",
+    "waiting_for_participants": "Waiting for participants to join...",
+    "layout": {
+      "grid": "Grid View",
+      "spotlight": "Spotlight",
+      "sidebar": "Sidebar"
+    },
+    "controls": {
+      "mute": "Mute",
+      "unmute": "Unmute",
+      "pin": "Pin",
+      "unpin": "Unpin",
+      "pin_to_spotlight": "Pin to spotlight",
+      "fullscreen": "Fullscreen",
+      "exit_fullscreen": "Exit fullscreen (Esc)",
+      "close": "Close"
+    },
+    "status": {
+      "muted": "Muted",
+      "camera_off": "Camera off",
+      "you": "(You)"
+    }
+  },
   "friendRequests": {
     "invitations_received": "Invitations received",
     "requests_sent": "Requests sent",

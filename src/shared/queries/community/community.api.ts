@@ -69,6 +69,11 @@ export const deleteChannel = (accessToken: string, channelId: string) => {
   return api.delete(`channels/${channelId}`).json()
 }
 
+export const getChannel = (accessToken: string, channelId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.get(`channels/${channelId}`).json()
+}
+
 export const updateChannel = (
   accessToken: string,
   channelId: string,

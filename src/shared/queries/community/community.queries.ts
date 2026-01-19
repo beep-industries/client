@@ -17,6 +17,7 @@ import {
   createChannel,
   deleteChannel,
   updateChannel,
+  getChannel,
   deleteFriend,
 } from "./community.api"
 import type {
@@ -127,6 +128,22 @@ export const useDeleteServer = (serverId: string) => {
     },
     isLoading: !!accessToken,
   }
+}
+
+export const useChannel = (channelId: string) => {
+  const { accessToken } = useAuth()
+  return useQuery({
+    queryKey: communityKeys.channels(channelId),
+    queryFn: async (): Promise<Channel> => {
+      try {
+        const response = await getChannel(accessToken!, channelId)
+        return response as Channel
+      } catch (error) {
+        console.error("Error fetching channel by ID:", error)
+        throw new Error("Error fetching channel by ID")
+      }
+    },
+  })
 }
 
 export const useChannels = (serverId: string | undefined) => {

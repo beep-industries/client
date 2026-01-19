@@ -27,6 +27,7 @@ export interface RemoteState {
 
 export interface WebRTCState {
   // UI/status
+  server: string | null
   session: string | null
   iceStatus: RTCIceConnectionState
   channelStatus: string
@@ -38,7 +39,7 @@ export interface WebRTCState {
   // Media
   remoteTracks: RemoteState[]
   // Actions
-  join: (session: string) => Promise<void>
+  join: (server: string, session: string) => Promise<void>
   leave: () => Promise<void>
   startCam: () => Promise<void>
   startScreenShare: () => Promise<void>
@@ -52,6 +53,7 @@ const WebRTCContext = createContext<WebRTCState | undefined>(undefined)
 
 export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<string | null>(null)
+  const [server, setServer] = useState<string | null>(null)
   const [iceStatus, setIceStatus] = useState<RTCIceConnectionState>("new")
   const [channelStatus, setChannelStatus] = useState<string>("Click Join Button...")
   const [joined, setJoined] = useState(false)
@@ -86,22 +88,13 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         setIceStatus(state)
         if (state === "disconnected" || state === "failed") {
           // stop local tracks
-          screenShareStreamRef.current?.getTracks().forEach((t) => t.stop())
-          camStreamRef.current?.getTracks().forEach((t) => t.stop())
-          micStreamRef.current?.getTracks().forEach((t) => t.stop())
-          rtc.close()
-          rtcRef.current = null
-          setJoined(false)
-          setCamEnabled(false)
-          setMicEnabled(false)
-          setScreenShareEnabled(false)
+          leave()
         }
       }
       // Remote tracks management
       rtc.ontrack = (e) => {
         const track = e.track
         const id = e.transceiver.mid!.split("-")[0]
-        console.log("ontrack", track, id)
 
         setRemoteTracks((prev) => {
           return prev.map((t) => {
@@ -158,7 +151,8 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   )
 
   const join = useCallback(
-    async (sess: string) => {
+    async (server: string, sess: string) => {
+      setServer(server)
       setSession(sess)
       const rtc = ensureRtc()
       setChannelStatus(`Joining session ${sess} as endpoint`)
@@ -406,6 +400,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<WebRTCState>(
     () => ({
+      server,
       session,
       iceStatus,
       channelStatus,
@@ -425,6 +420,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       stopMic,
     }),
     [
+      server,
       session,
       iceStatus,
       channelStatus,
