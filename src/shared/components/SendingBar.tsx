@@ -3,8 +3,13 @@ import { useRef, useEffect } from "react"
 import { Button } from "./ui/Button"
 import { Plus, Send } from "lucide-react"
 import { useTranslation } from "react-i18next"
+import type { CreateMessageRequest, Message } from "../queries/message/message.queries"
 
-export default function SendingBar() {
+interface SendingBarProps {
+  sendMessage: (messageData: Omit<CreateMessageRequest, "channel_id">) => Promise<Message>
+}
+
+export default function SendingBar({ sendMessage }: SendingBarProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(() => {
@@ -24,6 +29,18 @@ export default function SendingBar() {
 
   const { t } = useTranslation()
 
+  function handleSend() {
+    const textarea = textareaRef.current
+    if (!textarea) return
+
+    const content = textarea.value.trim()
+    if (content.length === 0) return
+
+    sendMessage({ content, attachments: [] })
+    textarea.value = ""
+    textarea.style.height = "auto"
+  }
+
   return (
     <div className="flex w-full items-end">
       <div
@@ -41,7 +58,7 @@ export default function SendingBar() {
           placeholder={t("sendingBar.placeholder")}
         />
       </div>
-      <Button className="ml-2 h-10">
+      <Button className="ml-2 h-10" onClick={handleSend}>
         <Send />
       </Button>
     </div>
