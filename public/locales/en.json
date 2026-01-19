@@ -125,7 +125,8 @@
     "view_profile": "View profile",
     "add_friend": "Add friend",
     "send_message": "Send message",
-    "profile": "Profile"
+    "profile": "Profile",
+    "notifications": "Notifications"
   },
   "videoConference": {
     "participants": "participant",
@@ -177,6 +178,6 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Envoyer un message"
+    "placeholder": "Send a message"
   }
 }
