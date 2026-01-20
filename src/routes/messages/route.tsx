@@ -4,6 +4,7 @@ import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { FriendNav } from "@/shared/components/FriendNav"
 import FriendsList, { type Friend } from "@/shared/components/FriendsList"
 import TopBar from "@/shared/components/TopBar"
+import { useDocumentTitle } from "@/hooks/use-document-title"
 
 export const Route = createFileRoute("/messages")({
   component: MessagesLayout,
@@ -29,6 +30,7 @@ const friendsMock: Friend[] = [
 
 function MessagesLayout() {
   const { setHeader, setContent } = useSidebarContent()
+  useDocumentTitle("Messages")
   useEffect(() => {
     setHeader(<FriendNav />)
     setContent(<FriendsList friends={friendsMock} />)

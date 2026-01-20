@@ -5,6 +5,7 @@ import { FriendNav } from "@/shared/components/FriendNav"
 import type { Friend } from "@/shared/components/FriendsList"
 import FriendsList from "@/shared/components/FriendsList"
 import TopBarFriends from "@/shared/components/TopBarFriends"
+import { useDocumentTitle } from "@/hooks/use-document-title"
 
 export const Route = createFileRoute("/friends")({
   component: FriendsPage,
@@ -30,6 +31,7 @@ const friendsMock: Friend[] = [
 
 function FriendsPage() {
   const { setHeader, setContent } = useSidebarContent()
+  useDocumentTitle("Friends")
   useEffect(() => {
     setHeader(<FriendNav />)
     setContent(<FriendsList friends={friendsMock} />)
