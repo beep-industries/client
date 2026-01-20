@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { FriendNav } from "@/shared/components/FriendNav"
 import TopBarFriends from "@/shared/components/TopBarFriends"
+import { useDocumentTitle } from "@/hooks/use-document-title"
 
 export const Route = createFileRoute("/friends")({
   component: FriendsPage,
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/friends")({
 
 function FriendsPage() {
   const { setHeader, setContent } = useSidebarContent()
-
+  useDocumentTitle("Friends")
   useEffect(() => {
     setHeader(<FriendNav />)
     return () => {

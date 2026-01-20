@@ -3,6 +3,7 @@ import { useEffect } from "react"
 import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { FriendNav } from "@/shared/components/FriendNav"
 import TopBar from "@/shared/components/TopBar"
+import { useDocumentTitle } from "@/hooks/use-document-title"
 
 export const Route = createFileRoute("/messages")({
   component: MessagesLayout,
@@ -10,7 +11,7 @@ export const Route = createFileRoute("/messages")({
 
 function MessagesLayout() {
   const { setHeader, setContent } = useSidebarContent()
-
+  useDocumentTitle("Messages")
   useEffect(() => {
     setHeader(<FriendNav />)
     return () => {
