@@ -18,14 +18,17 @@ const createMessageApi = (accessToken: string) =>
 
 export const listMessages = (
   accessToken: string,
-  query: MessagePagination
+  query: MessagePagination,
+  channelId: string
 ): Promise<PaginatedMessagesResponse> => {
   const api = createMessageApi(accessToken)
   const searchParams = {
     page: query.page.toString(),
     limit: query.limit.toString(),
   }
-  return api.get("messages", { searchParams }).json<PaginatedMessagesResponse>()
+  return api
+    .get(`channels/${channelId}/messages`, { searchParams })
+    .json<PaginatedMessagesResponse>()
 }
 
 export const getMessage = (accessToken: string, messageId: string): Promise<Message> => {

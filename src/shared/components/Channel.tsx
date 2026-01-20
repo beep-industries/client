@@ -27,9 +27,10 @@ interface ChannelProps {
   icon: LucideIcon
   channel: Channel
   isChildren?: boolean
+  onClick?: () => void
 }
 
-export default function Channel({ icon: Icon, channel, isChildren }: ChannelProps) {
+export default function Channel({ icon: Icon, channel, isChildren, onClick }: ChannelProps) {
   const { t } = useTranslation()
   const { folders } = useFolder()
   const {

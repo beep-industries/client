@@ -29,10 +29,14 @@ export const useMessages = (channelId: string) => {
     queryKey: messageKeys.list(channelId),
     queryFn: async ({ pageParam }): Promise<PaginatedMessagesResponse> => {
       try {
-        const response = await listMessages(accessToken!, {
-          page: pageParam,
-          limit: MESSAGES_PER_PAGE,
-        })
+        const response = await listMessages(
+          accessToken!,
+          {
+            page: pageParam,
+            limit: MESSAGES_PER_PAGE,
+          },
+          channelId
+        )
 
         return response as PaginatedMessagesResponse
       } catch (error) {
@@ -46,6 +50,8 @@ export const useMessages = (channelId: string) => {
       if (lastPage.page * MESSAGES_PER_PAGE < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!channelId,
+    gcTime: 0,
+    staleTime: 0,
   })
 }
 
