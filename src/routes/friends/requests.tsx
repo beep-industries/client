@@ -53,6 +53,7 @@ function RouteComponent() {
         {sectionSelected === "1"
           ? friendInvitations?.pages[0]?.data.map((request) => (
               <FriendRequest
+                key={request.user_id_requested}
                 user_id={request.user_id_requested}
                 status={request.status}
                 type="received"
@@ -60,6 +61,7 @@ function RouteComponent() {
             ))
           : friendRequests?.pages[0]?.data.map((request) => (
               <FriendRequest
+                key={request.user_id_invited}
                 user_id={request.user_id_invited}
                 status={request.status}
                 type="sent"
