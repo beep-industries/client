@@ -45,7 +45,7 @@ export const communityKeys = {
   all: [] as const,
   servers: () => [...communityKeys.all, "servers"] as const,
   server: (serverId: string) => [...communityKeys.all, `server-${serverId}`] as const,
-  channels: (serverId: string) => [...communityKeys.all, `channels-${serverId}`],
+  channels: (serverId: string) => [...communityKeys.all, `channels-${serverId}`] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -305,7 +305,7 @@ export const useDeleteFriend = () => {
 
   return useMutation({
     mutationFn: (friend_id: string) => {
-      return deleteFriend(accessToken!, { friend_id: friend_id })
+      return deleteFriend(accessToken!, { friend_id })
     },
   })
 }
