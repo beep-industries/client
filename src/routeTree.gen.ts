@@ -102,7 +102,7 @@ export interface FileRoutesByFullPath {
   "/messages/": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
-  "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
+  "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -147,7 +147,7 @@ export interface FileRouteTypes {
     | "/messages/"
     | "/servers/$id/settings"
     | "/servers/$id/"
-    | "/servers/$id/$channelId"
+    | "/servers/$id/$channelId/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -275,7 +275,7 @@ declare module "@tanstack/react-router" {
     "/servers/$id/$channelId/": {
       id: "/servers/$id/$channelId/"
       path: "/$channelId"
-      fullPath: "/servers/$id/$channelId"
+      fullPath: "/servers/$id/$channelId/"
       preLoaderRoute: typeof ServersIdChannelIdIndexRouteImport
       parentRoute: typeof ServersIdRouteRoute
     }

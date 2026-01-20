@@ -15,7 +15,7 @@ import {
 import { cn } from "@/shared/lib/utils"
 import { VideoStream } from "./VideoStream"
 import { AudioStream } from "./AudioStream"
-import type { ParticipantStream } from "../types"
+import type { ParticipantStream } from "@/pages/channel/types"
 
 interface FullscreenOverlayProps {
   participant: ParticipantStream

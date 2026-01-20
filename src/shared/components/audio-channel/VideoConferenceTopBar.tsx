@@ -16,7 +16,7 @@ import {
   SignalZero,
   Users,
 } from "lucide-react"
-import type { LayoutType } from "../types"
+import type { LayoutType } from "@/pages/channel/types"
 
 interface VideoConferenceTopBarProps {
   iceStatus: string
