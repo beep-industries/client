@@ -16,6 +16,7 @@ function FriendsIndexPage() {
     <div className="flex flex-col p-4">
       {friends?.pages[0]?.data.map((request) => (
         <FriendRequest
+          key={`${request.user_id_1} - ${request.user_id_2}`}
           user_id={request.user_id_1 === currentUserId ? request.user_id_2 : request.user_id_1}
           type="default"
         />
