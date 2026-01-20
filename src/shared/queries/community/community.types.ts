@@ -103,7 +103,7 @@ export interface GetFriendInvitationsResponse {
 }
 
 export interface CreateFriendRequestRequest {
-  user_id_invited: string
+  user_pseudo_invited: string
 }
 
 export interface AcceptFriendRequestRequest {

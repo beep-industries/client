@@ -103,12 +103,13 @@
     "modal": {
       "create_friend_request": {
         "title": "Ajouter un ami",
-        "user_id_invited": "Identifiant de l'utilisateur",
-        "user_id_invited_invalid": "L'identifiant de l'utilisateur est invalide",
+        "user_pseudo_invited": "Pseudo de l'utilisateur",
+        "user_pseudo_invited_required": "Le pseudo de l'utilisateur est requis",
         "cancel": "Annuler",
         "create": "Ajouter un ami",
         "success": "Demande d'ami envoyée avec succès",
-        "error": "Une erreur est survenue lors de l'envoi de la demande d'ami"
+        "error": "Une erreur est survenue lors de l'envoi de la demande d'ami",
+        "errors_user_not_found": "Utilisateur non trouvé"
       }
     }
   },
@@ -128,15 +129,25 @@
   },
   "friendRequests": {
     "invitations_received": "Invitations reçues",
-    "received_at": "Reçue le {{date}} à {{time}}",
-    "refused": "Refusée",
     "requests_sent": "Demandes envoyées",
-    "sent_at": "Envoyée le {{date}} à {{time}}",
+    "accept": "Accepter",
+    "decline": "Refuser",
+    "delete": "Supprimer",
+    "refused": "Refusée",
     "decline_success": "Demande d'ami refusée",
     "decline_error": "Une erreur est survenue lors du refus de la demande d'ami",
     "accept_success": "Demande d'ami acceptée",
     "accept_error": "Une erreur est survenue lors de l'acceptation de la demande d'ami",
     "delete_request_success": "Demande d'ami supprimée avec succès",
-    "delete_request_error": "Une erreur est survenue lors de la suppression de la demande d'ami"
+    "delete_request_error": "Une erreur est survenue lors de la suppression de la demande d'ami",
+    "delete_friend_success": "Ami supprimé avec succès",
+    "delete_friend_error": "Une erreur est survenue lors de la suppression de l'ami",
+    "default_user_name": "Utilisateur",
+    "errors": {
+      "E_CANNOT_FRIEND_YOURSELF": "Vous ne pouvez pas vous ajouter vous-même en ami",
+      "E_FRIEND_REQUEST_ALREADY_EXISTS": "Une demande d'ami existe déjà pour cet utilisateur",
+      "E_FRIENDSHIP_ALREADY_EXISTS": "Vous êtes déjà ami avec cet utilisateur",
+      "E_USER_NOT_FOUND": "Utilisateur non trouvé"
+    }
   }
 }

@@ -17,6 +17,7 @@ import {
   createChannel,
   deleteChannel,
   updateChannel,
+  deleteFriend,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -296,5 +297,15 @@ export const useFriends = () => {
       if (lastPage.page * MAXIMUM_FRIENDS_PER_API_CALL < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken,
+  })
+}
+
+export const useDeleteFriend = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (friend_id: string) => {
+      return deleteFriend(accessToken!, { friend_id: friend_id })
+    },
   })
 }

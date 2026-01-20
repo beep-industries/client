@@ -31,12 +31,12 @@ export function AddFriendRequestForm({ form, loading, onSubmit }: AddFriendReque
       >
         <FormField
           control={form.control}
-          name="user_id_invited"
+          name="user_pseudo_invited"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormLabel>{t("topBar.modal.create_friend_request.user_id_invited")}</FormLabel>
+              <FormLabel>{t("topBar.modal.create_friend_request.user_pseudo_invited")}</FormLabel>
               <FormControl>
-                <Input type="text" id="user_id_invited" {...field} />
+                <Input type="text" id="user_pseudo_invited" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
