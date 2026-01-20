@@ -179,5 +179,10 @@
   },
   "sendingBar": {
     "placeholder": "Send a message"
+  },
+  "date": {
+    "today_at": "Today at",
+    "yesterday_at": "Yesterday at",
+    "at": "at"
   }
 }

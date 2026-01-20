@@ -4,6 +4,7 @@ import { Button } from "./ui/Button"
 import { Plus, Send } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import type { CreateMessageRequest, Message } from "../queries/message/message.types"
+import { useKeyboard } from "../hooks/UseKeyboard"
 
 interface SendingBarProps {
   sendMessage: (messageData: Omit<CreateMessageRequest, "channel_id">) => Promise<Message>
@@ -40,6 +41,17 @@ export default function SendingBar({ sendMessage }: SendingBarProps) {
     textarea.value = ""
     textarea.style.height = "auto"
   }
+
+  useKeyboard({
+    key: "Enter",
+    element: textareaRef.current,
+    onKeyDown: (event) => {
+      if (!event.shiftKey) {
+        event.preventDefault()
+        handleSend()
+      }
+    },
+  })
 
   return (
     <div className="flex w-full items-end">

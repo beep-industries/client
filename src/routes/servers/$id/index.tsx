@@ -1,5 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import PageServer from "@/pages/server/ui/PageServer"
+import { useChannels } from "@/shared/queries/community/community.queries"
+import { useEffect } from "react"
 
 export const Route = createFileRoute("/servers/$id/")({
   component: ServerIndexPage,
@@ -7,5 +9,19 @@ export const Route = createFileRoute("/servers/$id/")({
 
 function ServerIndexPage() {
   const { id } = Route.useParams()
-  return <PageServer id={id} /> //TODO: redirect to the first text channel
+  const navigate = useNavigate()
+  const { data: channels, isSuccess } = useChannels(id)
+
+  useEffect(() => {
+    if (isSuccess && channels && channels.length > 0) {
+      const firstChannel = channels[0]
+      navigate({
+        to: "/servers/$id/$channelId",
+        params: { id, channelId: firstChannel.id },
+        replace: true,
+      })
+    }
+  }, [isSuccess, channels, navigate, id])
+
+  return <PageServer id={id} />
 }
