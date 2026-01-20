@@ -52,7 +52,7 @@ export default function TopBarFriends() {
   const handleError = async (error: unknown, defaultMessage: string) => {
     if (error && typeof error === "object" && "response" in error) {
       const bodyData = await (error.response as Response).json()
-      if (bodyData.error_code.trim().length > 0) {
+      if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
         toast.error(t("friendRequests.errors." + bodyData.error_code))
       } else if (bodyData.status == 404) {
         toast.error(t("topBar.modal.create_friend_request.errors_user_not_found"))

@@ -49,7 +49,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
   const handleError = async (error: unknown, defaultMessage: string) => {
     if (error && typeof error === "object" && "response" in error) {
       const bodyData = await (error.response as Response).json()
-      if (bodyData.error_code.trim().length > 0) {
+      if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
         toast.error(t("friendRequests.errors." + bodyData.error_code))
       } else {
         toast.error(defaultMessage)
