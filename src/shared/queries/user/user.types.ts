@@ -4,9 +4,6 @@ export interface UserBasicInfo {
   display_name: string
   profile_picture: string
   description: string
-  status: string
-  created_at: string
-  updated_at: string
 }
 
 // User full info (includes Keycloak data)

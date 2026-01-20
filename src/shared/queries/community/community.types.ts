@@ -11,6 +11,28 @@ export interface Server {
   updated_at: string | null
 }
 
+export interface FriendRequest {
+  user_id_invited: string
+  user_id_requested: string
+  status: 0 | 1
+  created_at: string
+}
+
+export interface FriendInvitation {
+  user_id_invited: string
+  user_id_requested: string
+  status: 0 | 1
+  created_at: string
+}
+
+export interface Friend {
+  user_id_1: string
+  user_id_2: string
+  created_at: string
+}
+
+// API call types
+
 export interface CommunityPagination {
   page: number
   limit: number
@@ -66,4 +88,42 @@ export interface CreateServerChannelRequest {
 export interface UpdateServerChannelRequest {
   name: string
   parent_id: string | null
+}
+
+export interface GetFriendRequestsResponse {
+  data: FriendRequest[]
+  page: number
+  total: number
+}
+
+export interface GetFriendInvitationsResponse {
+  data: FriendInvitation[]
+  page: number
+  total: number
+}
+
+export interface CreateFriendRequestRequest {
+  user_pseudo_invited: string
+}
+
+export interface AcceptFriendRequestRequest {
+  user_id_requested: string
+}
+
+export interface DeclineFriendRequestRequest {
+  user_id_requested: string
+}
+
+export interface DeleteFriendRequestRequest {
+  user_id_invited: string
+}
+
+export interface GetFriendsResponse {
+  data: Friend[]
+  page: number
+  total: number
+}
+
+export interface DeleteFriendRequest {
+  friend_id: string
 }

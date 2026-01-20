@@ -8,7 +8,7 @@
     "messages": "Messages",
     "explore": "Explore",
     "more_options": "More options",
-    "success_creating_server": "Server created successfully",
+    "success_creating_server": "Server created",
     "error_loading_servers": "An error occurred while loading servers",
     "error_creating_server": "An error occurred while creating the server",
     "validation": {
@@ -98,7 +98,20 @@
     "show_users": "Show users",
     "members": "Members",
     "notifications": "Notifications",
-    "add_friends": "Add a friend"
+    "add_friend": "Add a friend",
+    "friend_requests": "Friend requests",
+    "modal": {
+      "create_friend_request": {
+        "title": "Add a friend",
+        "user_pseudo_invited": "User Pseudo",
+        "user_pseudo_invited_required": "The user pseudo is required",
+        "cancel": "Cancel",
+        "create": "Add a friend",
+        "success": "Friend request sent",
+        "error": "An error occurred while sending the friend request",
+        "errors_user_not_found": "User not found"
+      }
+    }
   },
   "friends": {
     "nav": "Friends"
@@ -113,5 +126,28 @@
     "add_friend": "Add friend",
     "send_message": "Send message",
     "profile": "Profile"
+  },
+  "friendRequests": {
+    "invitations_received": "Invitations received",
+    "requests_sent": "Requests sent",
+    "accept": "Accept",
+    "decline": "Decline",
+    "delete": "Delete",
+    "refused": "Refused",
+    "decline_success": "Friend request declined",
+    "decline_error": "An error occurred while declining the friend request",
+    "accept_success": "Friend request accepted",
+    "accept_error": "An error occurred while accepting the friend request",
+    "delete_request_success": "Friend request deleted",
+    "delete_request_error": "An error occurred while deleting the friend request",
+    "delete_friend_success": "Friend deleted successfully",
+    "delete_friend_error": "An error occurred while deleting the friend",
+    "default_user_name": "User",
+    "errors": {
+      "E_CANNOT_FRIEND_YOURSELF": "You cannot add yourself as a friend",
+      "E_FRIEND_REQUEST_ALREADY_EXISTS": "A friend request already exists for this user",
+      "E_FRIENDSHIP_ALREADY_EXISTS": "You are already friends with this user",
+      "E_USER_NOT_FOUND": "User not found"
+    }
   }
 }
