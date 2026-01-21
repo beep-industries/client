@@ -20,7 +20,12 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
   }, [messagesState.fetchedMessages, messagesState.liveMessages])
 
   // Fetch messages from API
-  const fetchMessages = useMessages(channelId)
+  const {
+    data: messagesData,
+    hasNextPage,
+    isFetchingNextPage,
+    fetchNextPage,
+  } = useMessages(channelId)
   const createMessageMutation = useCreateMessage()
 
   // Send a new message
@@ -44,13 +49,21 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
 
   // Load fetched messages into state
   useEffect(() => {
-    if (fetchMessages.data) {
-      const allFetchedMessages = fetchMessages.data.pages.flatMap((page) => page.data)
+    if (messagesData) {
+      const allFetchedMessages = messagesData.pages.flatMap((page) => page.data)
       dispatch({ type: "SET_FETCHED_MESSAGES", payload: allFetchedMessages })
     }
-  }, [fetchMessages.data])
+  }, [messagesData])
 
   // TODO: Implement logic for websocket live messages
 
-  return <PageMessages messages={allMessages} sendMessage={sendMessage} />
+  return (
+    <PageMessages
+      messages={allMessages}
+      sendMessage={sendMessage}
+      hasNextPage={hasNextPage}
+      isFetchingNextPage={isFetchingNextPage}
+      fetchNextPage={fetchNextPage}
+    />
+  )
 }

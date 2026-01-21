@@ -23,26 +23,28 @@ export default function MessageComponent({
 
   if (isCompact) {
     return (
-      <div className="hover:bg-accent flex h-fit w-full items-start gap-3 px-5 pb-1 pl-16">
-        <div className="flex flex-col">
-          <p className="whitespace-pre-wrap">{content}</p>
+      <div className="hover:bg-accent flex h-fit w-full items-start gap-3 px-5 pl-16">
+        <div className="flex w-full flex-col wrap-anywhere">
+          <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="hover:bg-accent mt-3 flex h-fit w-full items-start gap-3 px-5 pb-1">
+    <div className="hover:bg-accent group mt-3 flex h-fit w-full items-start gap-3 px-5">
       <Avatar className="mt-1 h-8 w-8 rounded-lg grayscale">
         <AvatarImage src={profilePictureUrl} alt={author} />
         <AvatarFallback className="rounded-lg">{author.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
-      <div className="flex flex-col">
+      <div className="flex w-full flex-col wrap-anywhere">
         <div className="flex items-center gap-2">
           <h3 className="font-semibold">{author}</h3>
-          <p className="text-muted-foreground text-xs">{formatDate(date, i18n.language, t)}</p>
+          <p className="text-muted-foreground text-xs group-hover:hidden">
+            {formatDate(date, i18n.language, t)}
+          </p>
         </div>
-        <p className="whitespace-pre-wrap">{content}</p>
+        <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
       </div>
     </div>
   )
