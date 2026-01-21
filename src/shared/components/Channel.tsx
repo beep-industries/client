@@ -20,6 +20,8 @@ import { useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { toast } from "sonner"
 import type { Channel } from "@/shared/queries/community/community.types.ts"
+import { useNavigate, useParams } from "@tanstack/react-router"
+import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 
 interface ChannelProps {
   icon: LucideIcon
@@ -35,6 +37,10 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
     isError: isDeleteChannelError,
     isSuccess: isDeleteChannelSuccess,
   } = useDeleteChannel()
+  const { channelId } = useParams({ strict: false }) as { channelId?: string }
+  const { join } = useWebRTC()
+
+  const navigate = useNavigate()
 
   const {
     mutateAsync: updateChannel,
@@ -65,7 +71,16 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
     <ContextMenu>
       <ContextMenuTrigger>
         <SidebarMenuItem>
-          <SidebarMenuButton className="cursor-pointer">
+          <SidebarMenuButton
+            onClick={() =>
+              channelId === channel.id
+                ? join(channel.server_id, channel.id)
+                : navigate({ to: `/servers/${channel.server_id}/${channel.id}` })
+            }
+            className="w-full cursor-pointer"
+            size="lg"
+            aria-label={channel.name}
+          >
             <Icon />
             {channel.name}
           </SidebarMenuButton>

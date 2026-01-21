@@ -1,4 +1,12 @@
-import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react"
+import React, {
+  createContext,
+  type RefObject,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react"
 import { useRealTimeSocket } from "@/app/providers/RealTimeSocketProvider"
 import { Presence } from "phoenix"
 
@@ -19,18 +27,23 @@ export interface RemoteState {
 
 export interface WebRTCState {
   // UI/status
-  session: number | null
+  server: string | null
+  session: string | null
   iceStatus: RTCIceConnectionState
   channelStatus: string
   joined: boolean
+  videoStreamRef: RefObject<MediaStream | null> | null
   camEnabled: boolean
   micEnabled: boolean
+  screenShareEnabled: boolean
   // Media
   remoteTracks: RemoteState[]
   // Actions
-  join: (session: number) => Promise<void>
+  join: (server: string, session: string) => Promise<void>
   leave: () => Promise<void>
   startCam: () => Promise<void>
+  startScreenShare: () => Promise<void>
+  stopScreenShare: () => Promise<void>
   stopCam: () => void
   startMic: () => Promise<void>
   stopMic: () => void
@@ -39,11 +52,13 @@ export interface WebRTCState {
 const WebRTCContext = createContext<WebRTCState | undefined>(undefined)
 
 export function WebRTCProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<number | null>(null)
+  const [session, setSession] = useState<string | null>(null)
+  const [server, setServer] = useState<string | null>(null)
   const [iceStatus, setIceStatus] = useState<RTCIceConnectionState>("new")
   const [channelStatus, setChannelStatus] = useState<string>("Click Join Button...")
   const [joined, setJoined] = useState(false)
   const [camEnabled, setCamEnabled] = useState(false)
+  const [screenShareEnabled, setScreenShareEnabled] = useState(false)
   const [micEnabled, setMicEnabled] = useState(false)
   const [remoteTracks, setRemoteTracks] = useState<RemoteState[]>([])
 
@@ -51,7 +66,11 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const presenceRef = useRef<Presence | null>(null)
   const dataChannelRef = useRef<RTCDataChannel | null>(null)
   const camStreamRef = useRef<MediaStream | null>(null)
+  const videoStreamRef = useRef<MediaStream | null>(null)
   const camTransceiverRef = useRef<RTCRtpTransceiver | null>(null)
+  const screenShareStreamRef = useRef<MediaStream | null>(null)
+  const screenShareTransceiverVideoRef = useRef<RTCRtpTransceiver | null>(null)
+  const screenShareTransceiverAudioRef = useRef<RTCRtpTransceiver | null>(null)
   const micStreamRef = useRef<MediaStream | null>(null)
   const micTransceiverRef = useRef<RTCRtpTransceiver | null>(null)
   const negotiateCallbackRef = useRef<((json: string) => void) | null>(null)
@@ -69,13 +88,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         setIceStatus(state)
         if (state === "disconnected" || state === "failed") {
           // stop local tracks
-          camStreamRef.current?.getTracks().forEach((t) => t.stop())
-          micStreamRef.current?.getTracks().forEach((t) => t.stop())
-          rtc.close()
-          rtcRef.current = null
-          setJoined(false)
-          setCamEnabled(false)
-          setMicEnabled(false)
+          leave()
         }
       }
       // Remote tracks management
@@ -138,7 +151,8 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   )
 
   const join = useCallback(
-    async (sess: number) => {
+    async (server: string, sess: string) => {
+      setServer(server)
       setSession(sess)
       const rtc = ensureRtc()
       setChannelStatus(`Joining session ${sess} as endpoint`)
@@ -156,8 +170,8 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       }
       dataChannel.onopen = () => {
         setChannelStatus(`Joined session ${sess}`)
-        setCamEnabled(true)
-        setMicEnabled(true)
+        setCamEnabled(false)
+        setMicEnabled(false)
       }
       dataChannelRef.current = dataChannel
 
@@ -226,6 +240,12 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     camTransceiverRef.current = null
     camStreamRef.current?.getTracks().forEach((t) => t.stop())
     camStreamRef.current = null
+    await screenShareTransceiverVideoRef.current?.sender.replaceTrack(null)
+    screenShareTransceiverVideoRef.current = null
+    await screenShareTransceiverAudioRef.current?.sender.replaceTrack(null)
+    screenShareTransceiverAudioRef.current = null
+    screenShareStreamRef.current?.getTracks().forEach((t) => t.stop())
+    screenShareStreamRef.current = null
     await micTransceiverRef.current?.sender.replaceTrack(null)
     micTransceiverRef.current = null
     micStreamRef.current?.getTracks().forEach((t) => t.stop())
@@ -253,92 +273,169 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     }
   }, [joinTopic, leaveTopic, session])
 
-  const startCam = useCallback(async () => {
-    setCamEnabled(false)
-    camStreamRef.current = await navigator.mediaDevices.getUserMedia({
-      video: { width: 640, height: 360 },
-    })
-    if (camTransceiverRef.current) {
-      camTransceiverRef.current?.sender.replaceTrack(camStreamRef.current.getTracks()[0])
-    } else {
-      const rtc = ensureRtc()
-      camTransceiverRef.current = rtc.addTransceiver(camStreamRef.current.getTracks()[0], {
-        direction: "sendonly",
-        streams: [camStreamRef.current],
+  const stopScreenShare = useCallback(async () => {
+    setScreenShareEnabled(false)
+    if (joined && camTransceiverRef.current && screenShareTransceiverAudioRef.current) {
+      await camTransceiverRef.current?.sender.replaceTrack(null)
+      await screenShareTransceiverAudioRef.current?.sender.replaceTrack(null)
+      screenShareStreamRef.current?.getTracks().forEach((t) => t.stop())
+      screenShareStreamRef.current = null
+      videoStreamRef.current?.getTracks().forEach((t) => t.stop())
+      videoStreamRef.current = null
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: false,
+        audio: micEnabled,
       })
-      await negotiate()
     }
-    joinTopic(channelTopicRef.current!).push("state_change", {
-      video: true,
-      audio: !micEnabled,
-    })
-  }, [ensureRtc, joinTopic, micEnabled, negotiate])
+  }, [joinTopic, joined, micEnabled])
+
+  const startCam = useCallback(async () => {
+    setCamEnabled(true)
+    await stopScreenShare()
+    if (joined) {
+      camStreamRef.current = await navigator.mediaDevices.getUserMedia({
+        video: { width: 640, height: 360 },
+      })
+      videoStreamRef.current = camStreamRef.current
+      if (camTransceiverRef.current) {
+        camTransceiverRef.current?.sender.replaceTrack(camStreamRef.current.getTracks()[0])
+      } else {
+        const rtc = ensureRtc()
+        camTransceiverRef.current = rtc.addTransceiver(camStreamRef.current.getTracks()[0], {
+          direction: "sendonly",
+          streams: [camStreamRef.current],
+        })
+        await negotiate()
+      }
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: true,
+        audio: micEnabled,
+      })
+    }
+  }, [ensureRtc, joinTopic, joined, micEnabled, negotiate, stopScreenShare])
 
   const stopCam = useCallback(async () => {
-    await camTransceiverRef.current!.sender.replaceTrack(null)
-    camStreamRef.current?.getTracks().forEach((t) => t.stop())
-    camStreamRef.current = null
-    setCamEnabled(true)
-    joinTopic(channelTopicRef.current!).push("state_change", {
-      video: false,
-      audio: !micEnabled,
-    })
-  }, [joinTopic, micEnabled])
+    setCamEnabled(false)
+    if (joined && camTransceiverRef.current) {
+      await camTransceiverRef.current?.sender.replaceTrack(null)
+      camStreamRef.current?.getTracks().forEach((t) => t.stop())
+      camStreamRef.current = null
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: false,
+        audio: micEnabled,
+      })
+    }
+  }, [joinTopic, joined, micEnabled])
+
+  const startScreenShare = useCallback(async () => {
+    setScreenShareEnabled(true)
+    await stopCam()
+    if (joined) {
+      screenShareStreamRef.current = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true,
+      })
+      videoStreamRef.current = screenShareStreamRef.current
+      const rtc = ensureRtc()
+      let needNegotiate = false
+      for (const track of videoStreamRef.current.getTracks()) {
+        if (track.kind === "video") {
+          if (camTransceiverRef.current) {
+            camTransceiverRef.current?.sender.replaceTrack(track)
+          } else {
+            const rtc = ensureRtc()
+            camTransceiverRef.current = rtc.addTransceiver(track, {
+              direction: "sendonly",
+            })
+            needNegotiate = true
+          }
+        } else {
+          if (screenShareTransceiverAudioRef.current) {
+            await screenShareTransceiverAudioRef.current.sender.replaceTrack(track)
+          } else {
+            screenShareTransceiverAudioRef.current = rtc.addTransceiver(track, {
+              direction: "sendonly",
+            })
+            needNegotiate = true
+          }
+        }
+      }
+      if (needNegotiate) await negotiate()
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: true,
+        audio: true,
+      })
+    }
+  }, [ensureRtc, joinTopic, joined, negotiate, stopCam])
 
   const startMic = useCallback(async () => {
-    setMicEnabled(false)
-    const rtc = ensureRtc()
-    micStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true })
-    micTransceiverRef.current = rtc.addTransceiver(micStreamRef.current.getTracks()[0], {
-      direction: "sendonly",
-      streams: [micStreamRef.current],
-    })
-    await negotiate()
-    joinTopic(channelTopicRef.current!).push("state_change", {
-      video: !camEnabled,
-      audio: true,
-    })
-  }, [camEnabled, ensureRtc, joinTopic, negotiate])
+    setMicEnabled(true)
+    if (joined) {
+      const rtc = ensureRtc()
+      micStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true })
+      micTransceiverRef.current = rtc.addTransceiver(micStreamRef.current.getTracks()[0], {
+        direction: "sendonly",
+        streams: [micStreamRef.current],
+      })
+      await negotiate()
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: camEnabled,
+        audio: true,
+      })
+    }
+  }, [camEnabled, ensureRtc, joinTopic, negotiate, joined])
 
   const stopMic = useCallback(async () => {
-    await micTransceiverRef.current!.sender.replaceTrack(null)
-    micStreamRef.current?.getTracks().forEach((t) => t.stop())
-    micStreamRef.current = null
-    setMicEnabled(true)
-    joinTopic(channelTopicRef.current!).push("state_change", {
-      video: !camEnabled,
-      audio: false,
-    })
-  }, [camEnabled, joinTopic])
+    setMicEnabled(false)
+    if (joined) {
+      await micTransceiverRef.current!.sender.replaceTrack(null)
+      micStreamRef.current?.getTracks().forEach((t) => t.stop())
+      micStreamRef.current = null
+      joinTopic(channelTopicRef.current!).push("state_change", {
+        video: camEnabled,
+        audio: false,
+      })
+    }
+  }, [camEnabled, joinTopic, joined])
 
   const value = useMemo<WebRTCState>(
     () => ({
+      server,
       session,
       iceStatus,
       channelStatus,
       joined,
+      videoStreamRef,
+      screenShareEnabled,
       camEnabled,
       micEnabled,
       remoteTracks,
       join,
       leave,
       startCam,
+      startScreenShare,
       stopCam,
+      stopScreenShare,
       startMic,
       stopMic,
     }),
     [
+      server,
       session,
       iceStatus,
       channelStatus,
       joined,
+      videoStreamRef,
       camEnabled,
+      screenShareEnabled,
       micEnabled,
       remoteTracks,
       join,
       leave,
       startCam,
+      startScreenShare,
       stopCam,
+      stopScreenShare,
       startMic,
       stopMic,
     ]
