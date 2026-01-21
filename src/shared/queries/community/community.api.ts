@@ -27,7 +27,7 @@ export const getServers = (accessToken: string, query: CommunityPagination) => {
     page: query.page.toString(),
     limit: query.limit.toString(),
   }
-  return api.get("servers", { searchParams }).json()
+  return api.get("servers/@me", { searchParams }).json()
 }
 
 export const getServerById = (accessToken: string, serverId: string) => {
