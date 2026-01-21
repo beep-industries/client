@@ -5,6 +5,7 @@ import { messagesReducer, initialMessagesState } from "../reducers/MessageReduce
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useCreateMessage, useMessages } from "@/shared/queries/message/message.queries"
 import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
+import { RealTimeEventProvider } from "@/app/providers/RealTimeEventProvider.tsx"
 
 interface PageMessagesFeatureProps {
   channelId: string
@@ -47,6 +48,8 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     [accessToken, channelId, createMessageMutation]
   )
 
+  const onEventChannelHandler = () => {}
+
   // Load fetched messages into state
   useEffect(() => {
     if (messagesData) {
@@ -58,12 +61,18 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
   // TODO: Implement logic for websocket live messages
 
   return (
-    <PageMessages
-      messages={allMessages}
-      sendMessage={sendMessage}
-      hasNextPage={hasNextPage}
-      isFetchingNextPage={isFetchingNextPage}
-      fetchNextPage={fetchNextPage}
-    />
+    <RealTimeEventProvider
+      topic={`text-channel:${channelId}`}
+      event={"message.created"}
+      onEvent={onEventChannelHandler}
+    >
+      <PageMessages
+        messages={allMessages}
+        sendMessage={sendMessage}
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+      />
+    </RealTimeEventProvider>
   )
 }

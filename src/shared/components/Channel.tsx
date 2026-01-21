@@ -22,7 +22,6 @@ import { toast } from "sonner"
 import type { Channel } from "@/shared/queries/community/community.types.ts"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
-import { cn } from "@/shared/lib/utils"
 
 interface ChannelProps {
   icon: LucideIcon
@@ -32,13 +31,7 @@ interface ChannelProps {
   isSelected?: boolean
 }
 
-export default function Channel({
-  icon: Icon,
-  channel,
-  isChildren,
-  onClick,
-  isSelected = false,
-}: ChannelProps) {
+export default function Channel({ icon: Icon, channel, isChildren }: ChannelProps) {
   const { t } = useTranslation()
   const { folders } = useFolder()
   const {
