@@ -127,3 +127,32 @@ export interface GetFriendsResponse {
 export interface DeleteFriendRequest {
   friend_id: string
 }
+
+export interface CreateServerInvitation {
+  server_id: string
+  expire_in: ExpirationOption
+}
+
+export type ExpirationOption = "one_day" | "one_week" | "one_month"
+
+export interface ExpirationPayload {
+  expires_at: string
+}
+
+export const computeExpiration = (expiration: ExpirationOption): ExpirationPayload => {
+  const now = new Date()
+
+  switch (expiration) {
+    case "one_day":
+      now.setUTCDate(now.getUTCDate() + 1)
+      break
+    case "one_week":
+      now.setUTCDate(now.getUTCDate() + 7)
+      break
+    case "one_month":
+      now.setUTCMonth(now.getUTCMonth() + 1)
+      break
+  }
+
+  return { expires_at: now.toISOString() }
+}

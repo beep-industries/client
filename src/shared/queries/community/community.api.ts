@@ -1,15 +1,17 @@
 import ky from "ky"
-import type {
-  AcceptFriendRequestRequest,
-  CommunityPagination,
-  CreateFriendRequestRequest,
-  CreateServerRequest,
-  DeclineFriendRequestRequest,
-  DeleteFriendRequest,
-  DeleteFriendRequestRequest,
-  UpdateServerRequest,
-  CreateServerChannelRequest,
-  UpdateServerChannelRequest,
+import {
+  type AcceptFriendRequestRequest,
+  type CommunityPagination,
+  type CreateFriendRequestRequest,
+  type CreateServerRequest,
+  type DeclineFriendRequestRequest,
+  type DeleteFriendRequest,
+  type DeleteFriendRequestRequest,
+  type UpdateServerRequest,
+  type CreateServerChannelRequest,
+  type UpdateServerChannelRequest,
+  type CreateServerInvitation,
+  computeExpiration,
 } from "./community.types"
 
 const createCommunityApi = (accessToken: string) =>
@@ -133,4 +135,13 @@ export const getFriends = (accessToken: string, query: CommunityPagination) => {
 export const deleteFriend = (accessToken: string, body: DeleteFriendRequest) => {
   const api = createCommunityApi(accessToken)
   return api.delete(`friends/${body.friend_id}`).json()
+}
+
+export const createServerInvitation = (
+  accessToken: string,
+  { server_id, expire_in }: CreateServerInvitation
+) => {
+  const api = createCommunityApi(accessToken)
+  const body = computeExpiration(expire_in)
+  return api.post(`servers/${server_id}/invitations`, { json: body }).json()
 }

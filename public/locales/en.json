@@ -174,5 +174,22 @@
       "E_FRIENDSHIP_ALREADY_EXISTS": "You are already friends with this user",
       "E_USER_NOT_FOUND": "User not found"
     }
+  },
+  "serverInvitation": {
+    "title": "Create Server Invitation",
+    "expiration_label": "Expiration",
+    "expiration": {
+      "one_day": "1 Day",
+      "one_week": "1 Week",
+      "one_month": "1 Month"
+    },
+    "invitation_code": "Invitation Code",
+    "copy": "Copy",
+    "copied": "Invitation code copied to clipboard",
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create Invitation",
+    "success": "Invitation created successfully",
+    "error": "Failed to create invitation"
   }
 }

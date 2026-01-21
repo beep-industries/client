@@ -19,6 +19,7 @@ import {
   updateChannel,
   getChannel,
   deleteFriend,
+  createServerInvitation,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -34,6 +35,7 @@ import type {
   CreateServerChannelRequest,
   UpdateServerChannelRequest,
   GetServersResponse,
+  CreateServerInvitation,
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
@@ -324,5 +326,13 @@ export const useDeleteFriend = () => {
     mutationFn: (friend_id: string) => {
       return deleteFriend(accessToken!, { friend_id })
     },
+  })
+}
+
+export const useCreateServerInvitationMutation = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: CreateServerInvitation) => createServerInvitation(accessToken!, body),
   })
 }
