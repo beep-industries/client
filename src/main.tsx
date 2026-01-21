@@ -28,6 +28,7 @@ const oidcConfig = {
   post_logout_redirect_uri: window.location.origin,
   scope: "openid profile email",
   userStore: new WebStorageStateStore({ store: window.localStorage }),
+  automaticSilentRenew: true,
   onSigninCallback: () => {
     window.history.replaceState({}, document.title, window.location.pathname)
   },
