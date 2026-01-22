@@ -58,7 +58,7 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
         return <SignalLow className="size-5 text-orange-500" />
       case "failed":
       case "closed":
-        return <SignalZero className="size-5 text-red-500" />
+        return <SignalZero className="text-primary size-5" />
       default:
         return <Signal className="text-muted-foreground size-5" />
     }
@@ -107,7 +107,7 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
             type="button"
             onClick={micEnabled ? stopMic : startMic}
             aria-label={micEnabled ? "Mute microphone" : "Unmute microphone"}
-            className={`transition-colors ${micEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+            className={`transition-colors ${micEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
           >
             {micEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
           </button>
@@ -115,7 +115,7 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
             type="button"
             onClick={camEnabled ? stopCam : startCam}
             aria-label={camEnabled ? "Turn off camera" : "Turn on camera"}
-            className={`transition-colors ${camEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+            className={`transition-colors ${camEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
           >
             {camEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
           </button>
@@ -123,7 +123,7 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
             type="button"
             onClick={screenShareEnabled ? stopScreenShare : startScreenShare}
             aria-label={screenShareEnabled ? "Turn off screen share" : "Turn on screen share"}
-            className={`transition-colors ${screenShareEnabled ? "text-muted-foreground hover:text-foreground" : "text-red-500"}`}
+            className={`transition-colors ${screenShareEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
           >
             {screenShareEnabled ? (
               <ScreenShare className="h-5 w-5" />
