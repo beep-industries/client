@@ -1,4 +1,4 @@
-import { createRootRouteWithContext } from "@tanstack/react-router"
+import { createRootRouteWithContext, Outlet, useLocation } from "@tanstack/react-router"
 import type { AuthState } from "@/app/providers/KeycloakAuthProvider"
 import AppLayout from "@/layouts/AppLayout"
 import { Loader2 } from "lucide-react"
@@ -12,7 +12,12 @@ interface AppContext {
 function RootComponent() {
   const { auth } = Route.useRouteContext()
   const hasTriedSignin = useRef(false)
+  const location = useLocation()
 
+  // Check if we're on the invitations route (should bypass auth check)
+  const isInvitationRoute = location.pathname.startsWith("/invitations/")
+
+  // All hooks must be called before any conditional returns
   useEffect(() => {
     if (auth.isAuthenticated) {
       hasTriedSignin.current = false
@@ -21,6 +26,7 @@ function RootComponent() {
 
   useEffect(() => {
     if (
+      !isInvitationRoute &&
       !hasAuthParams() &&
       !auth.isAuthenticated &&
       !auth.activeNavigator &&
@@ -30,7 +36,12 @@ function RootComponent() {
       hasTriedSignin.current = true
       auth.login()
     }
-  }, [auth])
+  }, [auth, isInvitationRoute])
+
+  // For invitation routes, render directly without auth check
+  if (isInvitationRoute) {
+    return <Outlet />
+  }
 
   if (auth.isLoading) {
     return (

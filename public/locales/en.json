@@ -184,5 +184,32 @@
     "today_at": "Today at",
     "yesterday_at": "Yesterday at",
     "at": "at"
+    }
+  },
+  "serverInvitation": {
+    "title": "Create Server Invitation",
+    "expiration_label": "Expiration",
+    "expiration": {
+      "one_day": "1 Day",
+      "one_week": "1 Week",
+      "one_month": "1 Month"
+    },
+    "invitation_link": "Invitation Link",
+    "copy": "Copy",
+    "copied": "Invitation link copied to clipboard",
+    "cancel": "Cancel",
+    "close": "Close",
+    "create": "Create Invitation",
+    "success": "Invitation created successfully",
+    "error": "Failed to create invitation",
+    "loading": "Loading...",
+    "accepting": "Accepting invitation...",
+    "accept_success": "Successfully joined the server!",
+    "accept_error": "Failed to accept invitation. It may be invalid or expired.",
+    "success_title": "Invitation Accepted!",
+    "error_title": "Unable to Accept Invitation",
+    "go_to_server": "Go to Server",
+    "go_home": "Explore Servers",
+    "go_to_app": "Explore Servers"
   }
 }
