@@ -19,7 +19,7 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { toast } from "sonner"
-import type { Channel } from "@/shared/queries/community/community.types.ts"
+import { type Channel, ChannelTypes } from "@/shared/queries/community/community.types.ts"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 
@@ -40,7 +40,7 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
     isSuccess: isDeleteChannelSuccess,
   } = useDeleteChannel()
   const { channelId } = useParams({ strict: false }) as { channelId?: string }
-  const { join } = useWebRTC()
+  const { join, iceStatus } = useWebRTC()
 
   const navigate = useNavigate()
 
@@ -75,7 +75,9 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
         <SidebarMenuItem>
           <SidebarMenuButton
             onClick={() =>
-              channelId === channel.id
+              channelId === channel.id &&
+              channel.channel_type === ChannelTypes.VOICE &&
+              iceStatus === "connected"
                 ? join(channel.server_id, channel.id)
                 : navigate({ to: `/servers/${channel.server_id}/${channel.id}` })
             }
