@@ -11,6 +11,7 @@ import {
 } from "./ui/ContextMenu"
 import { useTranslation } from "react-i18next"
 import { useFolder } from "@/shared/hooks/UseFolder.ts"
+import { cn } from "@/shared/lib/utils"
 import {
   communityKeys,
   useDeleteChannel,
@@ -81,8 +82,10 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
                 ? join(channel.server_id, channel.id)
                 : navigate({ to: `/servers/${channel.server_id}/${channel.id}` })
             }
-            className="w-full cursor-pointer"
-            size="lg"
+            className={cn(
+              "w-full cursor-pointer",
+              channelId === channel.id && "bg-sidebar-accent text-sidebar-accent-foreground"
+            )}
             aria-label={channel.name}
           >
             <Icon />

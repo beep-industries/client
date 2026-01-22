@@ -14,9 +14,7 @@ import { Route as ExploreRouteImport } from "./routes/explore"
 import { Route as MessagesRouteRouteImport } from "./routes/messages/route"
 import { Route as FriendsRouteRouteImport } from "./routes/friends/route"
 import { Route as IndexRouteImport } from "./routes/index"
-import { Route as MessagesIndexRouteImport } from "./routes/messages/index"
 import { Route as FriendsIndexRouteImport } from "./routes/friends/index"
-import { Route as MessagesIdRouteImport } from "./routes/messages/$id"
 import { Route as FriendsRequestsRouteImport } from "./routes/friends/requests"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
@@ -48,20 +46,10 @@ const IndexRoute = IndexRouteImport.update({
   path: "/",
   getParentRoute: () => rootRouteImport,
 } as any)
-const MessagesIndexRoute = MessagesIndexRouteImport.update({
-  id: "/",
-  path: "/",
-  getParentRoute: () => MessagesRouteRoute,
-} as any)
 const FriendsIndexRoute = FriendsIndexRouteImport.update({
   id: "/",
   path: "/",
   getParentRoute: () => FriendsRouteRoute,
-} as any)
-const MessagesIdRoute = MessagesIdRouteImport.update({
-  id: "/$id",
-  path: "/$id",
-  getParentRoute: () => MessagesRouteRoute,
 } as any)
 const FriendsRequestsRoute = FriendsRequestsRouteImport.update({
   id: "/requests",
@@ -92,26 +80,23 @@ const ServersIdChannelIdIndexRoute = ServersIdChannelIdIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
   "/friends": typeof FriendsRouteRouteWithChildren
-  "/messages": typeof MessagesRouteRouteWithChildren
+  "/messages": typeof MessagesRouteRoute
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
-  "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
-  "/messages/": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
+  "/messages": typeof MessagesRouteRoute
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
   "/friends/requests": typeof FriendsRequestsRoute
-  "/messages/$id": typeof MessagesIdRoute
   "/friends": typeof FriendsIndexRoute
-  "/messages": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id": typeof ServersIdIndexRoute
   "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
@@ -120,14 +105,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   "/": typeof IndexRoute
   "/friends": typeof FriendsRouteRouteWithChildren
-  "/messages": typeof MessagesRouteRouteWithChildren
+  "/messages": typeof MessagesRouteRoute
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
-  "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
-  "/messages/": typeof MessagesIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id/": typeof ServersIdIndexRoute
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
@@ -142,21 +125,18 @@ export interface FileRouteTypes {
     | "/settings"
     | "/servers/$id"
     | "/friends/requests"
-    | "/messages/$id"
     | "/friends/"
-    | "/messages/"
     | "/servers/$id/settings"
     | "/servers/$id/"
     | "/servers/$id/$channelId/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
+    | "/messages"
     | "/explore"
     | "/settings"
     | "/friends/requests"
-    | "/messages/$id"
     | "/friends"
-    | "/messages"
     | "/servers/$id/settings"
     | "/servers/$id"
     | "/servers/$id/$channelId"
@@ -169,9 +149,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/servers/$id"
     | "/friends/requests"
-    | "/messages/$id"
     | "/friends/"
-    | "/messages/"
     | "/servers/$id/settings"
     | "/servers/$id/"
     | "/servers/$id/$channelId/"
@@ -180,7 +158,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   FriendsRouteRoute: typeof FriendsRouteRouteWithChildren
-  MessagesRouteRoute: typeof MessagesRouteRouteWithChildren
+  MessagesRouteRoute: typeof MessagesRouteRoute
   ExploreRoute: typeof ExploreRoute
   SettingsRoute: typeof SettingsRoute
   ServersIdRouteRoute: typeof ServersIdRouteRouteWithChildren
@@ -223,26 +201,12 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    "/messages/": {
-      id: "/messages/"
-      path: "/"
-      fullPath: "/messages/"
-      preLoaderRoute: typeof MessagesIndexRouteImport
-      parentRoute: typeof MessagesRouteRoute
-    }
     "/friends/": {
       id: "/friends/"
       path: "/"
       fullPath: "/friends/"
       preLoaderRoute: typeof FriendsIndexRouteImport
       parentRoute: typeof FriendsRouteRoute
-    }
-    "/messages/$id": {
-      id: "/messages/$id"
-      path: "/$id"
-      fullPath: "/messages/$id"
-      preLoaderRoute: typeof MessagesIdRouteImport
-      parentRoute: typeof MessagesRouteRoute
     }
     "/friends/requests": {
       id: "/friends/requests"
@@ -296,20 +260,6 @@ const FriendsRouteRouteWithChildren = FriendsRouteRoute._addFileChildren(
   FriendsRouteRouteChildren,
 )
 
-interface MessagesRouteRouteChildren {
-  MessagesIdRoute: typeof MessagesIdRoute
-  MessagesIndexRoute: typeof MessagesIndexRoute
-}
-
-const MessagesRouteRouteChildren: MessagesRouteRouteChildren = {
-  MessagesIdRoute: MessagesIdRoute,
-  MessagesIndexRoute: MessagesIndexRoute,
-}
-
-const MessagesRouteRouteWithChildren = MessagesRouteRoute._addFileChildren(
-  MessagesRouteRouteChildren,
-)
-
 interface ServersIdRouteRouteChildren {
   ServersIdSettingsRoute: typeof ServersIdSettingsRoute
   ServersIdIndexRoute: typeof ServersIdIndexRoute
@@ -329,7 +279,7 @@ const ServersIdRouteRouteWithChildren = ServersIdRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   FriendsRouteRoute: FriendsRouteRouteWithChildren,
-  MessagesRouteRoute: MessagesRouteRouteWithChildren,
+  MessagesRouteRoute: MessagesRouteRoute,
   ExploreRoute: ExploreRoute,
   SettingsRoute: SettingsRoute,
   ServersIdRouteRoute: ServersIdRouteRouteWithChildren,
