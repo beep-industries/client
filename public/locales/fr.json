@@ -174,5 +174,31 @@
       "E_FRIENDSHIP_ALREADY_EXISTS": "Vous êtes déjà ami avec cet utilisateur",
       "E_USER_NOT_FOUND": "Utilisateur non trouvé"
     }
+  },
+  "serverInvitation": {
+    "title": "Créer une invitation de serveur",
+    "expiration_label": "Expiration",
+    "expiration": {
+      "one_day": "1 Jour",
+      "one_week": "1 Semaine",
+      "one_month": "1 Mois"
+    },
+    "invitation_link": "Lien d'invitation",
+    "copy": "Copier",
+    "copied": "Lien d'invitation copié dans le presse-papiers",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "create": "Créer l'invitation",
+    "success": "Invitation créée avec succès",
+    "error": "Échec de la création de l'invitation",
+    "loading": "Chargement...",
+    "accepting": "Acceptation de l'invitation...",
+    "accept_success": "Vous avez rejoint le serveur avec succès !",
+    "accept_error": "Échec de l'acceptation de l'invitation. Elle peut être invalide ou expirée.",
+    "success_title": "Invitation acceptée !",
+    "error_title": "Impossible d'accepter l'invitation",
+    "go_to_server": "Aller au serveur",
+    "go_home": "Explorer les serveurs",
+    "go_to_app": "Explorer les serveurs"
   }
 }
