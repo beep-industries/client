@@ -32,6 +32,24 @@ RUN pnpm install --frozen-lockfile
 # Stage 2: Build stage
 FROM base AS builder
 
+# Build arguments for Vite environment variables
+ARG VITE_KEYCLOAK_CLIENT_ID=frontend
+ARG VITE_KEYCLOAK_AUTHORITY=http://localhost:8080/realms/myrealm
+ARG VITE_USER_SERVICE_URL=http://localhost:3000
+ARG VITE_COMMUNITY_SERVICE_URL=http://localhost:3003
+ARG VITE_REAL_TIME_URL=http://localhost:4000
+ARG VITE_WEBRTC_BASE=http://localhost:8080
+ARG VITE_MESSAGE_SERVICE_URL=http://localhost:3002
+
+# Convert ARG to ENV so they're available during build
+ENV VITE_KEYCLOAK_CLIENT_ID=$VITE_KEYCLOAK_CLIENT_ID
+ENV VITE_KEYCLOAK_AUTHORITY=$VITE_KEYCLOAK_AUTHORITY
+ENV VITE_USER_SERVICE_URL=$VITE_USER_SERVICE_URL
+ENV VITE_COMMUNITY_SERVICE_URL=$VITE_COMMUNITY_SERVICE_URL
+ENV VITE_REAL_TIME_URL=$VITE_REAL_TIME_URL
+ENV VITE_WEBRTC_BASE=$VITE_WEBRTC_BASE
+ENV VITE_MESSAGE_SERVICE_URL=$VITE_MESSAGE_SERVICE_URL
+
 # Copy node_modules from deps stage
 COPY --from=deps --chown=reactuser:nodejs /app/node_modules ./node_modules
 
