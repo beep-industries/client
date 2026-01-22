@@ -9,6 +9,7 @@ import React, {
 } from "react"
 import type { Channel, Socket } from "phoenix"
 import { Socket as PhoenixSocket } from "phoenix"
+import { Presence } from "phoenix"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import type { ChannelParams, RealTimeSocketState } from "@/shared/models/real-time.ts"
 
@@ -32,6 +33,20 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const [connected, setConnected] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const channelsRef = useRef<Map<string, Channel>>(new Map())
+  const [presences, setPresences] = useState<
+    Record<
+      string,
+      {
+        metas: [
+          {
+            phx_ref: string
+            [key: string | number]: unknown
+          },
+        ]
+      }[]
+    >
+  >({})
+  const presenceRefs = useRef<Map<string, Presence>>(new Map())
 
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
@@ -51,6 +66,16 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
       })
 
     channelsRef.current.set(topic, channel)
+
+    // Set up presence tracking
+    if (!presenceRefs.current.has(topic)) {
+      const presence = new Presence(channel)
+      presence.onSync(() => {
+        setPresences((prev) => ({ ...prev, [topic]: presence.list() }))
+      })
+      presenceRefs.current.set(topic, presence)
+    }
+
     return channel
   }, [])
   // Connect / disconnect the socket based on auth state
@@ -85,6 +110,8 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
         }
       })
       channelsRef.current.clear()
+      presenceRefs.current.clear()
+      setPresences({})
       socket.disconnect(() => void 0)
       setConnected(false)
     }
@@ -99,13 +126,23 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
         channelsRef.current.delete(topic)
       }
     }
+    // Clean up presence
+    const presence = presenceRefs.current.get(topic)
+    if (presence) {
+      presenceRefs.current.delete(topic)
+    }
+    setPresences((prev) => {
+      const newP = { ...prev }
+      delete newP[topic]
+      return newP
+    })
   }, [])
 
   const getChannel = useCallback((topic: string) => channelsRef.current.get(topic), [])
 
   const value = useMemo<RealTimeSocketState>(
-    () => ({ socket: socketRef.current, connected, join, leave, getChannel }),
-    [connected, join, leave, getChannel]
+    () => ({ socket: socketRef.current, connected, join, leave, getChannel, presences }),
+    [connected, join, leave, getChannel, presences]
   )
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

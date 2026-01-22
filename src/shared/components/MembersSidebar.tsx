@@ -5,7 +5,9 @@ import { ChevronDown, Loader2 } from "lucide-react"
 import Member from "./Member"
 import { Skeleton } from "./ui/Skeleton"
 import type { MemberData } from "./MemberDialog"
-import { useRef, useCallback, useEffect } from "react"
+import { useRef, useCallback, useEffect, useMemo } from "react"
+import { useRealTimeSocket } from "@/app/providers/RealTimeSocketProvider.tsx"
+import { useParams } from "@tanstack/react-router"
 
 interface MembersSidebarProps {
   open: boolean
@@ -36,6 +38,23 @@ export default function MembersSidebar({
   isFetchingMore,
 }: MembersSidebarProps) {
   const { t } = useTranslation()
+  const { id } = useParams({ strict: false }) as { id?: string }
+  const { presences } = useRealTimeSocket()
+  const updatedMembers = useMemo(
+    () =>
+      members.map(
+        (member) =>
+          ({
+            ...member,
+            status: presences["server:" + id]?.find(
+              (presence) => presence.metas[0]?.user_id === member.id
+            )
+              ? "online"
+              : "offline",
+          }) as MemberData
+      ),
+    [id, members, presences]
+  )
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const observerTarget = useRef<HTMLDivElement>(null)
 
@@ -86,7 +105,7 @@ export default function MembersSidebar({
               </>
             ) : (
               <>
-                {members.map((member) => (
+                {updatedMembers.map((member) => (
                   <Member key={member.id} member={member} />
                 ))}
                 {hasMore && (

@@ -10,6 +10,17 @@ export interface RealTimeSocketState {
   join: (topic: string, params?: ChannelParams) => Channel
   leave: (topic: string) => void
   getChannel: (topic: string) => Channel | undefined
+  presences: Record<
+    string,
+    {
+      metas: [
+        {
+          phx_ref: string
+          [key: string | number]: unknown
+        },
+      ]
+    }[]
+  >
 }
 
 export interface TopicJoinSpec {
