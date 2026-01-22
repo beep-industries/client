@@ -150,3 +150,15 @@ export const acceptServerInvitation = (accessToken: string, invitationId: string
   const api = createCommunityApi(accessToken)
   return api.post(`invitations/${invitationId}/accept`).json()
 }
+export const getServerMembers = (
+  accessToken: string,
+  serverId: string,
+  query: CommunityPagination
+) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get(`servers/${serverId}/members`, { searchParams }).json()
+}
