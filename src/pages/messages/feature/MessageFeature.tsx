@@ -6,8 +6,8 @@ interface MessageFeatureProps extends Message {
   content: string
   author_id: string
   created_at: string
-  updated_at?: string
-  reply_to_message_id?: string
+  updated_at?: string | null
+  reply_to_message_id?: string | null
   _id: string
   isCompact?: boolean
   status?: "pending" | "sent"

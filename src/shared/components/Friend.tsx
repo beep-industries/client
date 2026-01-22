@@ -10,7 +10,7 @@ interface FriendProps {
 export default function Friend({ id, name, avatar }: FriendProps) {
   return (
     <Link
-      to="/messages/$id"
+      to="/messages"
       params={{ id }}
       className="text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full flex-row items-center gap-3 rounded-md p-2"
       activeProps={{

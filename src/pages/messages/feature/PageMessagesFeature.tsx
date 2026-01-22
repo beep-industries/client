@@ -4,7 +4,7 @@ import { messagesReducer, initialMessagesState } from "../reducers/MessageReduce
 
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useCreateMessage, useMessages } from "@/shared/queries/message/message.queries"
-import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
+import type { CreateMessageRequest, Message } from "@/shared/queries/message/message.types"
 import { RealTimeEventProvider } from "@/app/providers/RealTimeEventProvider.tsx"
 import type { MessageCreatedEvent } from "@/shared/queries/real-time/event.types"
 
@@ -53,23 +53,33 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     [accessToken, channelId, createMessageMutation]
   )
 
+  // Helper pour convertir un event websocket en Message complet
+  const toMessage = (event: MessageCreatedEvent): Message => ({
+    _id: event.message_id,
+    channel_id: event.channel_id,
+    author_id: event.author_id,
+    content: event.content,
+    reply_to_message_id: event.reply_to_message_id ?? null,
+    attachments: [],
+    is_pinned: false,
+    created_at: event.created_at || new Date().toISOString(),
+    updated_at: event.updated_at ?? event.created_at ?? new Date().toISOString(),
+  })
+
   // Réconciliation sur réception websocket : passe le message en 'sent' si id match
   const onEventChannelHandler = (event: MessageCreatedEvent) => {
-    // Si le message existe déjà (même id), on update juste le status
-    const existingMsg = messagesState.liveMessages.find((m) => m._id === event.message_id)
+    const msg = toMessage(event)
+    const existingMsg = messagesState.liveMessages.find((m) => m._id === msg._id)
     if (existingMsg) {
       if (existingMsg.status === "pending") {
-        // Met à jour tous les champs du message local avec ceux du serveur, y compris status
         dispatch({
           type: "UPDATE_LIVE_MESSAGE",
-          payload: { id: existingMsg._id, message: { ...event, status: "sent" as const } },
+          payload: { id: existingMsg._id, message: { ...msg, status: "sent" as const } },
         })
       }
-      // Ne pas ajouter le message une deuxième fois
       return
     }
-    // Sinon, on l'ajoute (cas d'un message reçu d'un autre user)
-    dispatch({ type: "ADD_LIVE_MESSAGE", payload: { ...event, status: "sent" as const } })
+    dispatch({ type: "ADD_LIVE_MESSAGE", payload: { ...msg, status: "sent" as const } })
   }
 
   // Load fetched messages into state
