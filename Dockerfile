@@ -53,8 +53,17 @@ COPY --from=builder /app/dist /usr/share/nginx/html
 # Copy nginx configuration
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 8080 (non-privileged port)
-EXPOSE 8080
+# Copy entrypoint script
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+USER root
+RUN chmod +x /docker-entrypoint.sh
+USER nginx
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Expose port 5173 (can be overridden with NGINX_PORT env var)
+EXPOSE 5173
+
+# Set default port
+ENV NGINX_PORT=5173
+
+# Start nginx with entrypoint script
+ENTRYPOINT ["/docker-entrypoint.sh"]
