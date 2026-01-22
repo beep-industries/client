@@ -15,6 +15,7 @@ export interface Message {
   is_pinned: boolean
   created_at: string // ISO 8601 date-time
   updated_at?: string | null // ISO 8601 date-time or null
+  status?: "pending" | "sent"
 }
 
 // State type

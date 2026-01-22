@@ -15,6 +15,7 @@ interface MessageProps {
   authorId?: string
   authorStatus?: MemberData["status"]
   authorDescription?: string
+  status?: "pending" | "sent"
 }
 
 export default function MessageComponent({
@@ -26,6 +27,7 @@ export default function MessageComponent({
   authorId,
   authorStatus,
   authorDescription,
+  status,
 }: MessageProps) {
   const { t, i18n } = useTranslation()
   const [showProfile, setShowProfile] = useState(false)
@@ -38,9 +40,15 @@ export default function MessageComponent({
     description: authorDescription,
   }
 
+  // Couleur selon le status
+  let messageBg = ""
+  if (status === "pending") messageBg = "text-muted-foreground"
+
   if (isCompact) {
     return (
-      <div className="hover:bg-accent flex h-fit w-full items-start gap-3 px-5 pl-16">
+      <div
+        className={`hover:bg-accent flex h-fit w-full items-start gap-3 px-5 pl-16 ${messageBg}`}
+      >
         <div className="flex w-full flex-col wrap-anywhere">
           <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
         </div>
@@ -49,7 +57,9 @@ export default function MessageComponent({
   }
 
   return (
-    <div className="hover:bg-accent group mt-3 flex h-fit w-full items-start gap-3 px-5">
+    <div
+      className={`hover:bg-accent group mt-3 flex h-fit w-full items-start gap-3 px-5 ${messageBg}`}
+    >
       <Avatar
         className="mt-1 h-8 w-8 cursor-pointer rounded-lg grayscale"
         onClick={() => setShowProfile(true)}

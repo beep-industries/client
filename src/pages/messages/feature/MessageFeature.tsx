@@ -3,7 +3,14 @@ import type { Message } from "@/shared/queries/message/message.types"
 import { useUserBySub } from "@/shared/queries/user/user.queries"
 
 interface MessageFeatureProps extends Message {
+  content: string
+  author_id: string
+  created_at: string
+  updated_at?: string
+  reply_to_message_id?: string
+  _id: string
   isCompact?: boolean
+  status?: "pending" | "sent"
 }
 
 export default function MessageFeature({
@@ -14,6 +21,7 @@ export default function MessageFeature({
   reply_to_message_id,
   _id,
   isCompact = false,
+  status,
 }: MessageFeatureProps) {
   const { data: author, isLoading } = useUserBySub(author_id)
 
@@ -28,6 +36,7 @@ export default function MessageFeature({
         replyTo={reply_to_message_id || undefined}
         key={_id}
         isCompact={isCompact}
+        status={status}
       />
     )
   }
@@ -42,6 +51,7 @@ export default function MessageFeature({
       replyTo={reply_to_message_id || undefined}
       key={_id}
       isCompact={isCompact}
+      status={status}
     />
   )
 }

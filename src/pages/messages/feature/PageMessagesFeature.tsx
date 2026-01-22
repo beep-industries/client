@@ -6,6 +6,7 @@ import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useCreateMessage, useMessages } from "@/shared/queries/message/message.queries"
 import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
 import { RealTimeEventProvider } from "@/app/providers/RealTimeEventProvider.tsx"
+import type { MessageCreatedEvent } from "@/shared/queries/real-time/event.types"
 
 interface PageMessagesFeatureProps {
   channelId: string
@@ -29,7 +30,7 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
   } = useMessages(channelId)
   const createMessageMutation = useCreateMessage()
 
-  // Send a new message
+  // Send a new message (no optimistic, only after HTTP response)
   const sendMessage = useCallback(
     async (messageData: Omit<CreateMessageRequest, "channel_id">) => {
       if (!accessToken) throw new Error("No access token available")
@@ -38,7 +39,11 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
           ...messageData,
           channel_id: channelId,
         })
-        dispatch({ type: "ADD_FETCHED_MESSAGE", payload: newMessage })
+        // Ajoute le message en "pending" (gris) jusqu'à confirmation socket
+        dispatch({
+          type: "ADD_LIVE_MESSAGE",
+          payload: { ...newMessage, status: "pending" as const },
+        })
         return newMessage
       } catch (error) {
         console.error("Error sending message:", error)
@@ -48,7 +53,24 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     [accessToken, channelId, createMessageMutation]
   )
 
-  const onEventChannelHandler = () => {}
+  // Réconciliation sur réception websocket : passe le message en 'sent' si id match
+  const onEventChannelHandler = (event: MessageCreatedEvent) => {
+    // Si le message existe déjà (même id), on update juste le status
+    const existingMsg = messagesState.liveMessages.find((m) => m._id === event.message_id)
+    if (existingMsg) {
+      if (existingMsg.status === "pending") {
+        // Met à jour tous les champs du message local avec ceux du serveur, y compris status
+        dispatch({
+          type: "UPDATE_LIVE_MESSAGE",
+          payload: { id: existingMsg._id, message: { ...event, status: "sent" as const } },
+        })
+      }
+      // Ne pas ajouter le message une deuxième fois
+      return
+    }
+    // Sinon, on l'ajoute (cas d'un message reçu d'un autre user)
+    dispatch({ type: "ADD_LIVE_MESSAGE", payload: { ...event, status: "sent" as const } })
+  }
 
   // Load fetched messages into state
   useEffect(() => {
