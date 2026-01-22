@@ -125,6 +125,11 @@
     "view_profile": "Voir le profil",
     "add_friend": "Ajouter en ami",
     "send_message": "Envoyer un message",
+    "profile": "Profil",
+    "notifications": "Notifications"
+  },
+  "sendingBar": {
+    "placeholder": "Envoyer un message",
     "profile": "Profil"
   },
   "videoConference": {
@@ -174,6 +179,11 @@
       "E_FRIENDSHIP_ALREADY_EXISTS": "Vous êtes déjà ami avec cet utilisateur",
       "E_USER_NOT_FOUND": "Utilisateur non trouvé"
     }
+  },
+  "date": {
+    "today_at": "Aujourd'hui à",
+    "yesterday_at": "Hier à",
+    "at": "à"
   },
   "serverInvitation": {
     "title": "Créer une invitation de serveur",

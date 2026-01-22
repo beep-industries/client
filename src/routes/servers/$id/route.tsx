@@ -6,7 +6,7 @@ import ServerChannels from "@/shared/components/ServerChannels"
 import { useServerById } from "@/shared/queries/community/community.queries"
 import TopBarServers from "@/shared/components/TopBarServers"
 import MembersSidebar from "@/shared/components/MembersSidebar"
-import type { MemberData } from "@/shared/components/Member"
+import type { MemberData } from "@/shared/components/MemberDialog"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 
 export const Route = createFileRoute("/servers/$id")({

@@ -152,6 +152,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
   const join = useCallback(
     async (server: string, sess: string) => {
+      if (server === server && session === sess && iceStatus === "connected") return
       setServer(server)
       setSession(sess)
       const rtc = ensureRtc()

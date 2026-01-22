@@ -2,9 +2,10 @@ import { createFileRoute } from "@tanstack/react-router"
 import ChannelPage from "@/shared/components/ChannelPage.tsx"
 
 export const Route = createFileRoute("/servers/$id/$channelId/")({
-  component: RouteComponent,
+  component: ChannelIndexPage,
 })
 
-function RouteComponent() {
+function ChannelIndexPage() {
+  //const { id } = Route.useParams()
   return <ChannelPage />
 }

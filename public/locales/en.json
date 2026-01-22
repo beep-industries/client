@@ -125,7 +125,8 @@
     "view_profile": "View profile",
     "add_friend": "Add friend",
     "send_message": "Send message",
-    "profile": "Profile"
+    "profile": "Profile",
+    "notifications": "Notifications"
   },
   "videoConference": {
     "participants": "participant",
@@ -173,6 +174,16 @@
       "E_FRIEND_REQUEST_ALREADY_EXISTS": "A friend request already exists for this user",
       "E_FRIENDSHIP_ALREADY_EXISTS": "You are already friends with this user",
       "E_USER_NOT_FOUND": "User not found"
+    },
+    "notifications": "Notifications"
+  },
+  "sendingBar": {
+    "placeholder": "Send a message"
+  },
+  "date": {
+    "today_at": "Today at",
+    "yesterday_at": "Yesterday at",
+    "at": "at"
     }
   },
   "serverInvitation": {
