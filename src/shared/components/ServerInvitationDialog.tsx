@@ -68,7 +68,9 @@ export default function ServerInvitationDialog({
       expire_in: expiration,
     })
     if (response) {
-      setInvitationCode((response as InvitationResponse).id)
+      const invitationId = (response as InvitationResponse).id
+      const invitationUrl = `${window.location.origin}/invitations/${invitationId}`
+      setInvitationCode(invitationUrl)
     }
   }
 
@@ -128,9 +130,9 @@ export default function ServerInvitationDialog({
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <label className="text-sm font-medium">{t("serverInvitation.invitation_code")}</label>
+              <label className="text-sm font-medium">{t("serverInvitation.invitation_link")}</label>
               <div className="flex gap-2">
-                <Input value={invitationCode} readOnly className="font-mono" />
+                <Input value={invitationCode} readOnly className="flex-1 font-mono text-sm" />
                 <Button onClick={handleCopyInvitation}>{t("serverInvitation.copy")}</Button>
               </div>
             </div>

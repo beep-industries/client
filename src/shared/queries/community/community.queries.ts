@@ -20,6 +20,7 @@ import {
   getChannel,
   deleteFriend,
   createServerInvitation,
+  acceptServerInvitation,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -334,5 +335,13 @@ export const useCreateServerInvitationMutation = () => {
 
   return useMutation({
     mutationFn: (body: CreateServerInvitation) => createServerInvitation(accessToken!, body),
+  })
+}
+
+export const useAcceptServerInvitation = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (invitationId: string) => acceptServerInvitation(accessToken!, invitationId),
   })
 }

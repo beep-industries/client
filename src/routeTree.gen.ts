@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from "./routes/index"
 import { Route as MessagesIndexRouteImport } from "./routes/messages/index"
 import { Route as FriendsIndexRouteImport } from "./routes/friends/index"
 import { Route as MessagesIdRouteImport } from "./routes/messages/$id"
+import { Route as InvitationsInvitationIdRouteImport } from "./routes/invitations/$invitationId"
 import { Route as FriendsRequestsRouteImport } from "./routes/friends/requests"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
@@ -63,6 +64,11 @@ const MessagesIdRoute = MessagesIdRouteImport.update({
   path: "/$id",
   getParentRoute: () => MessagesRouteRoute,
 } as any)
+const InvitationsInvitationIdRoute = InvitationsInvitationIdRouteImport.update({
+  id: "/invitations/$invitationId",
+  path: "/invitations/$invitationId",
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FriendsRequestsRoute = FriendsRequestsRouteImport.update({
   id: "/requests",
   path: "/requests",
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   "/settings": typeof SettingsRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
+  "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
   "/messages/": typeof MessagesIndexRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByTo {
   "/explore": typeof ExploreRoute
   "/settings": typeof SettingsRoute
   "/friends/requests": typeof FriendsRequestsRoute
+  "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends": typeof FriendsIndexRoute
   "/messages": typeof MessagesIndexRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   "/settings": typeof SettingsRoute
   "/servers/$id": typeof ServersIdRouteRouteWithChildren
   "/friends/requests": typeof FriendsRequestsRoute
+  "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/messages/$id": typeof MessagesIdRoute
   "/friends/": typeof FriendsIndexRoute
   "/messages/": typeof MessagesIndexRoute
@@ -142,6 +151,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/servers/$id"
     | "/friends/requests"
+    | "/invitations/$invitationId"
     | "/messages/$id"
     | "/friends/"
     | "/messages/"
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
     | "/explore"
     | "/settings"
     | "/friends/requests"
+    | "/invitations/$invitationId"
     | "/messages/$id"
     | "/friends"
     | "/messages"
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | "/settings"
     | "/servers/$id"
     | "/friends/requests"
+    | "/invitations/$invitationId"
     | "/messages/$id"
     | "/friends/"
     | "/messages/"
@@ -184,6 +196,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   SettingsRoute: typeof SettingsRoute
   ServersIdRouteRoute: typeof ServersIdRouteRouteWithChildren
+  InvitationsInvitationIdRoute: typeof InvitationsInvitationIdRoute
 }
 
 declare module "@tanstack/react-router" {
@@ -243,6 +256,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/messages/$id"
       preLoaderRoute: typeof MessagesIdRouteImport
       parentRoute: typeof MessagesRouteRoute
+    }
+    "/invitations/$invitationId": {
+      id: "/invitations/$invitationId"
+      path: "/invitations/$invitationId"
+      fullPath: "/invitations/$invitationId"
+      preLoaderRoute: typeof InvitationsInvitationIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     "/friends/requests": {
       id: "/friends/requests"
@@ -333,6 +353,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   SettingsRoute: SettingsRoute,
   ServersIdRouteRoute: ServersIdRouteRouteWithChildren,
+  InvitationsInvitationIdRoute: InvitationsInvitationIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

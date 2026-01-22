@@ -145,3 +145,8 @@ export const createServerInvitation = (
   const body = computeExpiration(expire_in)
   return api.post(`servers/${server_id}/invitations`, { json: body }).json()
 }
+
+export const acceptServerInvitation = (accessToken: string, invitationId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.post(`invitations/${invitationId}/accept`).json()
+}
