@@ -47,3 +47,9 @@ export const getUserBySub = (accessToken: string, sub: string) => {
   const api = createUserApi(accessToken)
   return api.get(`users/${sub}`).json<UserBasicInfo>()
 }
+
+// POST /users/batch
+export const getUsersBatch = (accessToken: string, subs: string[]) => {
+  const api = createUserApi(accessToken)
+  return api.get("users/bart", { json: { subs } }).json<UserBasicInfo[]>()
+}

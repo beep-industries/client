@@ -4,6 +4,7 @@ import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
 import { ServerProfile } from "@/shared/components/ServerProfile"
 import ServerChannels from "@/shared/components/ServerChannels"
 import { useServerById, useServerMembers } from "@/shared/queries/community/community.queries"
+import { useUsersBatch } from "@/shared/queries/user/user.queries"
 import TopBarServers from "@/shared/components/TopBarServers"
 import MembersSidebar from "@/shared/components/MembersSidebar"
 import type { MemberData } from "@/shared/components/MemberDialog"
@@ -27,19 +28,35 @@ function ServerLayout() {
 
   useDocumentTitle(server?.name)
 
-  const members: MemberData[] = useMemo(() => {
+  // Get all unique user IDs from all pages
+  const userIds = useMemo(() => {
     if (!membersData?.pages) return []
+    return membersData.pages.flatMap((page) => page.data.map((member) => member.user_id))
+  }, [membersData])
+
+  // Fetch user details in batch
+  const { data: usersData, isLoading: isUsersLoading } = useUsersBatch(userIds)
+
+  // Combine member data with user details
+  const members: MemberData[] = useMemo(() => {
+    if (!membersData?.pages || !usersData) return []
+
+    // Create a map of user_id -> user info for quick lookup
+    const userMap = new Map(usersData.map((user) => [user.sub, user]))
 
     return membersData.pages.flatMap((page) =>
-      page.data.map((member) => ({
-        id: member.user_id,
-        username: member.nickname || member.user_id,
-        avatar_url: undefined,
-        status: undefined,
-        description: undefined,
-      }))
+      page.data.map((member) => {
+        const user = userMap.get(member.user_id)
+        return {
+          id: member.user_id,
+          username: member.nickname || user?.display_name || member.user_id,
+          avatar_url: user?.profile_picture,
+          status: undefined,
+          description: user?.description,
+        }
+      })
     )
-  }, [membersData])
+  }, [membersData, usersData])
 
   useEffect(() => {
     if (server) {
@@ -62,7 +79,11 @@ function ServerLayout() {
         <div className="flex-1 overflow-auto">
           <Outlet />
         </div>
-        <MembersSidebar open={showMembers} members={members} isLoading={isMembersLoading} />
+        <MembersSidebar
+          open={showMembers}
+          members={members}
+          isLoading={isMembersLoading || isUsersLoading}
+        />
       </div>
     </>
   )
