@@ -31,7 +31,8 @@ function ServerLayout() {
   // Get all unique user IDs from all pages
   const userIds = useMemo(() => {
     if (!membersData?.pages) return []
-    return membersData.pages.flatMap((page) => page.data.map((member) => member.user_id))
+    const ids = membersData.pages.flatMap((page) => page.data.map((member) => member.user_id))
+    return ids
   }, [membersData])
 
   // Fetch user details in batch
@@ -47,9 +48,10 @@ function ServerLayout() {
     return membersData.pages.flatMap((page) =>
       page.data.map((member) => {
         const user = userMap.get(member.user_id)
+        const displayName = member.nickname ?? user?.display_name ?? member.user_id
         return {
           id: member.user_id,
-          username: member.nickname || user?.display_name || member.user_id,
+          username: displayName,
           avatar_url: user?.profile_picture,
           status: undefined,
           description: user?.description,
@@ -69,6 +71,8 @@ function ServerLayout() {
     }
   }, [setHeader, setContent, server, id])
 
+  // Only show loading if we don't have any data yet
+
   return (
     <>
       <TopBarServers
@@ -82,7 +86,7 @@ function ServerLayout() {
         <MembersSidebar
           open={showMembers}
           members={members}
-          isLoading={isMembersLoading || isUsersLoading}
+          isLoading={isUsersLoading || isMembersLoading}
         />
       </div>
     </>

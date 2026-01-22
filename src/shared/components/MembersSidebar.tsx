@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next"
 import { cn } from "@/shared/lib/utils"
 import { SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "./ui/Sidebar"
 import { ChevronDown } from "lucide-react"
-import Member, { type MemberData } from "./Member"
+import Member from "./Member"
 import { Skeleton } from "./ui/Skeleton"
+import type { MemberData } from "./MemberDialog"
 
 interface MembersSidebarProps {
   open: boolean

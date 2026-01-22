@@ -19,12 +19,9 @@ import {
   updateChannel,
   getChannel,
   deleteFriend,
-<<<<<<< HEAD
   createServerInvitation,
   acceptServerInvitation,
-=======
   getServerMembers,
->>>>>>> e92b971 (feat: fetch server member and display basic information)
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -40,11 +37,8 @@ import type {
   CreateServerChannelRequest,
   UpdateServerChannelRequest,
   GetServersResponse,
-<<<<<<< HEAD
   CreateServerInvitation,
-=======
   GetServerMembersResponse,
->>>>>>> e92b971 (feat: fetch server member and display basic information)
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
@@ -340,7 +334,6 @@ export const useDeleteFriend = () => {
   })
 }
 
-<<<<<<< HEAD
 export const useCreateServerInvitationMutation = () => {
   const { accessToken } = useAuth()
 
@@ -354,7 +347,9 @@ export const useAcceptServerInvitation = () => {
 
   return useMutation({
     mutationFn: (invitationId: string) => acceptServerInvitation(accessToken!, invitationId),
-=======
+  })
+}
+
 export const useServerMembers = (serverId: string) => {
   const { accessToken } = useAuth()
 
@@ -379,6 +374,5 @@ export const useServerMembers = (serverId: string) => {
       if (lastPage.page * MAXIMUM_MEMBERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!serverId,
->>>>>>> e92b971 (feat: fetch server member and display basic information)
   })
 }
