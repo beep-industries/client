@@ -37,12 +37,10 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
     Record<
       string,
       {
-        metas: [
-          {
-            phx_ref: string
-            [key: string | number]: unknown
-          },
-        ]
+        metas: {
+          phx_ref: string
+          [key: string | number]: unknown
+        }[]
       }[]
     >
   >({})
