@@ -37,3 +37,17 @@ export interface UpdateUserSettingsRequest {
 export interface FullInfoQuery {
   full_info?: boolean
 }
+
+// Batch users request/response
+export interface GetUsersBySubsRequest {
+  subs: string[]
+  offset?: number
+  limit?: number
+}
+
+export interface GetUsersBySubsResponse {
+  users: UserBasicInfo[]
+  total: number
+  offset: number
+  limit: number
+}

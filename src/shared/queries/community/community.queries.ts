@@ -21,6 +21,7 @@ import {
   deleteFriend,
   createServerInvitation,
   acceptServerInvitation,
+  getServerMembers,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -37,12 +38,14 @@ import type {
   UpdateServerChannelRequest,
   GetServersResponse,
   CreateServerInvitation,
+  GetServerMembersResponse,
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
   MAXIMUM_FRIEND_REQUESTS_PER_API_CALL,
   MAXIMUM_FRIENDS_PER_API_CALL,
   MAXIMUM_SERVERS_PER_API_CALL,
+  MAXIMUM_MEMBERS_PER_API_CALL,
 } from "@/shared/constants/community.contants"
 
 export const communityKeys = {
@@ -50,6 +53,7 @@ export const communityKeys = {
   servers: () => [...communityKeys.all, "servers"] as const,
   server: (serverId: string) => [...communityKeys.all, `server-${serverId}`] as const,
   channels: (serverId: string) => [...communityKeys.all, `channels-${serverId}`] as const,
+  members: (serverId: string) => [...communityKeys.all, `members-${serverId}`] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -343,5 +347,32 @@ export const useAcceptServerInvitation = () => {
 
   return useMutation({
     mutationFn: (invitationId: string) => acceptServerInvitation(accessToken!, invitationId),
+  })
+}
+
+export const useServerMembers = (serverId: string) => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: communityKeys.members(serverId),
+    queryFn: async ({ pageParam }): Promise<GetServerMembersResponse> => {
+      try {
+        const response = await getServerMembers(accessToken!, serverId, {
+          page: pageParam,
+          limit: MAXIMUM_MEMBERS_PER_API_CALL,
+        })
+
+        return response as GetServerMembersResponse
+      } catch (error) {
+        console.error("Error fetching server members:", error)
+        throw new Error("Error fetching server members")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_MEMBERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken && !!serverId,
   })
 }

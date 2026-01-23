@@ -6,6 +6,7 @@ import type {
   UserSettings,
   UpdateUserSettingsRequest,
   FullInfoQuery,
+  GetUsersBySubsResponse,
 } from "./user.types"
 
 const createUserApi = (accessToken: string) =>
@@ -46,4 +47,11 @@ export const updateCurrentUserSettings = (accessToken: string, data: UpdateUserS
 export const getUserBySub = (accessToken: string, sub: string) => {
   const api = createUserApi(accessToken)
   return api.get(`users/${sub}`).json<UserBasicInfo>()
+}
+
+// POST /users/bart
+export const getUsersBatch = async (accessToken: string, subs: string[]) => {
+  const api = createUserApi(accessToken)
+  const response = await api.post("users/bart", { json: { subs } }).json<GetUsersBySubsResponse>()
+  return response.users
 }

@@ -5,6 +5,7 @@ import {
   getCurrentUserSettings,
   updateCurrentUserSettings,
   getUserBySub,
+  getUsersBatch,
 } from "./user.api"
 import type { UpdateUserRequest, UpdateUserSettingsRequest } from "./user.types"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
@@ -15,6 +16,7 @@ export const userKeys = {
   meFullInfo: () => [...userKeys.me(), "full"] as const,
   settings: () => [...userKeys.all, "settings"] as const,
   detail: (id: string) => [...userKeys.all, id] as const,
+  batch: (ids: string[]) => [...userKeys.all, "batch", ...ids.sort()] as const,
 }
 
 export const useCurrentUser = (fullInfo?: boolean) => {
@@ -80,5 +82,15 @@ export const useUsersBySubs = (subs: string[]) => {
       queryFn: () => getUserBySub(accessToken!, sub),
       enabled: !!accessToken && !!sub,
     })),
+  })
+}
+
+export const useUsersBatch = (subs: string[]) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: userKeys.batch(subs),
+    queryFn: () => getUsersBatch(accessToken!, subs),
+    enabled: !!accessToken && subs.length > 0,
   })
 }
