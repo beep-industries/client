@@ -24,6 +24,13 @@ import {
   getServerMembers,
   searchOrDiscoverServer,
   createMember,
+  getRoles,
+  getRole,
+  createRole,
+  updateRole,
+  deleteRole,
+  assignRole,
+  unassignRole,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -42,6 +49,12 @@ import type {
   CreateServerInvitation,
   GetServerMembersResponse,
   CreateMemberRequest,
+  Role,
+  GetRolesResponse,
+  CreateRoleRequest,
+  UpdateRoleRequest,
+  AssignRoleRequest,
+  UnassignRoleRequest,
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
@@ -59,6 +72,8 @@ export const communityKeys = {
   members: (serverId: string) => [...communityKeys.all, `members-${serverId}`] as const,
   createMember: (servirId: string, userId: string) =>
     [...communityKeys.all, `members-${servirId}`, userId] as const,
+  roles: (serverId: string) => [...communityKeys.all, `roles-${serverId}`] as const,
+  role: (roleId: string) => [...communityKeys.all, `role-${roleId}`] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -494,5 +509,90 @@ export const useDiscoverServersPage = (page: number) => {
       }
     },
     enabled: !!accessToken,
+  })
+}
+export const useRoles = (serverId: string) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.roles(serverId),
+    queryFn: async (): Promise<GetRolesResponse> => {
+      try {
+        const response = await getRoles(accessToken!, serverId)
+        return response as GetRolesResponse
+      } catch (error) {
+        console.error("Error fetching roles:", error)
+        throw new Error("Error fetching roles")
+      }
+    },
+    enabled: !!accessToken && !!serverId,
+  })
+}
+
+export const useRole = (roleId: string) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.role(roleId),
+    queryFn: async (): Promise<Role> => {
+      try {
+        const response = await getRole(accessToken!, roleId)
+        return response as Role
+      } catch (error) {
+        console.error("Error fetching role:", error)
+        throw new Error("Error fetching role")
+      }
+    },
+    enabled: !!accessToken && !!roleId,
+  })
+}
+
+export const useCreateRole = (serverId: string) => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: CreateRoleRequest) => {
+      return createRole(accessToken!, serverId, body)
+    },
+  })
+}
+
+export const useUpdateRole = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (payload: { roleId: string; body: UpdateRoleRequest }) => {
+      return updateRole(accessToken!, payload.roleId, payload.body)
+    },
+  })
+}
+
+export const useDeleteRole = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (roleId: string) => {
+      return deleteRole(accessToken!, roleId)
+    },
+  })
+}
+
+export const useAssignRole = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: AssignRoleRequest) => {
+      return assignRole(accessToken!, body)
+    },
+  })
+}
+
+export const useUnassignRole = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (body: UnassignRoleRequest) => {
+      return unassignRole(accessToken!, body)
+    },
   })
 }

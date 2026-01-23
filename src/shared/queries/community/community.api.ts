@@ -11,6 +11,10 @@ import {
   type CreateServerChannelRequest,
   type UpdateServerChannelRequest,
   type CreateServerInvitation,
+  type CreateRoleRequest,
+  type UpdateRoleRequest,
+  type AssignRoleRequest,
+  type UnassignRoleRequest,
   computeExpiration,
   type CreateMemberRequest,
 } from "./community.types"
@@ -182,4 +186,39 @@ export const searchOrDiscoverServer = (
     limit: query.limit.toString(),
   }
   return api.get(`servers/search`, { searchParams }).json()
+}
+
+export const getRoles = (accessToken: string, serverId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.get(`servers/${serverId}/roles`).json()
+}
+
+export const getRole = (accessToken: string, roleId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.get(`roles/${roleId}`).json()
+}
+
+export const createRole = (accessToken: string, serverId: string, body: CreateRoleRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post(`servers/${serverId}/roles`, { json: body }).json()
+}
+
+export const updateRole = (accessToken: string, roleId: string, body: UpdateRoleRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.put(`roles/${roleId}`, { json: body }).json()
+}
+
+export const deleteRole = (accessToken: string, roleId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.delete(`roles/${roleId}`).json()
+}
+
+export const assignRole = (accessToken: string, { role_id, member_id }: AssignRoleRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post(`roles/${role_id}/members/${member_id}`).json()
+}
+
+export const unassignRole = (accessToken: string, { role_id, member_id }: UnassignRoleRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.delete(`roles/${role_id}/members/${member_id}`).json()
 }
