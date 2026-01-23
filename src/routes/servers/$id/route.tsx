@@ -21,8 +21,9 @@ function ServerLayout() {
   const {
     data: membersData,
     isLoading: isMembersLoading,
-    // fetchNextPage,
-    // hasNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
   } = useServerMembers(id)
   const [showMembers, setShowMembers] = useState(false)
 
@@ -71,8 +72,6 @@ function ServerLayout() {
     }
   }, [setHeader, setContent, server, id])
 
-  // Only show loading if we don't have any data yet
-
   return (
     <>
       <TopBarServers
@@ -87,6 +86,9 @@ function ServerLayout() {
           open={showMembers}
           members={members}
           isLoading={isUsersLoading || isMembersLoading}
+          onLoadMore={fetchNextPage}
+          hasMore={hasNextPage}
+          isFetchingMore={isFetchingNextPage}
         />
       </div>
     </>

@@ -1,15 +1,19 @@
 import { useTranslation } from "react-i18next"
 import { cn } from "@/shared/lib/utils"
 import { SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "./ui/Sidebar"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, Loader2 } from "lucide-react"
 import Member from "./Member"
 import { Skeleton } from "./ui/Skeleton"
 import type { MemberData } from "./MemberDialog"
+import { useRef, useCallback, useEffect } from "react"
 
 interface MembersSidebarProps {
   open: boolean
   members: MemberData[]
   isLoading?: boolean
+  onLoadMore?: () => void
+  hasMore?: boolean
+  isFetchingMore?: boolean
 }
 
 function MemberSkeleton() {
@@ -23,8 +27,41 @@ function MemberSkeleton() {
   )
 }
 
-export default function MembersSidebar({ open, members, isLoading }: MembersSidebarProps) {
+export default function MembersSidebar({
+  open,
+  members,
+  isLoading,
+  onLoadMore,
+  hasMore,
+  isFetchingMore,
+}: MembersSidebarProps) {
   const { t } = useTranslation()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  const observerTarget = useRef<HTMLDivElement>(null)
+
+  const handleObserver = useCallback(
+    (entries: IntersectionObserverEntry[]) => {
+      const [target] = entries
+      if (target.isIntersecting && hasMore && !isFetchingMore && onLoadMore) {
+        onLoadMore()
+      }
+    },
+    [hasMore, isFetchingMore, onLoadMore]
+  )
+
+  useEffect(() => {
+    const element = observerTarget.current
+    const container = scrollContainerRef.current
+    if (!element || !container) return
+
+    const observer = new IntersectionObserver(handleObserver, {
+      root: container,
+      threshold: 0.1,
+    })
+
+    observer.observe(element)
+    return () => observer.disconnect()
+  }, [handleObserver])
 
   return (
     <aside
@@ -39,7 +76,7 @@ export default function MembersSidebar({ open, members, isLoading }: MembersSide
           <span>{t("topBar.members")}</span>
           <span className="text-muted-foreground/80">{isLoading ? "..." : members.length}</span>
         </SidebarGroupLabel>
-        <div className="flex-1 overflow-auto px-2">
+        <div className="flex-1 overflow-auto px-2" ref={scrollContainerRef}>
           <SidebarMenu>
             {isLoading ? (
               <>
@@ -48,7 +85,23 @@ export default function MembersSidebar({ open, members, isLoading }: MembersSide
                 ))}
               </>
             ) : (
-              members.map((member) => <Member key={member.id} member={member} />)
+              <>
+                {members.map((member) => (
+                  <Member key={member.id} member={member} />
+                ))}
+                {hasMore && (
+                  <div ref={observerTarget} className="py-2">
+                    {isFetchingMore && (
+                      <SidebarMenuItem>
+                        <SidebarMenuButton>
+                          <Loader2 className="size-4 animate-spin" />
+                          <span className="text-muted-foreground text-sm">Loading more...</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </SidebarMenu>
         </div>
