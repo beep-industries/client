@@ -150,6 +150,7 @@ export const acceptServerInvitation = (accessToken: string, invitationId: string
   const api = createCommunityApi(accessToken)
   return api.post(`invitations/${invitationId}/accept`).json()
 }
+
 export const getServerMembers = (
   accessToken: string,
   serverId: string,
@@ -161,4 +162,18 @@ export const getServerMembers = (
     limit: query.limit.toString(),
   }
   return api.get(`servers/${serverId}/members`, { searchParams }).json()
+}
+
+export const searchOrDiscoverServer = (
+  accessToken: string,
+  search_query: string,
+  query: CommunityPagination
+) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    q: search_query,
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get(`servers/search`, { searchParams }).json()
 }
