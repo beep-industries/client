@@ -1,6 +1,7 @@
 {
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "load_more": "Load more"
   },
   "serverNav": {
     "create_server": "Create a server",
@@ -119,7 +120,8 @@
   "explore": {
     "title": "Find your community on Beep",
     "subtitle": "From studying to music, there's a place for you.",
-    "search_placeholder": "Find a server..."
+    "search_placeholder": "Find a server...",
+    "no_results": "No servers found"
   },
   "member": {
     "view_profile": "View profile",

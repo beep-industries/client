@@ -22,6 +22,7 @@ import {
   createServerInvitation,
   acceptServerInvitation,
   getServerMembers,
+  searchOrDiscoverServer,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -57,6 +58,12 @@ export const communityKeys = {
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
+  searchServers: (query: string) => [...communityKeys.all, "search-servers", query] as const,
+  searchServersPage: (query: string, page: number) =>
+    [...communityKeys.all, "search-servers", query, `page-${page}`] as const,
+  discoverServers: () => [...communityKeys.all, "discover-servers"] as const,
+  discoverServersPage: (page: number) =>
+    [...communityKeys.all, "discover-servers", `page-${page}`] as const,
 }
 
 export const useServerById = (serverId: string) => {
@@ -374,5 +381,103 @@ export const useServerMembers = (serverId: string) => {
       if (lastPage.page * MAXIMUM_MEMBERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!serverId,
+  })
+}
+
+export const useSearchServers = (searchQuery: string) => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: communityKeys.searchServers(searchQuery),
+    queryFn: async ({ pageParam }): Promise<GetServersResponse> => {
+      try {
+        const response = await searchOrDiscoverServer(accessToken!, searchQuery, {
+          page: pageParam,
+          limit: MAXIMUM_SERVERS_PER_API_CALL,
+        })
+
+        return response as GetServersResponse
+      } catch (error) {
+        console.error("Error searching servers:", error)
+        throw new Error("Error searching servers")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_SERVERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken && searchQuery.length > 0,
+  })
+}
+
+export const useSearchServersPage = (searchQuery: string, page: number) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.searchServersPage(searchQuery, page),
+    queryFn: async (): Promise<GetServersResponse> => {
+      try {
+        const response = await searchOrDiscoverServer(accessToken!, searchQuery, {
+          page,
+          limit: MAXIMUM_SERVERS_PER_API_CALL,
+        })
+
+        return response as GetServersResponse
+      } catch (error) {
+        console.error("Error searching servers:", error)
+        throw new Error("Error searching servers")
+      }
+    },
+    enabled: !!accessToken && searchQuery.length > 0,
+  })
+}
+
+export const useDiscoverServers = () => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: communityKeys.discoverServers(),
+    queryFn: async ({ pageParam }): Promise<GetServersResponse> => {
+      try {
+        const response = await searchOrDiscoverServer(accessToken!, "", {
+          page: pageParam,
+          limit: MAXIMUM_SERVERS_PER_API_CALL,
+        })
+
+        return response as GetServersResponse
+      } catch (error) {
+        console.error("Error discovering servers:", error)
+        throw new Error("Error discovering servers")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_SERVERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken,
+  })
+}
+
+export const useDiscoverServersPage = (page: number) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.discoverServersPage(page),
+    queryFn: async (): Promise<GetServersResponse> => {
+      try {
+        const response = await searchOrDiscoverServer(accessToken!, "", {
+          page,
+          limit: MAXIMUM_SERVERS_PER_API_CALL,
+        })
+
+        return response as GetServersResponse
+      } catch (error) {
+        console.error("Error discovering servers:", error)
+        throw new Error("Error discovering servers")
+      }
+    },
+    enabled: !!accessToken,
   })
 }

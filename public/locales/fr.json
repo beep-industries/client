@@ -1,6 +1,7 @@
 {
   "common": {
-    "loading": "Chargement..."
+    "loading": "Chargement...",
+    "load_more": "Charger plus"
   },
   "serverNav": {
     "create_server": "Créer un serveur",
@@ -119,7 +120,8 @@
   "explore": {
     "title": "Trouve ta communauté sur Beep",
     "subtitle": "Des études à la musique, il y a une place pour toi.",
-    "search_placeholder": "Rechercher un serveur..."
+    "search_placeholder": "Rechercher un serveur...",
+    "no_results": "Aucun serveur trouvé"
   },
   "member": {
     "view_profile": "Voir le profil",
