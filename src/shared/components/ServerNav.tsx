@@ -26,6 +26,7 @@ import { Skeleton } from "./ui/Skeleton"
 import { useSkeletonLoading } from "../hooks/UseDelayedLoading"
 import { StaggerSlideIn } from "./ui/StaggerSlideIn"
 import { AnimatePresence } from "motion/react"
+import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
 
 interface NavLinkButtonProps {
   to: string
@@ -197,24 +198,32 @@ export default function ServerNav() {
 
       <div className="no-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
         <AnimatePresence mode="wait">
-          {showSkeleton
-            ? Array.from({ length: 5 }).map((_, index) => (
-                <StaggerSlideIn
-                  key={`skeleton-${index}`}
-                  index={3 + index}
-                  direction="right"
-                  exitAnimation
-                >
-                  <ServerButtonSkeleton />
-                </StaggerSlideIn>
-              ))
-            : servers?.pages
+          {showSkeleton ? (
+            Array.from({ length: 5 }).map((_, index) => (
+              <StaggerSlideIn
+                key={`skeleton-${index}`}
+                index={3 + index}
+                direction="right"
+                exitAnimation
+              >
+                <ServerButtonSkeleton />
+              </StaggerSlideIn>
+            ))
+          ) : (
+            <RealTimeTopicProvider
+              topics={servers?.pages
+                .flatMap((page) => page.data)
+                .map((server) => ({ topic: `server:${server.id}` }))}
+            >
+              {servers?.pages
                 .flatMap((page) => page.data)
                 .map((server, index) => (
                   <StaggerSlideIn key={server.id} index={3 + index} direction="right">
                     <ServerButton server={server} />
                   </StaggerSlideIn>
                 ))}
+            </RealTimeTopicProvider>
+          )}
         </AnimatePresence>
         <button
           ref={ref}
