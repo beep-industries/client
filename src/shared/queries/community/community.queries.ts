@@ -23,6 +23,7 @@ import {
   acceptServerInvitation,
   getServerMembers,
   searchOrDiscoverServer,
+  createMember,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -40,6 +41,7 @@ import type {
   GetServersResponse,
   CreateServerInvitation,
   GetServerMembersResponse,
+  CreateMemberRequest,
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
@@ -55,6 +57,8 @@ export const communityKeys = {
   server: (serverId: string) => [...communityKeys.all, `server-${serverId}`] as const,
   channels: (serverId: string) => [...communityKeys.all, `channels-${serverId}`] as const,
   members: (serverId: string) => [...communityKeys.all, `members-${serverId}`] as const,
+  createMember: (servirId: string, userId: string) =>
+    [...communityKeys.all, `members-${servirId}`, userId] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -381,6 +385,16 @@ export const useServerMembers = (serverId: string) => {
       if (lastPage.page * MAXIMUM_MEMBERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!serverId,
+  })
+}
+
+export const useCreateMember = () => {
+  const { accessToken } = useAuth()
+
+  return useMutation({
+    mutationFn: (request: CreateMemberRequest) => {
+      return createMember(accessToken!, request)
+    },
   })
 }
 

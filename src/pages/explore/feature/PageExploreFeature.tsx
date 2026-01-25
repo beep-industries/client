@@ -4,15 +4,18 @@ import { useDocumentTitle } from "@/hooks/use-document-title"
 import {
   useSearchServersPage,
   useDiscoverServersPage,
+  useCreateMember,
 } from "@/shared/queries/community/community.queries"
 import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
 import PageExplore from "../ui/PageExplore"
+import type { Server } from "@/shared/queries/community/community.types.ts"
 
 export default function PageExploreFeature() {
   const { setHeader, setContent } = useSidebarContent()
   useDocumentTitle("Explore")
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
+  const { mutateAsync: createMember } = useCreateMember()
 
   const discoverQuery = useDiscoverServersPage(currentPage)
   const searchServersQuery = useSearchServersPage(searchQuery, currentPage)
@@ -27,6 +30,17 @@ export default function PageExploreFeature() {
     if (currentPage < totalPages) {
       setCurrentPage((prev) => prev + 1)
     }
+  }
+
+  function handleServerClick(server: Server) {
+    createMember(
+      { server_id: server.id },
+      {
+        onSuccess: () => {
+          window.location.href = `/servers/${server.id}`
+        },
+      }
+    )
   }
 
   const handlePreviousPage = () => {
@@ -59,6 +73,7 @@ export default function PageExploreFeature() {
       onNextPage={handleNextPage}
       onPreviousPage={handlePreviousPage}
       isFetching={activeQuery.isFetching}
+      handleServerClick={(server: Server) => handleServerClick(server)}
     />
   )
 }
