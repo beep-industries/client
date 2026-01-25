@@ -47,11 +47,11 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
 
   const join = useCallback(
-    (topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void) => {
+    (topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void, force?: boolean) => {
       const socket = socketRef.current
       if (!socket) throw new Error("Socket not initialized yet")
       const existing = channelsRef.current.get(topic)
-      if (existing) return existing
+      if (existing && !force) return existing
 
       const channel = socket.channel(topic, params)
       channel

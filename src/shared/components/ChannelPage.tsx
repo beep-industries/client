@@ -9,14 +9,19 @@ import { useChannelType, type ChannelType } from "@/shared/components/ChannelTyp
 
 export default function ChannelPage() {
   const { channelId, id } = useParams({ strict: false }) as { channelId: string; id: string }
-  const { join } = useWebRTC()
+  const { join, iceStatus, session } = useWebRTC()
   const { connected } = useRealTimeSocket()
   const { data: channel } = useChannel(channelId)
   const { setChannelType } = useChannelType()
 
   useEffect(() => {
     setChannelType((channel?.channel_type as ChannelType) ?? null)
-    if (connected && channel?.channel_type === "ServerVoice") {
+    if (
+      connected &&
+      channel?.channel_type === "ServerVoice" &&
+      session !== channelId &&
+      iceStatus !== "connected"
+    ) {
       join(id, channelId)
     }
   }, [channelId, id, join, connected, channel, setChannelType])

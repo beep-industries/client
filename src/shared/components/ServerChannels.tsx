@@ -16,11 +16,13 @@ import {
 } from "@/shared/queries/community/community.queries"
 import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
 import { AddChannelForm } from "@/shared/forms/AddChannel.tsx"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useFolder } from "@/shared/hooks/UseFolder.ts"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
+import type { TopicJoinSpec } from "@/shared/models/real-time.ts"
+import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 
 export interface Folder {
   id: string
@@ -34,6 +36,7 @@ interface ServerChannelsProps {
 export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { t } = useTranslation()
   const { setFolders, folders } = useFolder()
+  const { session, joined } = useWebRTC()
 
   const {
     mutateAsync: deleteFolder,
@@ -74,12 +77,22 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
     }
   }, [channelsData, setFolders, folders])
 
+  const watchedTopicSpecs: TopicJoinSpec[] = useMemo(() => {
+    const result: TopicJoinSpec[] = []
+    channelsWithoutFolder.forEach((channel) => {
+      if (channel.channel_type === ChannelTypes.TEXT) {
+        result.push({ topic: `text-channel:${channel.id}` })
+      } else {
+        if (!(joined && session === channel.id)) {
+          result.push({ topic: `voice-channel:${channel.id}`, params: { presence_only: true } })
+        }
+      }
+    })
+    return result
+  }, [channelsWithoutFolder, joined, session])
+
   return (
-    <RealTimeTopicProvider
-      topics={channelsWithoutFolder
-        .filter((channel) => channel.channel_type === ChannelTypes.TEXT)
-        .map((channel) => ({ topic: `text-channel:${channel.id}` }))}
-    >
+    <RealTimeTopicProvider topics={watchedTopicSpecs}>
       <ContextMenu>
         <ContextMenuTrigger className="flex h-full flex-col gap-2">
           {/* Channels without folder */}

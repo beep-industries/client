@@ -78,7 +78,7 @@ export default function Channel({ icon: Icon, channel, isChildren }: ChannelProp
             onClick={() =>
               channelId === channel.id &&
               channel.channel_type === ChannelTypes.VOICE &&
-              iceStatus === "connected"
+              iceStatus !== "connected"
                 ? join(channel.server_id, channel.id)
                 : navigate({ to: `/servers/${channel.server_id}/${channel.id}` })
             }
