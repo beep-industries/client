@@ -19,8 +19,10 @@ import { Route as InvitationsInvitationIdRouteImport } from "./routes/invitation
 import { Route as FriendsRequestsRouteImport } from "./routes/friends/requests"
 import { Route as ServersIdRouteRouteImport } from "./routes/servers/$id/route"
 import { Route as ServersIdIndexRouteImport } from "./routes/servers/$id/index"
-import { Route as ServersIdSettingsRouteImport } from "./routes/servers/$id/settings"
+import { Route as ServersIdSettingsRouteRouteImport } from "./routes/servers/$id/settings/route"
+import { Route as ServersIdSettingsIndexRouteImport } from "./routes/servers/$id/settings/index"
 import { Route as ServersIdChannelIdIndexRouteImport } from "./routes/servers/$id/$channelId/index"
+import { Route as ServersIdSettingsRolesIndexRouteImport } from "./routes/servers/$id/settings/roles/index"
 
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
@@ -72,16 +74,27 @@ const ServersIdIndexRoute = ServersIdIndexRouteImport.update({
   path: "/",
   getParentRoute: () => ServersIdRouteRoute,
 } as any)
-const ServersIdSettingsRoute = ServersIdSettingsRouteImport.update({
+const ServersIdSettingsRouteRoute = ServersIdSettingsRouteRouteImport.update({
   id: "/settings",
   path: "/settings",
   getParentRoute: () => ServersIdRouteRoute,
+} as any)
+const ServersIdSettingsIndexRoute = ServersIdSettingsIndexRouteImport.update({
+  id: "/",
+  path: "/",
+  getParentRoute: () => ServersIdSettingsRouteRoute,
 } as any)
 const ServersIdChannelIdIndexRoute = ServersIdChannelIdIndexRouteImport.update({
   id: "/$channelId/",
   path: "/$channelId/",
   getParentRoute: () => ServersIdRouteRoute,
 } as any)
+const ServersIdSettingsRolesIndexRoute =
+  ServersIdSettingsRolesIndexRouteImport.update({
+    id: "/roles/",
+    path: "/roles/",
+    getParentRoute: () => ServersIdSettingsRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute
@@ -93,9 +106,11 @@ export interface FileRoutesByFullPath {
   "/friends/requests": typeof FriendsRequestsRoute
   "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/friends/": typeof FriendsIndexRoute
-  "/servers/$id/settings": typeof ServersIdSettingsRoute
+  "/servers/$id/settings": typeof ServersIdSettingsRouteRouteWithChildren
   "/servers/$id/": typeof ServersIdIndexRoute
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
+  "/servers/$id/settings/": typeof ServersIdSettingsIndexRoute
+  "/servers/$id/settings/roles/": typeof ServersIdSettingsRolesIndexRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -105,9 +120,10 @@ export interface FileRoutesByTo {
   "/friends/requests": typeof FriendsRequestsRoute
   "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/friends": typeof FriendsIndexRoute
-  "/servers/$id/settings": typeof ServersIdSettingsRoute
   "/servers/$id": typeof ServersIdIndexRoute
   "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
+  "/servers/$id/settings": typeof ServersIdSettingsIndexRoute
+  "/servers/$id/settings/roles": typeof ServersIdSettingsRolesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -120,9 +136,11 @@ export interface FileRoutesById {
   "/friends/requests": typeof FriendsRequestsRoute
   "/invitations/$invitationId": typeof InvitationsInvitationIdRoute
   "/friends/": typeof FriendsIndexRoute
-  "/servers/$id/settings": typeof ServersIdSettingsRoute
+  "/servers/$id/settings": typeof ServersIdSettingsRouteRouteWithChildren
   "/servers/$id/": typeof ServersIdIndexRoute
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
+  "/servers/$id/settings/": typeof ServersIdSettingsIndexRoute
+  "/servers/$id/settings/roles/": typeof ServersIdSettingsRolesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -139,6 +157,8 @@ export interface FileRouteTypes {
     | "/servers/$id/settings"
     | "/servers/$id/"
     | "/servers/$id/$channelId/"
+    | "/servers/$id/settings/"
+    | "/servers/$id/settings/roles/"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -148,9 +168,10 @@ export interface FileRouteTypes {
     | "/friends/requests"
     | "/invitations/$invitationId"
     | "/friends"
-    | "/servers/$id/settings"
     | "/servers/$id"
     | "/servers/$id/$channelId"
+    | "/servers/$id/settings"
+    | "/servers/$id/settings/roles"
   id:
     | "__root__"
     | "/"
@@ -165,6 +186,8 @@ export interface FileRouteTypes {
     | "/servers/$id/settings"
     | "/servers/$id/"
     | "/servers/$id/$channelId/"
+    | "/servers/$id/settings/"
+    | "/servers/$id/settings/roles/"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -253,8 +276,15 @@ declare module "@tanstack/react-router" {
       id: "/servers/$id/settings"
       path: "/settings"
       fullPath: "/servers/$id/settings"
-      preLoaderRoute: typeof ServersIdSettingsRouteImport
+      preLoaderRoute: typeof ServersIdSettingsRouteRouteImport
       parentRoute: typeof ServersIdRouteRoute
+    }
+    "/servers/$id/settings/": {
+      id: "/servers/$id/settings/"
+      path: "/"
+      fullPath: "/servers/$id/settings/"
+      preLoaderRoute: typeof ServersIdSettingsIndexRouteImport
+      parentRoute: typeof ServersIdSettingsRouteRoute
     }
     "/servers/$id/$channelId/": {
       id: "/servers/$id/$channelId/"
@@ -262,6 +292,13 @@ declare module "@tanstack/react-router" {
       fullPath: "/servers/$id/$channelId/"
       preLoaderRoute: typeof ServersIdChannelIdIndexRouteImport
       parentRoute: typeof ServersIdRouteRoute
+    }
+    "/servers/$id/settings/roles/": {
+      id: "/servers/$id/settings/roles/"
+      path: "/roles"
+      fullPath: "/servers/$id/settings/roles/"
+      preLoaderRoute: typeof ServersIdSettingsRolesIndexRouteImport
+      parentRoute: typeof ServersIdSettingsRouteRoute
     }
   }
 }
@@ -280,14 +317,30 @@ const FriendsRouteRouteWithChildren = FriendsRouteRoute._addFileChildren(
   FriendsRouteRouteChildren,
 )
 
+interface ServersIdSettingsRouteRouteChildren {
+  ServersIdSettingsIndexRoute: typeof ServersIdSettingsIndexRoute
+  ServersIdSettingsRolesIndexRoute: typeof ServersIdSettingsRolesIndexRoute
+}
+
+const ServersIdSettingsRouteRouteChildren: ServersIdSettingsRouteRouteChildren =
+  {
+    ServersIdSettingsIndexRoute: ServersIdSettingsIndexRoute,
+    ServersIdSettingsRolesIndexRoute: ServersIdSettingsRolesIndexRoute,
+  }
+
+const ServersIdSettingsRouteRouteWithChildren =
+  ServersIdSettingsRouteRoute._addFileChildren(
+    ServersIdSettingsRouteRouteChildren,
+  )
+
 interface ServersIdRouteRouteChildren {
-  ServersIdSettingsRoute: typeof ServersIdSettingsRoute
+  ServersIdSettingsRouteRoute: typeof ServersIdSettingsRouteRouteWithChildren
   ServersIdIndexRoute: typeof ServersIdIndexRoute
   ServersIdChannelIdIndexRoute: typeof ServersIdChannelIdIndexRoute
 }
 
 const ServersIdRouteRouteChildren: ServersIdRouteRouteChildren = {
-  ServersIdSettingsRoute: ServersIdSettingsRoute,
+  ServersIdSettingsRouteRoute: ServersIdSettingsRouteRouteWithChildren,
   ServersIdIndexRoute: ServersIdIndexRoute,
   ServersIdChannelIdIndexRoute: ServersIdChannelIdIndexRoute,
 }
