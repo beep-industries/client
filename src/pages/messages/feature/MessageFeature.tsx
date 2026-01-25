@@ -1,4 +1,5 @@
 import MessageComponent from "@/shared/components/Message"
+import { useDeleteMessage } from "@/shared/queries/message/message.queries"
 import type { Message } from "@/shared/queries/message/message.types"
 import { useUserBySub } from "@/shared/queries/user/user.queries"
 
@@ -24,6 +25,11 @@ export default function MessageFeature({
   status,
 }: MessageFeatureProps) {
   const { data: author, isLoading } = useUserBySub(author_id)
+  const deleteMessageMutation = useDeleteMessage()
+
+  const onDelete = () => {
+    deleteMessageMutation.mutate(_id)
+  }
 
   if (isLoading) {
     return (
@@ -37,6 +43,7 @@ export default function MessageFeature({
         key={_id}
         isCompact={isCompact}
         status={status}
+        onDelete={onDelete}
       />
     )
   }
@@ -52,6 +59,7 @@ export default function MessageFeature({
       key={_id}
       isCompact={isCompact}
       status={status}
+      onDelete={onDelete}
     />
   )
 }

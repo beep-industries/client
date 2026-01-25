@@ -43,7 +43,6 @@ export function RealTimeEventProvider<P, S>({
     () => (typeof topic === "function" ? topic(user) : topic),
     [topic, user]
   )
-
   // Compute stable id for registry access
   const resolvedId = useMemo(() => id ?? `${topicName}:${event}`, [id, topicName, event])
 

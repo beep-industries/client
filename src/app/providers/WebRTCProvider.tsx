@@ -79,6 +79,50 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const { join: joinTopic, leave: leaveTopic } = useRealTimeSocket()
   const channelTopicRef = useRef<string | null>(null)
 
+  const leave = useCallback(async () => {
+    const sess = session
+    setIceStatus("new")
+    setChannelStatus("Click Join Button...")
+    setJoined(false)
+    setCamEnabled(false)
+    setMicEnabled(false)
+    await camTransceiverRef.current?.sender.replaceTrack(null)
+    camTransceiverRef.current = null
+    camStreamRef.current?.getTracks().forEach((t) => t.stop())
+    camStreamRef.current = null
+    await screenShareTransceiverVideoRef.current?.sender.replaceTrack(null)
+    screenShareTransceiverVideoRef.current = null
+    await screenShareTransceiverAudioRef.current?.sender.replaceTrack(null)
+    screenShareTransceiverAudioRef.current = null
+    screenShareStreamRef.current?.getTracks().forEach((t) => t.stop())
+    screenShareStreamRef.current = null
+    await micTransceiverRef.current?.sender.replaceTrack(null)
+    micTransceiverRef.current = null
+    micStreamRef.current?.getTracks().forEach((t) => t.stop())
+    micStreamRef.current = null
+    // Close rtc
+    rtcRef.current?.close()
+    rtcRef.current = null
+    setRemoteTracks([])
+    // Notify backend via Phoenix channel and leave topic
+    if (sess != null && channelTopicRef.current) {
+      const topic = channelTopicRef.current
+      const ch = joinTopic(topic)
+      try {
+        await new Promise<void>((resolve) => {
+          ch?.push("leave", {
+            session_id: String(sess),
+          })
+            .receive("ok", () => resolve())
+            .receive("error", () => resolve()) // resolve anyway
+        })
+      } finally {
+        leaveTopic(topic)
+        channelTopicRef.current = null
+      }
+    }
+  }, [joinTopic, leaveTopic, session])
+
   const ensureRtc = useCallback(() => {
     if (!rtcRef.current) {
       const rtc = new RTCPeerConnection()
@@ -114,7 +158,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       rtcRef.current = rtc
     }
     return rtcRef.current!
-  }, [])
+  }, [leave])
 
   const negotiate = useCallback(async () => {
     const rtc = ensureRtc()
@@ -227,52 +271,8 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
           })
       })
     },
-    [ensureRtc, handleOffer, joinTopic]
+    [ensureRtc, handleOffer, joinTopic, session, iceStatus]
   )
-
-  const leave = useCallback(async () => {
-    const sess = session
-    setIceStatus("new")
-    setChannelStatus("Click Join Button...")
-    setJoined(false)
-    setCamEnabled(false)
-    setMicEnabled(false)
-    await camTransceiverRef.current?.sender.replaceTrack(null)
-    camTransceiverRef.current = null
-    camStreamRef.current?.getTracks().forEach((t) => t.stop())
-    camStreamRef.current = null
-    await screenShareTransceiverVideoRef.current?.sender.replaceTrack(null)
-    screenShareTransceiverVideoRef.current = null
-    await screenShareTransceiverAudioRef.current?.sender.replaceTrack(null)
-    screenShareTransceiverAudioRef.current = null
-    screenShareStreamRef.current?.getTracks().forEach((t) => t.stop())
-    screenShareStreamRef.current = null
-    await micTransceiverRef.current?.sender.replaceTrack(null)
-    micTransceiverRef.current = null
-    micStreamRef.current?.getTracks().forEach((t) => t.stop())
-    micStreamRef.current = null
-    // Close rtc
-    rtcRef.current?.close()
-    rtcRef.current = null
-    setRemoteTracks([])
-    // Notify backend via Phoenix channel and leave topic
-    if (sess != null && channelTopicRef.current) {
-      const topic = channelTopicRef.current
-      const ch = joinTopic(topic)
-      try {
-        await new Promise<void>((resolve) => {
-          ch?.push("leave", {
-            session_id: String(sess),
-          })
-            .receive("ok", () => resolve())
-            .receive("error", () => resolve()) // resolve anyway
-        })
-      } finally {
-        leaveTopic(topic)
-        channelTopicRef.current = null
-      }
-    }
-  }, [joinTopic, leaveTopic, session])
 
   const stopScreenShare = useCallback(async () => {
     setScreenShareEnabled(false)

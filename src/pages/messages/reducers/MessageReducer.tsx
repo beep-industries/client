@@ -67,6 +67,10 @@ export function messagesReducer(state: MessagesState, action: MessagesAction): M
       return { ...state, fetchedMessages: [] }
 
     case "ADD_LIVE_MESSAGE":
+      //verify if message already exists
+      if (state.liveMessages.find((msg) => msg._id === action.payload._id)) {
+        return state
+      }
       return {
         ...state,
         liveMessages: [...state.liveMessages, action.payload],

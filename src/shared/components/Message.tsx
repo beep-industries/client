@@ -1,8 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import { formatDate } from "../lib/utils"
+import { cn, formatDate } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 import MemberDialog, { type MemberData } from "./MemberDialog"
+import { Button } from "./ui/Button"
+import { Ellipsis } from "lucide-react"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuGroup,
+} from "./ui/DropdownMenu"
 
 interface MessageProps {
   content: string
@@ -16,6 +25,9 @@ interface MessageProps {
   authorStatus?: MemberData["status"]
   authorDescription?: string
   status?: "pending" | "sent"
+  onDelete?: () => void
+  onEdit?: () => void
+  onPin?: () => void
 }
 
 export default function MessageComponent({
@@ -28,6 +40,9 @@ export default function MessageComponent({
   authorStatus,
   authorDescription,
   status,
+  onDelete,
+  onEdit,
+  onPin,
 }: MessageProps) {
   const { t, i18n } = useTranslation()
   const [showProfile, setShowProfile] = useState(false)
@@ -47,10 +62,18 @@ export default function MessageComponent({
   if (isCompact) {
     return (
       <div
-        className={`hover:bg-accent flex h-fit w-full items-start gap-3 px-5 pl-16 ${messageBg}`}
+        className={`hover:bg-accent group flex h-6 w-full items-start gap-3 px-5 pl-16 ${messageBg}`}
       >
         <div className="flex w-full flex-col wrap-anywhere">
           <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
+        </div>
+        <div className="ml-auto flex-shrink-0">
+          <MessageOptionsMenu
+            onDelete={onDelete}
+            onEdit={onEdit}
+            onPin={onPin}
+            className="-top-1"
+          />
         </div>
       </div>
     )
@@ -76,8 +99,77 @@ export default function MessageComponent({
         </div>
         <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
       </div>
+      <div className="ml-auto flex-shrink-0">
+        <MessageOptionsMenu onDelete={onDelete} onEdit={onEdit} onPin={onPin} />
+      </div>
 
       <MemberDialog member={memberData} open={showProfile} onOpenChange={setShowProfile} />
+    </div>
+  )
+}
+
+function MessageOptionsMenu({
+  onEdit,
+  onDelete,
+  onPin,
+  className,
+}: {
+  onEdit?: () => void
+  onDelete?: () => void
+  onPin?: () => void
+  className?: string
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="relative">
+      <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            className={cn(
+              `dark:bg-oklch(1 0 0 / 15%) dark:border-input dark:hover:bg-oklch(1 0 0 / 15%) relative -top-2 h-8 w-8 opacity-100 ${open ? "block" : "hidden group-hover:block"}`,
+              className
+            )}
+            variant="outline"
+            size="xs"
+            aria-label="Message actions"
+          >
+            <Ellipsis />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" side="bottom" sideOffset={4} className="z-[9999]">
+          <DropdownMenuGroup>
+            {onEdit && (
+              <DropdownMenuItem
+                onSelect={() => {
+                  onEdit()
+                }}
+              >
+                Edit
+              </DropdownMenuItem>
+            )}
+            {onPin && (
+              <DropdownMenuItem
+                onSelect={() => {
+                  onPin()
+                }}
+              >
+                Pin
+              </DropdownMenuItem>
+            )}
+            {onDelete && (
+              <DropdownMenuItem
+                onSelect={() => {
+                  onDelete()
+                }}
+                variant="destructive"
+              >
+                Delete
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   )
 }
