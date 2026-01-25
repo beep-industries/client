@@ -32,7 +32,7 @@ export default function PageServerSettings({
             )}
             asChild
           >
-            <Link from={origin} to="./roles" params={{ id }} className="">
+            <Link from={origin} to="./roles" params={{ id }}>
               Roles
             </Link>
           </Button>

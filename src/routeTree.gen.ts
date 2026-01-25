@@ -23,7 +23,9 @@ import { Route as ServersIdSettingsRouteRouteImport } from "./routes/servers/$id
 import { Route as ServersIdSettingsIndexRouteImport } from "./routes/servers/$id/settings/index"
 import { Route as ServersIdChannelIdIndexRouteImport } from "./routes/servers/$id/$channelId/index"
 import { Route as ServersIdSettingsRolesRouteRouteImport } from "./routes/servers/$id/settings/roles/route"
-import { Route as ServersIdSettingsRolesRoleIdRouteImport } from "./routes/servers/$id/settings/roles/$roleId"
+import { Route as ServersIdSettingsRolesRoleIdRouteRouteImport } from "./routes/servers/$id/settings/roles/$roleId/route"
+import { Route as ServersIdSettingsRolesRoleIdPermissionsRouteImport } from "./routes/servers/$id/settings/roles/$roleId/permissions"
+import { Route as ServersIdSettingsRolesRoleIdMembersRouteImport } from "./routes/servers/$id/settings/roles/$roleId/members"
 
 const SettingsRoute = SettingsRouteImport.update({
   id: "/settings",
@@ -96,11 +98,23 @@ const ServersIdSettingsRolesRouteRoute =
     path: "/roles",
     getParentRoute: () => ServersIdSettingsRouteRoute,
   } as any)
-const ServersIdSettingsRolesRoleIdRoute =
-  ServersIdSettingsRolesRoleIdRouteImport.update({
+const ServersIdSettingsRolesRoleIdRouteRoute =
+  ServersIdSettingsRolesRoleIdRouteRouteImport.update({
     id: "/$roleId",
     path: "/$roleId",
     getParentRoute: () => ServersIdSettingsRolesRouteRoute,
+  } as any)
+const ServersIdSettingsRolesRoleIdPermissionsRoute =
+  ServersIdSettingsRolesRoleIdPermissionsRouteImport.update({
+    id: "/permissions",
+    path: "/permissions",
+    getParentRoute: () => ServersIdSettingsRolesRoleIdRouteRoute,
+  } as any)
+const ServersIdSettingsRolesRoleIdMembersRoute =
+  ServersIdSettingsRolesRoleIdMembersRouteImport.update({
+    id: "/members",
+    path: "/members",
+    getParentRoute: () => ServersIdSettingsRolesRoleIdRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -118,7 +132,9 @@ export interface FileRoutesByFullPath {
   "/servers/$id/settings/roles": typeof ServersIdSettingsRolesRouteRouteWithChildren
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
   "/servers/$id/settings/": typeof ServersIdSettingsIndexRoute
-  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRoute
+  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRouteRouteWithChildren
+  "/servers/$id/settings/roles/$roleId/members": typeof ServersIdSettingsRolesRoleIdMembersRoute
+  "/servers/$id/settings/roles/$roleId/permissions": typeof ServersIdSettingsRolesRoleIdPermissionsRoute
 }
 export interface FileRoutesByTo {
   "/": typeof IndexRoute
@@ -132,7 +148,9 @@ export interface FileRoutesByTo {
   "/servers/$id/settings/roles": typeof ServersIdSettingsRolesRouteRouteWithChildren
   "/servers/$id/$channelId": typeof ServersIdChannelIdIndexRoute
   "/servers/$id/settings": typeof ServersIdSettingsIndexRoute
-  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRoute
+  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRouteRouteWithChildren
+  "/servers/$id/settings/roles/$roleId/members": typeof ServersIdSettingsRolesRoleIdMembersRoute
+  "/servers/$id/settings/roles/$roleId/permissions": typeof ServersIdSettingsRolesRoleIdPermissionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -150,7 +168,9 @@ export interface FileRoutesById {
   "/servers/$id/settings/roles": typeof ServersIdSettingsRolesRouteRouteWithChildren
   "/servers/$id/$channelId/": typeof ServersIdChannelIdIndexRoute
   "/servers/$id/settings/": typeof ServersIdSettingsIndexRoute
-  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRoute
+  "/servers/$id/settings/roles/$roleId": typeof ServersIdSettingsRolesRoleIdRouteRouteWithChildren
+  "/servers/$id/settings/roles/$roleId/members": typeof ServersIdSettingsRolesRoleIdMembersRoute
+  "/servers/$id/settings/roles/$roleId/permissions": typeof ServersIdSettingsRolesRoleIdPermissionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -170,6 +190,8 @@ export interface FileRouteTypes {
     | "/servers/$id/$channelId/"
     | "/servers/$id/settings/"
     | "/servers/$id/settings/roles/$roleId"
+    | "/servers/$id/settings/roles/$roleId/members"
+    | "/servers/$id/settings/roles/$roleId/permissions"
   fileRoutesByTo: FileRoutesByTo
   to:
     | "/"
@@ -184,6 +206,8 @@ export interface FileRouteTypes {
     | "/servers/$id/$channelId"
     | "/servers/$id/settings"
     | "/servers/$id/settings/roles/$roleId"
+    | "/servers/$id/settings/roles/$roleId/members"
+    | "/servers/$id/settings/roles/$roleId/permissions"
   id:
     | "__root__"
     | "/"
@@ -201,6 +225,8 @@ export interface FileRouteTypes {
     | "/servers/$id/$channelId/"
     | "/servers/$id/settings/"
     | "/servers/$id/settings/roles/$roleId"
+    | "/servers/$id/settings/roles/$roleId/members"
+    | "/servers/$id/settings/roles/$roleId/permissions"
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -317,8 +343,22 @@ declare module "@tanstack/react-router" {
       id: "/servers/$id/settings/roles/$roleId"
       path: "/$roleId"
       fullPath: "/servers/$id/settings/roles/$roleId"
-      preLoaderRoute: typeof ServersIdSettingsRolesRoleIdRouteImport
+      preLoaderRoute: typeof ServersIdSettingsRolesRoleIdRouteRouteImport
       parentRoute: typeof ServersIdSettingsRolesRouteRoute
+    }
+    "/servers/$id/settings/roles/$roleId/permissions": {
+      id: "/servers/$id/settings/roles/$roleId/permissions"
+      path: "/permissions"
+      fullPath: "/servers/$id/settings/roles/$roleId/permissions"
+      preLoaderRoute: typeof ServersIdSettingsRolesRoleIdPermissionsRouteImport
+      parentRoute: typeof ServersIdSettingsRolesRoleIdRouteRoute
+    }
+    "/servers/$id/settings/roles/$roleId/members": {
+      id: "/servers/$id/settings/roles/$roleId/members"
+      path: "/members"
+      fullPath: "/servers/$id/settings/roles/$roleId/members"
+      preLoaderRoute: typeof ServersIdSettingsRolesRoleIdMembersRouteImport
+      parentRoute: typeof ServersIdSettingsRolesRoleIdRouteRoute
     }
   }
 }
@@ -337,13 +377,32 @@ const FriendsRouteRouteWithChildren = FriendsRouteRoute._addFileChildren(
   FriendsRouteRouteChildren,
 )
 
+interface ServersIdSettingsRolesRoleIdRouteRouteChildren {
+  ServersIdSettingsRolesRoleIdMembersRoute: typeof ServersIdSettingsRolesRoleIdMembersRoute
+  ServersIdSettingsRolesRoleIdPermissionsRoute: typeof ServersIdSettingsRolesRoleIdPermissionsRoute
+}
+
+const ServersIdSettingsRolesRoleIdRouteRouteChildren: ServersIdSettingsRolesRoleIdRouteRouteChildren =
+  {
+    ServersIdSettingsRolesRoleIdMembersRoute:
+      ServersIdSettingsRolesRoleIdMembersRoute,
+    ServersIdSettingsRolesRoleIdPermissionsRoute:
+      ServersIdSettingsRolesRoleIdPermissionsRoute,
+  }
+
+const ServersIdSettingsRolesRoleIdRouteRouteWithChildren =
+  ServersIdSettingsRolesRoleIdRouteRoute._addFileChildren(
+    ServersIdSettingsRolesRoleIdRouteRouteChildren,
+  )
+
 interface ServersIdSettingsRolesRouteRouteChildren {
-  ServersIdSettingsRolesRoleIdRoute: typeof ServersIdSettingsRolesRoleIdRoute
+  ServersIdSettingsRolesRoleIdRouteRoute: typeof ServersIdSettingsRolesRoleIdRouteRouteWithChildren
 }
 
 const ServersIdSettingsRolesRouteRouteChildren: ServersIdSettingsRolesRouteRouteChildren =
   {
-    ServersIdSettingsRolesRoleIdRoute: ServersIdSettingsRolesRoleIdRoute,
+    ServersIdSettingsRolesRoleIdRouteRoute:
+      ServersIdSettingsRolesRoleIdRouteRouteWithChildren,
   }
 
 const ServersIdSettingsRolesRouteRouteWithChildren =

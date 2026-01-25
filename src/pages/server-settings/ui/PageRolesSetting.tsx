@@ -49,7 +49,7 @@ function RoleNavigatorButton(serverId: string, origin: "/servers/$id/settings/ro
         )}
         asChild
       >
-        <Link from={origin} to="./$roleId" params={{ id: serverId, roleId: role.id }}>
+        <Link from={origin} to="./$roleId/permissions" params={{ id: serverId, roleId: role.id }}>
           {role.name}
         </Link>
       </Button>
