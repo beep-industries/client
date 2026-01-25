@@ -139,6 +139,10 @@ export interface ExpirationPayload {
   expires_at: string
 }
 
+export interface CreateMemberRequest {
+  server_id: string
+}
+
 export const computeExpiration = (expiration: ExpirationOption): ExpirationPayload => {
   const now = new Date()
 

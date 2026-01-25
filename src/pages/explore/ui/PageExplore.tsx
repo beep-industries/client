@@ -15,6 +15,7 @@ interface PageExploreProps {
   onNextPage: () => void
   onPreviousPage: () => void
   isFetching: boolean
+  handleServerClick?: (server: Server) => void
 }
 
 export default function PageExplore({
@@ -27,12 +28,9 @@ export default function PageExplore({
   onNextPage,
   onPreviousPage,
   isFetching,
+  handleServerClick,
 }: PageExploreProps) {
   const { t } = useTranslation()
-
-  const handleServerClick = (server: Server) => {
-    console.log("Server clicked:", server.id, server.name)
-  }
 
   return (
     <div className="flex h-full flex-col">

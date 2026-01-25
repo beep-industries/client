@@ -12,6 +12,7 @@ import {
   type UpdateServerChannelRequest,
   type CreateServerInvitation,
   computeExpiration,
+  type CreateMemberRequest,
 } from "./community.types"
 
 const createCommunityApi = (accessToken: string) =>
@@ -162,6 +163,11 @@ export const getServerMembers = (
     limit: query.limit.toString(),
   }
   return api.get(`servers/${serverId}/members`, { searchParams }).json()
+}
+
+export const createMember = (accessToken: string, { server_id }: CreateMemberRequest) => {
+  const api = createCommunityApi(accessToken)
+  return api.post(`servers/${server_id}/members`).json()
 }
 
 export const searchOrDiscoverServer = (
