@@ -1,20 +1,20 @@
-import type { Role } from "@/shared/queries/community/community.types"
 import { PageRolesSetting } from "../ui/PageRolesSetting"
+import { useRoles } from "@/shared/queries/community/community.queries"
 
-// interface PageRolesSettingFeatureProps {
-//
-// }
+interface PageRolesSettingFeatureProps {
+  serverId: string
+}
 
-export function PageRolesSettingFeature() {
-  const roles: Array<Role> = [
-    {
-      name: "roles test",
-      id: "yea",
-      server_id: "hey",
-      permissions: 1,
-      created_at: "test",
-      updated_at: null,
-    },
-  ]
-  return <PageRolesSetting roles={roles} />
+export function PageRolesSettingFeature({ serverId }: PageRolesSettingFeatureProps) {
+  const { data, isLoading, isError, isSuccess } = useRoles(serverId)
+  return (
+    <PageRolesSetting
+      roles={data?.data}
+      serverId={serverId}
+      origin={"/servers/$id/settings/roles"}
+      isRoleLoading={isLoading}
+      isRoleError={isError}
+      isRoleSuccess={isSuccess}
+    />
+  )
 }
