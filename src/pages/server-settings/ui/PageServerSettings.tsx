@@ -20,7 +20,6 @@ export default function PageServerSettings({
 }: PageServerSettingsProps) {
   return (
     <div className="flex h-full flex-col space-y-12 p-4">
-      <h1 className="text-responsive-2xl">Settings</h1>
       <div className="flex h-full w-full flex-row">
         <div className="flex w-1/4 flex-col gap-y-2 p-4">
           <Button

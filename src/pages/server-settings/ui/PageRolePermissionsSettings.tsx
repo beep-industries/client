@@ -28,12 +28,23 @@ export function PageRolePermissionsSettings({
 
   if (isLoadingRole) {
     return (
-      <div className="flex flex-col gap-4 p-6">
-        <div className="animate-pulse">
-          <div className="bg-muted mb-6 h-8 w-1/4 rounded"></div>
+      <div className="flex h-full flex-col overflow-hidden">
+        <div className="shrink-0 border-b px-6 py-4">
+          <div className="flex flex-row items-start justify-between gap-4">
+            <div className="flex flex-1 animate-pulse flex-col gap-2">
+              <div className="bg-muted h-8 w-1/3 rounded"></div>
+              <div className="bg-muted h-5 w-1/2 rounded"></div>
+            </div>
+            <div className="flex flex-row gap-3">
+              <div className="bg-muted h-10 w-20 rounded"></div>
+              <div className="bg-muted h-10 w-24 rounded"></div>
+            </div>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-6 py-4">
           <div className="space-y-4">
-            {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="bg-muted h-20 rounded"></div>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="bg-muted h-20 animate-pulse rounded"></div>
             ))}
           </div>
         </div>
@@ -51,47 +62,56 @@ export function PageRolePermissionsSettings({
   }
 
   return (
-    <div className="flex max-w-4xl flex-col gap-6 p-6">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">{role.name}</h1>
-        <p className="text-muted-foreground">{t("rolePermissions.subtitle")}</p>
-      </div>
-
+    <div className="flex h-full flex-col overflow-hidden">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          <div className="flex flex-col gap-3">
-            {PERMISSION_METADATA.map((permission) => (
-              <FormField
-                key={permission.key}
-                control={form.control}
-                name={`permissions.${permission.key}`}
-                render={({ field }) => (
-                  <FormControl>
-                    <PermissionSwitch
-                      name={t(permission.nameKey)}
-                      description={t(permission.descriptionKey)}
-                      checked={field.value || false}
-                      onCheckedChange={field.onChange}
-                      disabled={isUpdatingRole}
-                    />
-                  </FormControl>
-                )}
-              />
-            ))}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex h-full min-h-0 flex-col">
+          <div className="bg-background shrink-0 border-b px-6 py-4">
+            <div className="flex flex-row items-start justify-between gap-4">
+              <div className="flex flex-col gap-2">
+                <h1 className="text-2xl font-bold">{role.name}</h1>
+                <p className="text-muted-foreground">{t("rolePermissions.subtitle")}</p>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                  disabled={isUpdatingRole || !isDirty}
+                >
+                  {t("rolePermissions.reset")}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isUpdatingRole || !isDirty}
+                  isLoading={isUpdatingRole}
+                >
+                  {t("rolePermissions.save")}
+                </Button>
+              </div>
+            </div>
           </div>
 
-          <div className="bg-background sticky bottom-0 flex flex-row justify-end gap-3 border-t pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => form.reset()}
-              disabled={isUpdatingRole || !isDirty}
-            >
-              {t("rolePermissions.reset")}
-            </Button>
-            <Button type="submit" disabled={isUpdatingRole || !isDirty} isLoading={isUpdatingRole}>
-              {t("rolePermissions.save")}
-            </Button>
+          <div className="flex-1 overflow-y-auto px-6 py-4">
+            <div className="flex max-w-4xl flex-col gap-3">
+              {PERMISSION_METADATA.map((permission) => (
+                <FormField
+                  key={permission.key}
+                  control={form.control}
+                  name={`permissions.${permission.key}`}
+                  render={({ field }) => (
+                    <FormControl>
+                      <PermissionSwitch
+                        name={t(permission.nameKey)}
+                        description={t(permission.descriptionKey)}
+                        checked={field.value || false}
+                        onCheckedChange={field.onChange}
+                        disabled={isUpdatingRole}
+                      />
+                    </FormControl>
+                  )}
+                />
+              ))}
+            </div>
           </div>
         </form>
       </Form>
