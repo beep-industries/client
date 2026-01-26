@@ -26,6 +26,7 @@ import {
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
 import { useTheme } from "@/app/providers/ThemeProvider"
+import { Tooltip, TooltipTrigger, TooltipContent } from "./ui/Tooltip"
 
 export function UserNav({
   user,
@@ -72,12 +73,19 @@ export function UserNav({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    {user.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Avatar className="hover:outline-primary h-8 w-8 cursor-pointer rounded-lg duration-200 ease-in-out hover:outline hover:outline-2 hover:outline-offset-2">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="rounded-lg">
+                        {user.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{t("userNav.change_picture")}</p>
+                  </TooltipContent>
+                </Tooltip>
                 <div className="grid flex-1 text-left leading-tight">
                   <span className="text-responsive-base truncate font-medium">{user.name}</span>
                   <span className="text-muted-foreground text-responsive-sm truncate">

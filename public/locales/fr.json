@@ -39,7 +39,8 @@
     "french": "Français",
     "english": "Anglais",
     "settings": "Paramètres",
-    "log_out": "Se déconnecter"
+    "log_out": "Se déconnecter",
+	"change_picture": "Changer de photo"
   },
   "serverProfile": {
     "create_folder": "Créer un dossier",

@@ -39,7 +39,8 @@
     "french": "French",
     "english": "English",
     "settings": "Settings",
-    "log_out": "Log out"
+    "log_out": "Log out",
+	"change_picture": "Change picture"
   },
   "serverProfile": {
     "create_folder": "Create a folder",
