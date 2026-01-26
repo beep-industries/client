@@ -5,6 +5,8 @@ import { useState, useRef, useEffect } from "react"
 import MemberDialog, { type MemberData } from "./MemberDialog"
 import { Button } from "./ui/Button"
 import { Ellipsis } from "lucide-react"
+import Markdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -61,79 +63,68 @@ export default function MessageComponent({
   let messageBg = ""
   if (status === "pending") messageBg = "text-muted-foreground"
 
-  if (isCompact) {
-    return (
-      <div
-        className={cn(
-          `group relative flex w-full items-start gap-3 px-5 py-1 pl-16`,
-          messageBg,
-          !editMode && "hover:bg-accent"
-        )}
-      >
-        <div className="flex w-full flex-col wrap-anywhere">
-          {editMode ? (
-            <EditMessageForm
-              initialContent={content}
-              onSave={(newContent) => {
-                setEditMode(false)
-                if (onEdit && newContent !== content) onEdit(newContent)
-              }}
-              onCancel={() => setEditMode(false)}
-              t={t}
-            />
-          ) : (
-            <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
-          )}
-        </div>
-        <div className="absolute top-0 right-2 shrink-0">
-          <MessageOptionsMenu onDelete={onDelete} onEdit={() => setEditMode(true)} onPin={onPin} />
-        </div>
-      </div>
-    )
-  }
+  // Shared message content
+  const messageContent = editMode ? (
+    <EditMessageForm
+      initialContent={content}
+      onSave={(newContent) => {
+        setEditMode(false)
+        if (onEdit && newContent !== content) onEdit(newContent)
+      }}
+      onCancel={() => setEditMode(false)}
+      t={t}
+    />
+  ) : (
+    <p className="wrap-anywhere whitespace-pre-wrap">
+      <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+    </p>
+  )
+
+  // Shared options menu
+  const optionsMenu = (
+    <MessageOptionsMenu onDelete={onDelete} onEdit={() => setEditMode(true)} onPin={onPin} />
+  )
 
   return (
     <div
       className={cn(
-        `group mt-3 flex h-fit w-full items-start gap-3 px-5 py-1`,
+        isCompact
+          ? "group relative flex w-full items-start gap-3 px-5 py-1 pl-16"
+          : "group mt-3 flex h-fit w-full items-start gap-3 px-5 py-1",
         messageBg,
         !editMode && "hover:bg-accent"
       )}
     >
-      <Avatar
-        className="mt-1 h-8 w-8 cursor-pointer rounded-lg grayscale"
-        onClick={() => setShowProfile(true)}
-      >
-        <AvatarImage src={profilePictureUrl} alt={author} />
-        <AvatarFallback className="rounded-lg">{author.charAt(0).toUpperCase()}</AvatarFallback>
-      </Avatar>
+      {!isCompact && (
+        <Avatar
+          className="mt-1 h-8 w-8 cursor-pointer rounded-lg grayscale"
+          onClick={() => setShowProfile(true)}
+        >
+          <AvatarImage src={profilePictureUrl} alt={author} />
+          <AvatarFallback className="rounded-lg">{author.charAt(0).toUpperCase()}</AvatarFallback>
+        </Avatar>
+      )}
       <div className="flex w-full flex-col wrap-anywhere">
-        <div className="flex items-center gap-2">
-          <h3 className="cursor-pointer font-semibold" onClick={() => setShowProfile(true)}>
-            {author}
-          </h3>
-          <p className="text-muted-foreground text-xs">{formatDate(date, i18n.language, t)}</p>
-        </div>
-        {editMode ? (
-          <EditMessageForm
-            initialContent={content}
-            onSave={(newContent) => {
-              setEditMode(false)
-              if (onEdit && newContent !== content) onEdit(newContent)
-            }}
-            onCancel={() => setEditMode(false)}
-            t={t}
-          />
-        ) : (
-          <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
+        {!isCompact && (
+          <div className="flex items-center gap-2">
+            <h3 className="cursor-pointer font-semibold" onClick={() => setShowProfile(true)}>
+              {author}
+            </h3>
+            <p className="text-muted-foreground text-xs">{formatDate(date, i18n.language, t)}</p>
+          </div>
         )}
+        {messageContent}
       </div>
-
-      <div className="absolute top-3 right-2 shrink-0">
-        <MessageOptionsMenu onDelete={onDelete} onEdit={() => setEditMode(true)} onPin={onPin} />
+      <div
+        className={
+          isCompact ? "absolute top-0 right-2 shrink-0" : "absolute top-3 right-2 shrink-0"
+        }
+      >
+        {optionsMenu}
       </div>
-
-      <MemberDialog member={memberData} open={showProfile} onOpenChange={setShowProfile} />
+      {!isCompact && (
+        <MemberDialog member={memberData} open={showProfile} onOpenChange={setShowProfile} />
+      )}
     </div>
   )
 }
