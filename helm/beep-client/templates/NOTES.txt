@@ -1,0 +1,20 @@
+1. Get the application URL by running these commands:
+{{- if .Values.httpRoute.enabled }}
+  Your HTTPRoute is configured with hostnames:
+  {{- range .Values.httpRoute.hostnames }}
+    - {{ . }}
+  {{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "beep-client.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "beep-client.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "beep-client.fullname" . }} 8080:{{ .Values.service.port }}
+  echo "Visit http://127.0.0.1:8080"
+{{- end }}
+
+NOTE: The VITE_* environment variables are baked into the Docker image at build time.
+To change API endpoints, rebuild the image with the appropriate --build-arg flags.
