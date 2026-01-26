@@ -1,7 +1,9 @@
 {
   "common": {
     "loading": "Loading...",
-    "load_more": "Load more"
+    "load_more": "Load more",
+    "cancel": "Cancel",
+    "loading_more": "Loading more..."
   },
   "serverNav": {
     "create_server": "Create a server",
@@ -305,6 +307,31 @@
     "no_results": "No members found",
     "member_count": "{{count}} member",
     "member_count_plural": "{{count}} members"
+  },
+  "roles": {
+    "add_role": "Add Role",
+    "validation": {
+      "name_required": "Role name is required",
+      "name_too_long": "Role name is too long (max 100 characters)"
+    },
+    "form": {
+      "name": "Role Name",
+      "name_placeholder": "Enter role name...",
+      "subtitle": "Configure permissions for this role below",
+      "create": "Create Role",
+      "permissions_title": "Permissions"
+    },
+    "delete": {
+      "title": "Delete Role",
+      "description": "Are you sure you want to delete the role \"{{roleName}}\"? This action cannot be undone.",
+      "confirm": "Delete Role",
+      "success": "Role deleted successfully",
+      "error": "Failed to delete role"
+    },
+    "create": {
+      "success": "Role created successfully",
+      "error": "Failed to create role"
+    }
   },
   "roleTabs": {
     "permissions": "Permissions",

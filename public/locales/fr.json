@@ -1,7 +1,9 @@
 {
   "common": {
     "loading": "Chargement...",
-    "load_more": "Charger plus"
+    "load_more": "Charger plus",
+    "cancel": "Annuler",
+    "loading_more": "Chargement en cours..."
   },
   "serverNav": {
     "create_server": "Créer un serveur",
@@ -305,6 +307,31 @@
     "no_results": "Aucun membre trouvé",
     "member_count": "{{count}} membre",
     "member_count_plural": "{{count}} membres"
+  },
+  "roles": {
+    "add_role": "Ajouter un rôle",
+    "validation": {
+      "name_required": "Le nom du rôle est requis",
+      "name_too_long": "Le nom du rôle est trop long (max 100 caractères)"
+    },
+    "form": {
+      "name": "Nom du rôle",
+      "name_placeholder": "Entrez le nom du rôle...",
+      "subtitle": "Configurez les permissions pour ce rôle ci-dessous",
+      "create": "Créer le rôle",
+      "permissions_title": "Permissions"
+    },
+    "delete": {
+      "title": "Supprimer le rôle",
+      "description": "Êtes-vous sûr de vouloir supprimer le rôle \"{{roleName}}\" ? Cette action est irréversible.",
+      "confirm": "Supprimer le rôle",
+      "success": "Rôle supprimé avec succès",
+      "error": "Échec de la suppression du rôle"
+    },
+    "create": {
+      "success": "Rôle créé avec succès",
+      "error": "Échec de la création du rôle"
+    }
   },
   "roleTabs": {
     "permissions": "Permissions",

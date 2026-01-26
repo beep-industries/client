@@ -554,6 +554,9 @@ export const useCreateRole = (serverId: string) => {
 
   return useMutation({
     mutationFn: (body: CreateRoleRequest) => {
+      console.log("useCreateRole mutation called with:", body)
+      console.log("accessToken:", accessToken ? "exists" : "missing")
+      console.log("serverId:", serverId)
       return createRole(accessToken!, serverId, body)
     },
   })
