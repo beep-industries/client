@@ -7,7 +7,11 @@ import type { EventContextValue, TopicName } from "@/shared/models/real-time.ts"
 export interface RealTimeEventProviderProps<TPayload, TState> {
   children: React.ReactNode
   topic: TopicName
-  event: string
+  event?: string // single event (legacy)
+  events?: Array<{
+    event: string
+    onEvent?: (payload: unknown, meta: { topic: string; channel: Channel; event: string }) => void
+  }>
   // Optional explicit id for nested access; defaults to `${resolvedTopic}:${event}`
   id?: string
   // Optional local state sink for this event
@@ -15,7 +19,7 @@ export interface RealTimeEventProviderProps<TPayload, TState> {
     initial: TState
     reducer: (prev: TState, msg: TPayload, event: string) => TState
   }
-  // Optional side-effect handler invoked for every event message
+  // Optional side-effect handler invoked for every event message (legacy)
   onEvent?: (payload: TPayload, meta: { topic: string; channel: Channel; event: string }) => void
 }
 
@@ -28,6 +32,7 @@ export function RealTimeEventProvider<P, S>({
   children,
   topic,
   event,
+  events,
   id,
   state: stateCfg,
   onEvent,
@@ -43,7 +48,6 @@ export function RealTimeEventProvider<P, S>({
     () => (typeof topic === "function" ? topic(user) : topic),
     [topic, user]
   )
-
   // Compute stable id for registry access
   const resolvedId = useMemo(() => id ?? `${topicName}:${event}`, [id, topicName, event])
 
@@ -53,23 +57,50 @@ export function RealTimeEventProvider<P, S>({
     if (!ch) return
     channelRef.current = ch
 
-    const cb = (payload: P) => {
-      if (stateCfg) {
-        setState((prev) => stateCfg.reducer(prev ?? stateCfg.initial, payload, event))
-      }
-      if (onEvent) onEvent(payload, { topic: topicName, channel: ch, event })
-    }
+    // Support multiple events
+    const eventList: Array<{
+      event: string
+      onEvent?: (payload: P, meta: { topic: string; channel: Channel; event: string }) => void
+    }> =
+      events && events.length > 0
+        ? (events as Array<{
+            event: string
+            onEvent?: (payload: P, meta: { topic: string; channel: Channel; event: string }) => void
+          }>)
+        : event
+          ? ([{ event, onEvent }] as Array<{
+              event: string
+              onEvent?: (
+                payload: P,
+                meta: { topic: string; channel: Channel; event: string }
+              ) => void
+            }>)
+          : []
 
-    const id = ch.on(event, cb)
+    const ids: Array<{ event: string; id: number | undefined }> = []
+
+    eventList.forEach((entry) => {
+      const { event: evt, onEvent: handler } = entry
+      const cb = (payload: unknown) => {
+        if (stateCfg) {
+          setState((prev) => stateCfg.reducer(prev ?? stateCfg.initial, payload as P, evt))
+        }
+        if (handler) handler(payload as P, { topic: topicName, channel: ch, event: evt })
+      }
+      const id = ch.on(evt, cb)
+      ids.push({ event: evt, id: id as number | undefined })
+    })
 
     return () => {
-      try {
-        ch.off(event, id)
-      } catch {
-        /* empty */
-      }
+      ids.forEach(({ event: evt, id }) => {
+        try {
+          ch.off(evt, id)
+        } catch {
+          /* empty */
+        }
+      })
     }
-  }, [isAuthenticated, connected, getChannel, topicName, event, onEvent, stateCfg])
+  }, [isAuthenticated, connected, getChannel, topicName, event, events, onEvent, stateCfg])
 
   const value = useMemo<EventContextValue<S>>(() => ({ state: state as S }), [state])
 

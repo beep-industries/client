@@ -8,7 +8,7 @@ import {
   useDeleteFriend,
   useDeleteFriendRequest,
 } from "../queries/community/community.queries"
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import { useTranslation } from "react-i18next"
@@ -46,18 +46,21 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
     error: deleteFriendError,
   } = useDeleteFriend()
 
-  const handleError = async (error: unknown, defaultMessage: string) => {
-    if (error && typeof error === "object" && "response" in error) {
-      const bodyData = await (error.response as Response).json()
-      if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
-        toast.error(t("friendRequests.errors." + bodyData.error_code))
+  const handleError = useCallback(
+    async (error: unknown, defaultMessage: string) => {
+      if (error && typeof error === "object" && "response" in error) {
+        const bodyData = await (error.response as Response).json()
+        if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
+          toast.error(t("friendRequests.errors." + bodyData.error_code))
+        } else {
+          toast.error(defaultMessage)
+        }
       } else {
         toast.error(defaultMessage)
       }
-    } else {
-      toast.error(defaultMessage)
-    }
-  }
+    },
+    [t]
+  )
 
   useEffect(() => {
     if (isAcceptFriendRequestSuccess) {
@@ -68,7 +71,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
     if (acceptFriendRequestError) {
       handleError(acceptFriendRequestError, t("friendRequests.accept_error"))
     }
-  }, [isAcceptFriendRequestSuccess, queryClient, acceptFriendRequestError, t])
+  }, [isAcceptFriendRequestSuccess, queryClient, acceptFriendRequestError, t, handleError])
 
   useEffect(() => {
     if (isDeclineFriendRequestSuccess) {
@@ -78,7 +81,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
     if (declineFriendRequestError) {
       handleError(declineFriendRequestError, t("friendRequests.decline_error"))
     }
-  }, [isDeclineFriendRequestSuccess, declineFriendRequestError, queryClient, t])
+  }, [isDeclineFriendRequestSuccess, declineFriendRequestError, queryClient, t, handleError])
 
   useEffect(() => {
     if (isDeleteFriendRequestSuccess) {
@@ -88,7 +91,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
     if (deleteFriendRequestError) {
       handleError(deleteFriendRequestError, t("friendRequests.delete_request_error"))
     }
-  }, [isDeleteFriendRequestSuccess, deleteFriendRequestError, queryClient, t])
+  }, [isDeleteFriendRequestSuccess, deleteFriendRequestError, queryClient, t, handleError])
 
   useEffect(() => {
     if (isDeleteFriendSuccess) {
@@ -98,7 +101,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
     if (deleteFriendError) {
       handleError(deleteFriendError, t("friendRequests.delete_friend_error"))
     }
-  }, [isDeleteFriendSuccess, deleteFriendError, queryClient, t])
+  }, [isDeleteFriendSuccess, deleteFriendError, queryClient, t, handleError])
 
   return (
     <div className="group hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full flex-row items-center justify-between rounded-md p-2">

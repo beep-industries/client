@@ -9,7 +9,7 @@ import {
   useFriendInvitations,
 } from "../queries/community/community.queries"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { AddFriendRequestForm } from "../forms/AddFriendRequest"
 import { useForm } from "react-hook-form"
 import type z from "zod"
@@ -49,20 +49,23 @@ export default function TopBarFriends() {
   const [isCreateFriendRequestModalOpen, setIsCreateFriendRequestModalOpen] =
     useState<boolean>(false)
 
-  const handleError = async (error: unknown, defaultMessage: string) => {
-    if (error && typeof error === "object" && "response" in error) {
-      const bodyData = await (error.response as Response).json()
-      if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
-        toast.error(t("friendRequests.errors." + bodyData.error_code))
-      } else if (bodyData.status === 404) {
-        toast.error(t("topBar.modal.create_friend_request.errors_user_not_found"))
+  const handleError = useCallback(
+    async (error: unknown, defaultMessage: string) => {
+      if (error && typeof error === "object" && "response" in error) {
+        const bodyData = await (error.response as Response).json()
+        if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
+          toast.error(t("friendRequests.errors." + bodyData.error_code))
+        } else if (bodyData.status === 404) {
+          toast.error(t("topBar.modal.create_friend_request.errors_user_not_found"))
+        } else {
+          toast.error(defaultMessage)
+        }
       } else {
         toast.error(defaultMessage)
       }
-    } else {
-      toast.error(defaultMessage)
-    }
-  }
+    },
+    [t]
+  )
 
   useEffect(() => {
     if (!isCreateFriendRequestModalOpen) {
@@ -78,7 +81,14 @@ export default function TopBarFriends() {
     } else if (createFriendRequestError) {
       handleError(createFriendRequestError, t("topBar.modal.create_friend_request.error"))
     }
-  }, [createFriendRequestError, isCreateFriendRequestSuccess, createdFriendRequest, queryClient, t])
+  }, [
+    createFriendRequestError,
+    isCreateFriendRequestSuccess,
+    createdFriendRequest,
+    queryClient,
+    t,
+    handleError,
+  ])
 
   return (
     <>

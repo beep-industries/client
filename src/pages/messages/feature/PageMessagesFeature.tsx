@@ -6,7 +6,10 @@ import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useCreateMessage, useMessages } from "@/shared/queries/message/message.queries"
 import type { CreateMessageRequest, Message } from "@/shared/queries/message/message.types"
 import { RealTimeEventProvider } from "@/app/providers/RealTimeEventProvider.tsx"
-import type { MessageCreatedEvent } from "@/shared/queries/real-time/event.types"
+import type {
+  MessageCreatedEvent,
+  MessageDeletedEvent,
+} from "@/shared/queries/real-time/event.types"
 
 interface PageMessagesFeatureProps {
   channelId: string
@@ -66,7 +69,7 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     updated_at: event.updated_at ?? event.created_at ?? new Date().toISOString(),
   })
 
-  // Réconciliation sur réception websocket : passe le message en 'sent' si id match
+  // Handle message.created event
   const onEventChannelHandler = (event: MessageCreatedEvent) => {
     const msg = toMessage(event)
     const existingMsg = messagesState.liveMessages.find((m) => m._id === msg._id)
@@ -82,6 +85,18 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     dispatch({ type: "ADD_LIVE_MESSAGE", payload: { ...msg, status: "sent" as const } })
   }
 
+  // Handle message.deleted event
+  const onEventDeletedHandler = (event: MessageDeletedEvent) => {
+    // Remove from liveMessages if present
+    if (messagesState.liveMessages.some((m) => m._id === event.message_id)) {
+      dispatch({ type: "DELETE_LIVE_MESSAGE", payload: event.message_id })
+    }
+    // Remove from fetchedMessages if present
+    if (messagesState.fetchedMessages.some((m) => m._id === event.message_id)) {
+      dispatch({ type: "DELETE_FETCHED_MESSAGE", payload: event.message_id })
+    }
+  }
+
   // Load fetched messages into state
   useEffect(() => {
     if (messagesData) {
@@ -92,11 +107,21 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
 
   // TODO: Implement logic for websocket live messages
 
+  // Adapters to cast payload from unknown to correct type
+  const handleCreated = (payload: unknown) => {
+    onEventChannelHandler(payload as MessageCreatedEvent)
+  }
+  const handleDeleted = (payload: unknown) => {
+    onEventDeletedHandler(payload as MessageDeletedEvent)
+  }
+
   return (
     <RealTimeEventProvider
       topic={`text-channel:${channelId}`}
-      event={"message.created"}
-      onEvent={onEventChannelHandler}
+      events={[
+        { event: "message.created", onEvent: handleCreated },
+        { event: "message.deleted", onEvent: handleDeleted },
+      ]}
     >
       <PageMessages
         messages={allMessages}
