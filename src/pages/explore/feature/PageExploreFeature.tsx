@@ -42,9 +42,10 @@ export default function PageExploreFeature() {
         onSuccess: () => {
           navigate({ to: `/servers/${server.id}` })
         },
-        onError: (error: { response: { status: number }; status: number }) => {
+        onError: (error: Error) => {
           // If user is already a member (409), redirect to server anyway
-          if (error?.response?.status === 409 || error?.status === 409) {
+          const httpError = error as Error & { response?: { status: number }; status?: number }
+          if (httpError?.response?.status === 409 || httpError?.status === 409) {
             navigate({ to: `/servers/${server.id}` })
           } else {
             toast.error("Failed to join server. Please try again.")
