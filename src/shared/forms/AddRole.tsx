@@ -25,20 +25,13 @@ interface AddRoleFormProps {
 export function AddRoleForm({ form, loading, onSubmit, onCancel }: AddRoleFormProps) {
   const { t } = useTranslation()
 
-  const handleSubmit = () => {
-    console.log("Form submit event triggered")
-    console.log("Form values:", form.getValues())
-    console.log("Form errors:", form.formState.errors)
-  }
-
   return (
     <Form {...form}>
       <form
         onSubmit={(e) => {
-          handleSubmit()
           form.handleSubmit(onSubmit)(e)
         }}
-        className="flex h-full min-h-0 flex-col"
+        className="flex h-full min-h-0 w-full flex-col"
       >
         <div className="bg-background shrink-0 border-b px-6 py-4">
           <div className="flex flex-row items-start justify-between gap-4">
