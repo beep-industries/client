@@ -76,7 +76,7 @@ export default function MessageComponent({
               initialContent={content}
               onSave={(newContent) => {
                 setEditMode(false)
-                if (onEdit) onEdit(newContent)
+                if (onEdit && newContent !== content) onEdit(newContent)
               }}
               onCancel={() => setEditMode(false)}
               t={t}
@@ -119,7 +119,7 @@ export default function MessageComponent({
             initialContent={content}
             onSave={(newContent) => {
               setEditMode(false)
-              if (onEdit) onEdit(newContent)
+              if (onEdit && newContent !== content) onEdit(newContent)
             }}
             onCancel={() => setEditMode(false)}
             t={t}
@@ -171,7 +171,9 @@ function EditMessageForm({
     onKeyDown: (event) => {
       if (!event.shiftKey) {
         event.preventDefault()
-        onSave(value)
+        if (value.trim() !== "") {
+          onSave(value)
+        }
       }
     },
   })
@@ -190,7 +192,9 @@ function EditMessageForm({
       className="flex flex-col gap-2"
       onSubmit={(e) => {
         e.preventDefault()
-        onSave(value)
+        if (value.trim() !== "") {
+          onSave(value)
+        }
       }}
     >
       <textarea
@@ -201,7 +205,7 @@ function EditMessageForm({
         rows={2}
       />
       <div className="mt-1 flex gap-2">
-        <Button type="submit" size="sm" variant="default">
+        <Button type="submit" size="sm" variant="default" disabled={value.trim() === ""}>
           {t("messages.save")}
         </Button>
         <Button type="button" size="sm" variant="outline" onClick={onCancel}>
