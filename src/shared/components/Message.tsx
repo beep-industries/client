@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import { cn, formatDate } from "../lib/utils"
 import { useTranslation } from "react-i18next"
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import MemberDialog, { type MemberData } from "./MemberDialog"
 import { Button } from "./ui/Button"
 import { Ellipsis } from "lucide-react"
@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuGroup,
 } from "./ui/DropdownMenu"
+import { useKeyboard } from "../hooks/UseKeyboard"
 
 interface MessageProps {
   content: string
@@ -137,7 +138,6 @@ export default function MessageComponent({
   )
 }
 
-// Inline edit form for message content
 function EditMessageForm({
   initialContent,
   onSave,
@@ -150,6 +150,41 @@ function EditMessageForm({
   t: (key: string) => string
 }) {
   const [value, setValue] = useState(initialContent)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  // Focus textarea when component mounts (edit mode entered)
+  useEffect(() => {
+    // Delay focus to ensure textarea is mounted
+    const timer = setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus()
+        // Move cursor to end of text
+        const len = textareaRef.current.value.length
+        textareaRef.current.setSelectionRange(len, len)
+      }
+    }, 0)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useKeyboard({
+    key: "Enter",
+    element: textareaRef.current,
+    onKeyDown: (event) => {
+      if (!event.shiftKey) {
+        event.preventDefault()
+        onSave(value)
+      }
+    },
+  })
+
+  useKeyboard({
+    key: "Escape",
+    element: textareaRef.current,
+    onKeyDown: (event) => {
+      event.preventDefault()
+      onCancel()
+    },
+  })
+
   return (
     <form
       className="flex flex-col gap-2"
@@ -159,11 +194,11 @@ function EditMessageForm({
       }}
     >
       <textarea
+        ref={textareaRef}
         className="w-full resize-none rounded border p-2 focus:ring-0 focus:outline-none"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         rows={2}
-        autoFocus
       />
       <div className="mt-1 flex gap-2">
         <Button type="submit" size="sm" variant="default">
