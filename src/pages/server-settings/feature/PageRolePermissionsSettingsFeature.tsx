@@ -25,7 +25,7 @@ export function PageRolePermissionsSettingsFeature({
   const { data, isError, isLoading } = useRoles(serverId)
 
   const role = useMemo(() => {
-    return data?.data.find((role) => role.id == roleId)
+    return data?.data.find((role) => role.id === roleId)
   }, [data, roleId])
 
   const {

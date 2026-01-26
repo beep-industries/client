@@ -540,8 +540,7 @@ export const useRole = (roleId: string) => {
       try {
         const response = await getRole(accessToken!, roleId)
         return response as Role
-      } catch (error) {
-        console.error("Error fetching role:", error)
+      } catch {
         throw new Error("Error fetching role")
       }
     },
@@ -554,9 +553,6 @@ export const useCreateRole = (serverId: string) => {
 
   return useMutation({
     mutationFn: (body: CreateRoleRequest) => {
-      console.log("useCreateRole mutation called with:", body)
-      console.log("accessToken:", accessToken ? "exists" : "missing")
-      console.log("serverId:", serverId)
       return createRole(accessToken!, serverId, body)
     },
   })
