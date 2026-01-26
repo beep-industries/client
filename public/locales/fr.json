@@ -1,7 +1,9 @@
 {
   "common": {
     "loading": "Chargement...",
-    "load_more": "Charger plus"
+    "load_more": "Charger plus",
+    "cancel": "Annuler",
+    "loading_more": "Chargement en cours..."
   },
   "serverNav": {
     "create_server": "Créer un serveur",
@@ -225,5 +227,114 @@
   },
   "server": {
     "no_channels": "Il n'y a pas encore de salons sur ce serveur"
+  },
+  "rolePermissions": {
+    "title": "Gérer les permissions pour",
+    "subtitle": "Configurez ce que les membres avec ce rôle peuvent faire",
+    "save": "Enregistrer les modifications",
+    "reset": "Réinitialiser",
+    "loading": "Chargement du rôle...",
+    "error_loading": "Échec du chargement du rôle",
+    "error_loading_subtitle": "Veuillez réessayer plus tard",
+    "success_updating": "Permissions du rôle mises à jour avec succès",
+    "error_updating": "Échec de la mise à jour des permissions du rôle",
+    "permissions": {
+      "Administrator": {
+        "name": "Administrateur",
+        "description": "Accès complet à toutes les fonctionnalités du serveur"
+      },
+      "ManageServer": {
+        "name": "Gérer le serveur",
+        "description": "Modifier les paramètres et informations du serveur"
+      },
+      "ManageRoles": {
+        "name": "Gérer les rôles",
+        "description": "Créer, modifier et supprimer des rôles"
+      },
+      "CreateInvitation": {
+        "name": "Créer des invitations",
+        "description": "Créer des invitations au serveur"
+      },
+      "ManageChannels": {
+        "name": "Gérer les salons",
+        "description": "Créer, modifier et supprimer des salons"
+      },
+      "ManageWebhooks": {
+        "name": "Gérer les webhooks",
+        "description": "Créer et gérer des webhooks"
+      },
+      "ViewChannels": {
+        "name": "Voir les salons",
+        "description": "Voir les salons du serveur"
+      },
+      "SendMessages": {
+        "name": "Envoyer des messages",
+        "description": "Envoyer des messages dans les salons"
+      },
+      "ManageNicknames": {
+        "name": "Gérer les pseudos",
+        "description": "Changer les pseudos des autres membres"
+      },
+      "ChangeNickname": {
+        "name": "Changer de pseudo",
+        "description": "Changer son propre pseudo"
+      },
+      "ManageMessages": {
+        "name": "Gérer les messages",
+        "description": "Supprimer et modifier les messages des autres"
+      },
+      "AttachFiles": {
+        "name": "Joindre des fichiers",
+        "description": "Télécharger des fichiers et pièces jointes"
+      }
+    }
+  },
+  "roleMembers": {
+    "title": "Gérer les membres pour",
+    "subtitle": "Ajouter ou retirer des membres de ce rôle",
+    "search_placeholder": "Rechercher des membres...",
+    "no_members": "Aucun membre dans ce rôle",
+    "no_members_subtitle": "Ajoutez des membres en utilisant la recherche ci-dessus",
+    "add_member": "Ajouter un membre",
+    "remove_member": "Retirer du rôle",
+    "success_adding": "Membre ajouté au rôle avec succès",
+    "error_adding": "Échec de l'ajout du membre au rôle",
+    "success_removing": "Membre retiré du rôle avec succès",
+    "error_removing": "Échec du retrait du membre du rôle",
+    "loading": "Chargement des membres...",
+    "error_loading": "Échec du chargement des membres",
+    "error_loading_subtitle": "Veuillez réessayer plus tard",
+    "no_results": "Aucun membre trouvé",
+    "member_count": "{{count}} membre",
+    "member_count_plural": "{{count}} membres"
+  },
+  "roles": {
+    "add_role": "Ajouter un rôle",
+    "validation": {
+      "name_required": "Le nom du rôle est requis",
+      "name_too_long": "Le nom du rôle est trop long (max 100 caractères)"
+    },
+    "form": {
+      "name": "Nom du rôle",
+      "name_placeholder": "Entrez le nom du rôle...",
+      "subtitle": "Configurez les permissions pour ce rôle ci-dessous",
+      "create": "Créer le rôle",
+      "permissions_title": "Permissions"
+    },
+    "delete": {
+      "title": "Supprimer le rôle",
+      "description": "Êtes-vous sûr de vouloir supprimer le rôle \"{{roleName}}\" ? Cette action est irréversible.",
+      "confirm": "Supprimer le rôle",
+      "success": "Rôle supprimé avec succès",
+      "error": "Échec de la suppression du rôle"
+    },
+    "create": {
+      "success": "Rôle créé avec succès",
+      "error": "Échec de la création du rôle"
+    }
+  },
+  "roleTabs": {
+    "permissions": "Permissions",
+    "members": "Membres"
   }
 }

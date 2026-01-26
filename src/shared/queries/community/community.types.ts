@@ -174,3 +174,38 @@ export interface GetServerMembersResponse {
   page: number
   total: number
 }
+
+export interface Role {
+  id: string
+  server_id: string
+  name: string
+  permissions: number
+  created_at: string
+  updated_at: string | null
+}
+
+export interface CreateRoleRequest {
+  name: string
+  permissions: number
+}
+
+export interface UpdateRoleRequest {
+  name?: string
+  permissions?: number
+}
+
+export interface GetRolesResponse {
+  data: Role[]
+  page: number
+  total: number
+}
+
+export interface AssignRoleRequest {
+  role_id: string
+  member_id: string
+}
+
+export interface UnassignRoleRequest {
+  role_id: string
+  member_id: string
+}
