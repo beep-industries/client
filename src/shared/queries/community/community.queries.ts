@@ -85,7 +85,7 @@ export const useServerById = (serverId: string) => {
         throw new Error("Error fetching server by ID")
       }
     },
-    enabled: !!accessToken,
+    enabled: !!accessToken && !!serverId,
   })
 }
 
@@ -161,6 +161,7 @@ export const useChannel = (channelId: string) => {
         throw new Error("Error fetching channel by ID")
       }
     },
+    enabled: !!accessToken && !!channelId,
   })
 }
 
