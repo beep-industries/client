@@ -107,12 +107,20 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
 
   // TODO: Implement logic for websocket live messages
 
+  // Adapters to cast payload from unknown to correct type
+  const handleCreated = (payload: unknown) => {
+    onEventChannelHandler(payload as MessageCreatedEvent)
+  }
+  const handleDeleted = (payload: unknown) => {
+    onEventDeletedHandler(payload as MessageDeletedEvent)
+  }
+
   return (
     <RealTimeEventProvider
       topic={`text-channel:${channelId}`}
       events={[
-        { event: "message.created", onEvent: onEventChannelHandler },
-        { event: "message.deleted", onEvent: onEventDeletedHandler },
+        { event: "message.created", onEvent: handleCreated },
+        { event: "message.deleted", onEvent: handleDeleted },
       ]}
     >
       <PageMessages
