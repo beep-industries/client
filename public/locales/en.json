@@ -182,6 +182,11 @@
   "sendingBar": {
     "placeholder": "Send a message"
   },
+  "messages": {
+    "edit": "Edit",
+    "delete": "Delete",
+    "pin": "Pin Message"
+  },
   "date": {
     "today_at": "Today at",
     "yesterday_at": "Yesterday at",

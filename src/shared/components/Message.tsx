@@ -114,6 +114,7 @@ function MessageOptionsMenu({
   onPin?: () => void
 }) {
   const [open, setOpen] = useState(false)
+  const t = useTranslation().t
 
   return (
     <div className="relative">
@@ -136,7 +137,7 @@ function MessageOptionsMenu({
                   onEdit()
                 }}
               >
-                Edit
+                {t("messages.edit")}
               </DropdownMenuItem>
             )}
             {onPin && (
@@ -145,7 +146,7 @@ function MessageOptionsMenu({
                   onPin()
                 }}
               >
-                Pin
+                {t("messages.pin")}
               </DropdownMenuItem>
             )}
             {onDelete && (
@@ -155,7 +156,7 @@ function MessageOptionsMenu({
                 }}
                 variant="destructive"
               >
-                Delete
+                {t("messages.delete")}
               </DropdownMenuItem>
             )}
           </DropdownMenuGroup>

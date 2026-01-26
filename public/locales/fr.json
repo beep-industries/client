@@ -134,6 +134,11 @@
     "placeholder": "Envoyer un message",
     "profile": "Profil"
   },
+  "messages": {
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "pin": "Épingler le message"
+  },
   "videoConference": {
     "participants": "participant",
     "participants_plural": "participants",
