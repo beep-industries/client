@@ -128,7 +128,7 @@ function MessageOptionsMenu({
             <Ellipsis />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="bottom" sideOffset={4} className="z-9999">
+        <DropdownMenuContent align="end" side="bottom" sideOffset={4}>
           <DropdownMenuGroup>
             {onEdit && (
               <DropdownMenuItem
