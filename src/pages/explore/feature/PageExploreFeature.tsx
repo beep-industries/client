@@ -9,6 +9,8 @@ import {
 import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
 import PageExplore from "../ui/PageExplore"
 import type { Server } from "@/shared/queries/community/community.types.ts"
+import { useNavigate } from "@tanstack/react-router"
+import { toast } from "sonner"
 
 export default function PageExploreFeature() {
   const { setHeader, setContent } = useSidebarContent()
@@ -16,6 +18,7 @@ export default function PageExploreFeature() {
   const [searchQuery, setSearchQuery] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
   const { mutateAsync: createMember } = useCreateMember()
+  const navigate = useNavigate()
 
   const discoverQuery = useDiscoverServersPage(currentPage)
   const searchServersQuery = useSearchServersPage(searchQuery, currentPage)
@@ -37,7 +40,15 @@ export default function PageExploreFeature() {
       { server_id: server.id },
       {
         onSuccess: () => {
-          window.location.href = `/servers/${server.id}`
+          navigate({ to: `/servers/${server.id}` })
+        },
+        onError: (error: { response: { status: number }; status: number }) => {
+          // If user is already a member (409), redirect to server anyway
+          if (error?.response?.status === 409 || error?.status === 409) {
+            navigate({ to: `/servers/${server.id}` })
+          } else {
+            toast.error("Failed to join server. Please try again.")
+          }
         },
       }
     )
