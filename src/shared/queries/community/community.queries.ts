@@ -31,6 +31,7 @@ import {
   deleteRole,
   assignRole,
   unassignRole,
+  getRoleMembers,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -74,6 +75,7 @@ export const communityKeys = {
     [...communityKeys.all, `members-${servirId}`, userId] as const,
   roles: (serverId: string) => [...communityKeys.all, `roles-${serverId}`] as const,
   role: (roleId: string) => [...communityKeys.all, `role-${roleId}`] as const,
+  roleMembers: (roleId: string) => [...communityKeys.all, `role-members-${roleId}`] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -594,5 +596,32 @@ export const useUnassignRole = () => {
     mutationFn: (body: UnassignRoleRequest) => {
       return unassignRole(accessToken!, body)
     },
+  })
+}
+
+export const useRoleMembers = (roleId: string) => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: communityKeys.roleMembers(roleId),
+    queryFn: async ({ pageParam }): Promise<GetServerMembersResponse> => {
+      try {
+        const response = await getRoleMembers(accessToken!, roleId, {
+          page: pageParam,
+          limit: MAXIMUM_MEMBERS_PER_API_CALL,
+        })
+
+        return response as GetServerMembersResponse
+      } catch (error) {
+        console.error("Error fetching role members:", error)
+        throw new Error("Error fetching role members")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * MAXIMUM_MEMBERS_PER_API_CALL < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken && !!roleId,
   })
 }

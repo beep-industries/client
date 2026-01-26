@@ -18,6 +18,8 @@ interface PageRoleMembersSettingsProps {
   onAddMember: (memberId: string) => void
   onRemoveMember: (memberId: string) => void
   isUpdating: boolean
+  onRoleMembersScroll?: () => void
+  isFetchingMore?: boolean
 }
 
 export function PageRoleMembersSettings({
@@ -30,6 +32,8 @@ export function PageRoleMembersSettings({
   onAddMember,
   onRemoveMember,
   isUpdating,
+  onRoleMembersScroll,
+  isFetchingMore,
 }: PageRoleMembersSettingsProps) {
   const { t } = useTranslation()
 
@@ -81,7 +85,16 @@ export function PageRoleMembersSettings({
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto px-6 py-4">
+      <div
+        className="flex-1 overflow-y-auto px-6 py-4"
+        onScroll={(e) => {
+          const target = e.currentTarget
+          const scrollPercentage = (target.scrollTop + target.clientHeight) / target.scrollHeight
+          if (scrollPercentage > 0.8 && onRoleMembersScroll) {
+            onRoleMembersScroll()
+          }
+        }}
+      >
         <div className="flex max-w-4xl flex-col gap-4">
           <MemberSearchCombobox
             members={allMembers}
@@ -109,6 +122,11 @@ export function PageRoleMembersSettings({
                   disabled={isUpdating}
                 />
               ))}
+              {isFetchingMore && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="text-muted-foreground text-sm">{t("common.loading_more")}</div>
+                </div>
+              )}
             </div>
           )}
         </div>

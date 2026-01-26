@@ -222,3 +222,12 @@ export const unassignRole = (accessToken: string, { role_id, member_id }: Unassi
   const api = createCommunityApi(accessToken)
   return api.delete(`roles/${role_id}/members/${member_id}`).json()
 }
+
+export const getRoleMembers = (accessToken: string, roleId: string, query: CommunityPagination) => {
+  const api = createCommunityApi(accessToken)
+  const searchParams = {
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api.get(`roles/${roleId}/members`, { searchParams }).json()
+}

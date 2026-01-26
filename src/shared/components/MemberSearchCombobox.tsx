@@ -54,7 +54,7 @@ export function MemberSearchCombobox({
           {placeholder || t("roleMembers.add_member")}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[400px] p-0" align="start">
+      <PopoverContent className="w-100 p-0" align="start">
         <Command>
           <CommandInput placeholder={t("roleMembers.search_placeholder")} />
           <CommandList>

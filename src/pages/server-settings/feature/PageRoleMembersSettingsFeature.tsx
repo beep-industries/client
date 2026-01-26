@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 import {
   useServerMembers,
   useAssignRole,
   useUnassignRole,
+  useRoleMembers,
 } from "@/shared/queries/community/community.queries"
 import { useUsersBatch } from "@/shared/queries/user/user.queries"
 import { PageRoleMembersSettings } from "../ui/PageRoleMembersSettings"
@@ -29,7 +30,15 @@ export function PageRoleMembersSettingsFeature({
 }: PageRoleMembersSettingsFeatureProps) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
-  const [roleMembers, setRoleMembers] = useState<Set<string>>(new Set())
+
+  // Fetch role members with infinite scroll
+  const {
+    data: roleMembersData,
+    isLoading: isRoleMembersLoading,
+    fetchNextPage: fetchNextRoleMembersPage,
+    hasNextPage: hasNextRoleMembersPage,
+    isFetchingNextPage: isFetchingNextRoleMembersPage,
+  } = useRoleMembers(roleId)
 
   // Fetch ALL server members (up to 1000) for local search
   const {
@@ -40,12 +49,19 @@ export function PageRoleMembersSettingsFeature({
     isFetchingNextPage,
   } = useServerMembers(serverId)
 
-  // Get all unique user IDs from all pages
+  // Get all unique user IDs from all pages (both server members and role members)
   const userIds = useMemo(() => {
-    if (!membersData?.pages) return []
-    const ids = membersData.pages.flatMap((page) => page.data.map((member) => member.user_id))
-    return ids
-  }, [membersData])
+    const ids: string[] = []
+    if (membersData?.pages) {
+      ids.push(...membersData.pages.flatMap((page) => page.data.map((member) => member.user_id)))
+    }
+    if (roleMembersData?.pages) {
+      ids.push(
+        ...roleMembersData.pages.flatMap((page) => page.data.map((member) => member.user_id))
+      )
+    }
+    return [...new Set(ids)] // Remove duplicates
+  }, [membersData, roleMembersData])
 
   // Fetch user details in batch
   const { data: usersData, isLoading: isUsersLoading } = useUsersBatch(userIds)
@@ -95,6 +111,7 @@ export function PageRoleMembersSettingsFeature({
 
   useEffect(() => {
     if (isAssignSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.roleMembers(roleId) })
       queryClient.invalidateQueries({ queryKey: communityKeys.roles(serverId) })
       toast.success(t("roleMembers.success_adding"))
       resetAssign()
@@ -102,10 +119,11 @@ export function PageRoleMembersSettingsFeature({
       toast.error(t("roleMembers.error_adding"))
       resetAssign()
     }
-  }, [isAssignSuccess, isAssignError, queryClient, serverId, t, resetAssign])
+  }, [isAssignSuccess, isAssignError, queryClient, serverId, roleId, t, resetAssign])
 
   useEffect(() => {
     if (isUnassignSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.roleMembers(roleId) })
       queryClient.invalidateQueries({ queryKey: communityKeys.roles(serverId) })
       toast.success(t("roleMembers.success_removing"))
       resetUnassign()
@@ -113,10 +131,9 @@ export function PageRoleMembersSettingsFeature({
       toast.error(t("roleMembers.error_removing"))
       resetUnassign()
     }
-  }, [isUnassignSuccess, isUnassignError, queryClient, serverId, t, resetUnassign])
+  }, [isUnassignSuccess, isUnassignError, queryClient, serverId, roleId, t, resetUnassign])
 
   const handleAddMember = async (memberId: string) => {
-    setRoleMembers((prev) => new Set(prev).add(memberId))
     await assignRole({
       role_id: roleId,
       member_id: memberId,
@@ -124,11 +141,6 @@ export function PageRoleMembersSettingsFeature({
   }
 
   const handleRemoveMember = async (memberId: string) => {
-    setRoleMembers((prev) => {
-      const newSet = new Set(prev)
-      newSet.delete(memberId)
-      return newSet
-    })
     await unassignRole({
       role_id: roleId,
       member_id: memberId,
@@ -136,8 +148,29 @@ export function PageRoleMembersSettingsFeature({
   }
 
   const currentRoleMembers = useMemo(() => {
-    return allMembers.filter((member) => roleMembers.has(member.id))
-  }, [allMembers, roleMembers])
+    if (!roleMembersData?.pages || !usersData) return []
+
+    const userMap = new Map(usersData.map((user) => [user.sub, user]))
+
+    return roleMembersData.pages.flatMap((page) =>
+      page.data.map((member) => {
+        const user = userMap.get(member.user_id)
+        const displayName = member.nickname ?? user?.display_name ?? member.user_id
+        return {
+          id: member.id,
+          userId: member.user_id,
+          username: displayName,
+          avatarUrl: user?.profile_picture,
+        }
+      })
+    )
+  }, [roleMembersData, usersData])
+
+  const handleRoleMembersScroll = () => {
+    if (hasNextRoleMembersPage && !isFetchingNextRoleMembersPage) {
+      fetchNextRoleMembersPage()
+    }
+  }
 
   return (
     <PageRoleMembersSettings
@@ -146,10 +179,12 @@ export function PageRoleMembersSettingsFeature({
       isErrorRole={isErrorRole}
       allMembers={allMembers}
       roleMembers={currentRoleMembers}
-      isLoadingMembers={isMembersLoading || isUsersLoading}
+      isLoadingMembers={isMembersLoading || isUsersLoading || isRoleMembersLoading}
       onAddMember={handleAddMember}
       onRemoveMember={handleRemoveMember}
       isUpdating={isAssigning || isUnassigning}
+      onRoleMembersScroll={handleRoleMembersScroll}
+      isFetchingMore={isFetchingNextRoleMembersPage}
     />
   )
 }
