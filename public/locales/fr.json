@@ -123,7 +123,8 @@
     "title": "Trouve ta communauté sur Beep",
     "subtitle": "Des études à la musique, il y a une place pour toi.",
     "search_placeholder": "Rechercher un serveur...",
-    "no_results": "Aucun serveur trouvé"
+    "no_results": "Aucun serveur trouvé",
+    "join_server_error": "Échec de la connexion au serveur. Veuillez réessayer."
   },
   "member": {
     "view_profile": "Voir le profil",

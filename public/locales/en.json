@@ -123,7 +123,8 @@
     "title": "Find your community on Beep",
     "subtitle": "From studying to music, there's a place for you.",
     "search_placeholder": "Find a server...",
-    "no_results": "No servers found"
+    "no_results": "No servers found",
+    "join_server_error": "Failed to join server. Please try again."
   },
   "member": {
     "view_profile": "View profile",

@@ -12,7 +12,7 @@ export default function PageServer({ id }: PageServerProps) {
   return (
     <div className="flex h-full items-center justify-center">
       <div className="text-center">
-        <h2 className="mb-2 text-2xl font-semibold">{server?.name || "Server"}</h2>
+        <h2 className="mb-2 text-2xl font-semibold">{server?.name}</h2>
         <p className="text-muted-foreground">{t("server.no_channels")}</p>
       </div>
     </div>

@@ -11,6 +11,7 @@ import PageExplore from "../ui/PageExplore"
 import type { Server } from "@/shared/queries/community/community.types.ts"
 import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
+import { useTranslation } from "react-i18next"
 
 export default function PageExploreFeature() {
   const { setHeader, setContent } = useSidebarContent()
@@ -19,6 +20,7 @@ export default function PageExploreFeature() {
   const [currentPage, setCurrentPage] = useState(1)
   const { mutateAsync: createMember } = useCreateMember()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const discoverQuery = useDiscoverServersPage(currentPage)
   const searchServersQuery = useSearchServersPage(searchQuery, currentPage)
@@ -48,7 +50,7 @@ export default function PageExploreFeature() {
           if (httpError?.response?.status === 409 || httpError?.status === 409) {
             navigate({ to: `/servers/${server.id}` })
           } else {
-            toast.error("Failed to join server. Please try again.")
+            toast.error(t("explore.join_server_error"))
           }
         },
       }

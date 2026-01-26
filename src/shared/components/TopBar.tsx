@@ -1,7 +1,3 @@
-// import { Bell } from "lucide-react"
-// import { useTranslation } from "react-i18next"
-// import { Button } from "./ui/Button"
-// import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/Tooltip"
 import SidebarTrigger from "./SidebarTrigger"
 
 interface TopBarProps {
