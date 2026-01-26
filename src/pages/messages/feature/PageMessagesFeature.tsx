@@ -9,6 +9,7 @@ import { RealTimeEventProvider } from "@/app/providers/RealTimeEventProvider.tsx
 import type {
   MessageCreatedEvent,
   MessageDeletedEvent,
+  MessageUpdatedEvent,
 } from "@/shared/queries/real-time/event.types"
 
 interface PageMessagesFeatureProps {
@@ -97,6 +98,29 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     }
   }
 
+  const onEventUpdatedHandler = (event: MessageUpdatedEvent) => {
+    // Update message content in liveMessages if present
+    if (messagesState.liveMessages.some((m) => m._id === event.message_id)) {
+      dispatch({
+        type: "UPDATE_LIVE_MESSAGE",
+        payload: {
+          id: event.message_id,
+          message: { content: event.content, is_pinned: event.is_pinned },
+        },
+      })
+    }
+    // Update message content in fetchedMessages if present
+    if (messagesState.fetchedMessages.some((m) => m._id === event.message_id)) {
+      dispatch({
+        type: "UPDATE_FETCHED_MESSAGE",
+        payload: {
+          id: event.message_id,
+          message: { content: event.content, is_pinned: event.is_pinned },
+        },
+      })
+    }
+  }
+
   // Load fetched messages into state
   useEffect(() => {
     if (messagesData) {
@@ -115,12 +139,17 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     onEventDeletedHandler(payload as MessageDeletedEvent)
   }
 
+  const handleUpdated = (payload: unknown) => {
+    onEventUpdatedHandler(payload as MessageUpdatedEvent)
+  }
+
   return (
     <RealTimeEventProvider
       topic={`text-channel:${channelId}`}
       events={[
         { event: "message.created", onEvent: handleCreated },
         { event: "message.deleted", onEvent: handleDeleted },
+        { event: "message.updated", onEvent: handleUpdated },
       ]}
     >
       <PageMessages

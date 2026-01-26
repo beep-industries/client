@@ -137,7 +137,9 @@
   "messages": {
     "edit": "Modifier",
     "delete": "Supprimer",
-    "pin": "Épingler le message"
+    "pin": "Épingler le message",
+    "save": "Enregistrer",
+    "cancel": "Annuler"
   },
   "videoConference": {
     "participants": "participant",

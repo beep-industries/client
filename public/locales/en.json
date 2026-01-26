@@ -185,7 +185,9 @@
   "messages": {
     "edit": "Edit",
     "delete": "Delete",
-    "pin": "Pin Message"
+    "pin": "Pin Message",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "date": {
     "today_at": "Today at",
