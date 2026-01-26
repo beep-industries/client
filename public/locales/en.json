@@ -219,5 +219,8 @@
     "go_to_server": "Go to Server",
     "go_home": "Explore Servers",
     "go_to_app": "Explore Servers"
+  },
+  "server": {
+    "no_channels": "There are no channels on this server yet"
   }
 }

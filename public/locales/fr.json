@@ -219,5 +219,8 @@
     "go_to_server": "Aller au serveur",
     "go_home": "Explorer les serveurs",
     "go_to_app": "Explorer les serveurs"
+  },
+  "server": {
+    "no_channels": "Il n'y a pas encore de salons sur ce serveur"
   }
 }
