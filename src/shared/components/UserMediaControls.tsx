@@ -123,7 +123,7 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
             type="button"
             onClick={screenShareEnabled ? stopScreenShare : startScreenShare}
             aria-label={screenShareEnabled ? "Turn off screen share" : "Turn on screen share"}
-            className={`transition-colors ${screenShareEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
+            className={`transition-colors ${!screenShareEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
           >
             {screenShareEnabled ? (
               <ScreenShare className="h-5 w-5" />
