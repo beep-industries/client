@@ -78,6 +78,7 @@ export default function MessageComponent({
                 if (onEdit) onEdit(newContent)
               }}
               onCancel={() => setEditMode(false)}
+              t={t}
             />
           ) : (
             <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
@@ -120,6 +121,7 @@ export default function MessageComponent({
               if (onEdit) onEdit(newContent)
             }}
             onCancel={() => setEditMode(false)}
+            t={t}
           />
         ) : (
           <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
@@ -133,43 +135,46 @@ export default function MessageComponent({
       <MemberDialog member={memberData} open={showProfile} onOpenChange={setShowProfile} />
     </div>
   )
-  // Inline edit form for message content
-  function EditMessageForm({
-    initialContent,
-    onSave,
-    onCancel,
-  }: {
-    initialContent: string
-    onSave: (newContent: string) => void
-    onCancel: () => void
-  }) {
-    const [value, setValue] = useState(initialContent)
-    return (
-      <form
-        className="flex flex-col gap-2"
-        onSubmit={(e) => {
-          e.preventDefault()
-          onSave(value)
-        }}
-      >
-        <textarea
-          className="w-full resize-none rounded border p-2 focus:ring-0 focus:outline-none"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          rows={2}
-          autoFocus
-        />
-        <div className="mt-1 flex gap-2">
-          <Button type="submit" size="sm" variant="default">
-            Save
-          </Button>
-          <Button type="button" size="sm" variant="outline" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
-      </form>
-    )
-  }
+}
+
+// Inline edit form for message content
+function EditMessageForm({
+  initialContent,
+  onSave,
+  onCancel,
+  t,
+}: {
+  initialContent: string
+  onSave: (newContent: string) => void
+  onCancel: () => void
+  t: (key: string) => string
+}) {
+  const [value, setValue] = useState(initialContent)
+  return (
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={(e) => {
+        e.preventDefault()
+        onSave(value)
+      }}
+    >
+      <textarea
+        className="w-full resize-none rounded border p-2 focus:ring-0 focus:outline-none"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        rows={2}
+        autoFocus
+      />
+      <div className="mt-1 flex gap-2">
+        <Button type="submit" size="sm" variant="default">
+          {t("messages.save")}
+        </Button>
+        <Button type="button" size="sm" variant="outline" onClick={onCancel}>
+          {t("messages.cancel")}
+        </Button>
+      </div>
+    </form>
+  )
 }
 
 function MessageOptionsMenu({
