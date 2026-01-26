@@ -286,5 +286,28 @@
         "description": "Upload files and attachments"
       }
     }
+  },
+  "roleMembers": {
+    "title": "Manage members for",
+    "subtitle": "Add or remove members from this role",
+    "search_placeholder": "Search members...",
+    "no_members": "No members in this role",
+    "no_members_subtitle": "Add members using the search above",
+    "add_member": "Add Member",
+    "remove_member": "Remove from role",
+    "success_adding": "Member added to role successfully",
+    "error_adding": "Failed to add member to role",
+    "success_removing": "Member removed from role successfully",
+    "error_removing": "Failed to remove member from role",
+    "loading": "Loading members...",
+    "error_loading": "Failed to load members",
+    "error_loading_subtitle": "Please try again later",
+    "no_results": "No members found",
+    "member_count": "{{count}} member",
+    "member_count_plural": "{{count}} members"
+  },
+  "roleTabs": {
+    "permissions": "Permissions",
+    "members": "Members"
   }
 }

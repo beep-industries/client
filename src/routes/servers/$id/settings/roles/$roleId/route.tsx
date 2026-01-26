@@ -1,11 +1,13 @@
 import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/Tabs"
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
+import { useTranslation } from "react-i18next"
 
 export const Route = createFileRoute("/servers/$id/settings/roles/$roleId")({
   component: RouteComponent,
 })
 
 function RouteComponent() {
+  const { t } = useTranslation()
   const { id, roleId } = Route.useParams()
   const path = "/servers/$id/settings/roles/$roleId"
   return (
@@ -15,12 +17,12 @@ function RouteComponent() {
           <TabsList variant="line" className="w-full">
             <Link from={path} to={"permissions"} params={{ id, roleId }} className="w-1/2">
               <TabsTrigger value="permissions" className="w-full">
-                Permissions
+                {t("roleTabs.permissions")}
               </TabsTrigger>
             </Link>
             <Link from={path} to={"members"} params={{ id, roleId }} className="w-1/2">
               <TabsTrigger value="members" className="w-full">
-                Members
+                {t("roleTabs.members")}
               </TabsTrigger>
             </Link>
           </TabsList>

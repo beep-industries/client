@@ -286,5 +286,28 @@
         "description": "Télécharger des fichiers et pièces jointes"
       }
     }
+  },
+  "roleMembers": {
+    "title": "Gérer les membres pour",
+    "subtitle": "Ajouter ou retirer des membres de ce rôle",
+    "search_placeholder": "Rechercher des membres...",
+    "no_members": "Aucun membre dans ce rôle",
+    "no_members_subtitle": "Ajoutez des membres en utilisant la recherche ci-dessus",
+    "add_member": "Ajouter un membre",
+    "remove_member": "Retirer du rôle",
+    "success_adding": "Membre ajouté au rôle avec succès",
+    "error_adding": "Échec de l'ajout du membre au rôle",
+    "success_removing": "Membre retiré du rôle avec succès",
+    "error_removing": "Échec du retrait du membre du rôle",
+    "loading": "Chargement des membres...",
+    "error_loading": "Échec du chargement des membres",
+    "error_loading_subtitle": "Veuillez réessayer plus tard",
+    "no_results": "Aucun membre trouvé",
+    "member_count": "{{count}} membre",
+    "member_count_plural": "{{count}} membres"
+  },
+  "roleTabs": {
+    "permissions": "Permissions",
+    "members": "Membres"
   }
 }
