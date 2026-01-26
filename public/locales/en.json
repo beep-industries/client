@@ -45,6 +45,8 @@
     "create_folder": "Create a folder",
     "create_channel": "Create a channel",
     "copy_server_id": "Copy server ID",
+    "server_id_copied": "Server ID copied to clipboard",
+    "failed_to_copy": "Failed to copy server ID",
     "settings": "Server settings",
     "user_plus": "Invite a friend"
   },
@@ -121,7 +123,8 @@
     "title": "Find your community on Beep",
     "subtitle": "From studying to music, there's a place for you.",
     "search_placeholder": "Find a server...",
-    "no_results": "No servers found"
+    "no_results": "No servers found",
+    "join_server_error": "Failed to join server. Please try again."
   },
   "member": {
     "view_profile": "View profile",
@@ -219,5 +222,8 @@
     "go_to_server": "Go to Server",
     "go_home": "Explore Servers",
     "go_to_app": "Explore Servers"
+  },
+  "server": {
+    "no_channels": "There are no channels on this server yet"
   }
 }

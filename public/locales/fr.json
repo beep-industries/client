@@ -45,6 +45,8 @@
     "create_folder": "Créer un dossier",
     "create_channel": "Créer un salon",
     "copy_server_id": "Copier l'ID du serveur",
+    "server_id_copied": "ID du serveur copié dans le presse-papiers",
+    "failed_to_copy": "Échec de la copie de l'ID du serveur",
     "settings": "Paramètres du serveur",
     "user_plus": "Inviter un ami"
   },
@@ -121,7 +123,8 @@
     "title": "Trouve ta communauté sur Beep",
     "subtitle": "Des études à la musique, il y a une place pour toi.",
     "search_placeholder": "Rechercher un serveur...",
-    "no_results": "Aucun serveur trouvé"
+    "no_results": "Aucun serveur trouvé",
+    "join_server_error": "Échec de la connexion au serveur. Veuillez réessayer."
   },
   "member": {
     "view_profile": "Voir le profil",
@@ -219,5 +222,8 @@
     "go_to_server": "Aller au serveur",
     "go_home": "Explorer les serveurs",
     "go_to_app": "Explorer les serveurs"
+  },
+  "server": {
+    "no_channels": "Il n'y a pas encore de salons sur ce serveur"
   }
 }
