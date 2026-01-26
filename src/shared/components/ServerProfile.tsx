@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useTranslation } from "react-i18next"
+import { toast } from "sonner"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import {
   DropdownMenu,
@@ -30,6 +31,15 @@ export function ServerProfile({ server }: { server: Server }) {
   const [isFolder, setIsFolder] = useState(false)
   const { t } = useTranslation()
   const [isInvitationDialogOpen, setIsInvitationDialogOpen] = useState<boolean>(false)
+
+  const handleCopyServerId = async () => {
+    try {
+      await navigator.clipboard.writeText(server.id)
+      toast.success(t("serverProfile.server_id_copied"))
+    } catch {
+      toast.error(t("serverProfile.failed_to_copy"))
+    }
+  }
 
   return (
     <>
@@ -78,6 +88,7 @@ export function ServerProfile({ server }: { server: Server }) {
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
+                  setIsOpen(false)
                   setIsFolder(false)
                   setIsCreateChannelModalOpen(true)
                 }}
@@ -88,6 +99,7 @@ export function ServerProfile({ server }: { server: Server }) {
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
+                  setIsOpen(false)
                   setIsFolder(true)
                   setIsCreateChannelModalOpen(true)
                 }}
@@ -96,13 +108,20 @@ export function ServerProfile({ server }: { server: Server }) {
                 {t("serverProfile.create_folder")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault()
+                  setIsOpen(false)
+                  handleCopyServerId()
+                }}
+              >
                 <IdCard className="size-4" />
                 {t("serverProfile.copy_server_id")}
               </DropdownMenuItem>
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
+                  setIsOpen(false)
                   setIsInvitationDialogOpen(true)
                 }}
               >

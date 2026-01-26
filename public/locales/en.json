@@ -45,6 +45,8 @@
     "create_folder": "Create a folder",
     "create_channel": "Create a channel",
     "copy_server_id": "Copy server ID",
+    "server_id_copied": "Server ID copied to clipboard",
+    "failed_to_copy": "Failed to copy server ID",
     "settings": "Server settings",
     "user_plus": "Invite a friend"
   },
