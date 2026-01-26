@@ -75,17 +75,8 @@ export default function MessageComponent({
       t={t}
     />
   ) : (
-    <article className="prose dark:prose-invert wrap-anywhere whitespace-pre-wrap">
-      <Markdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          ul: ({ children }) => {
-            return <ul className="flex flex-col gap-0">{children}</ul>
-          },
-        }}
-      >
-        {content}
-      </Markdown>
+    <article className="prose dark:prose-invert prose-headings:my-0 prose-headings:leading-tight prose-p:my-0 prose-p:leading-normal prose-ul:my-0 prose-ol:my-0 prose-li:my-0 prose-li:leading-normal prose-blockquote:my-0 prose-pre:my-0 prose-hr:my-0 wrap-anywhere *:my-0! *:mt-0! *:mb-0! **:my-0!">
+      <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
     </article>
   )
 
