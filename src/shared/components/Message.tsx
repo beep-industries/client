@@ -75,9 +75,18 @@ export default function MessageComponent({
       t={t}
     />
   ) : (
-    <p className="wrap-anywhere whitespace-pre-wrap">
-      <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
-    </p>
+    <article className="prose dark:prose-invert wrap-anywhere whitespace-pre-wrap">
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          ul: ({ children }) => {
+            return <ul className="flex flex-col gap-0">{children}</ul>
+          },
+        }}
+      >
+        {content}
+      </Markdown>
+    </article>
   )
 
   // Shared options menu
