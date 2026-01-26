@@ -74,6 +74,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const micStreamRef = useRef<MediaStream | null>(null)
   const micTransceiverRef = useRef<RTCRtpTransceiver | null>(null)
   const negotiateCallbackRef = useRef<((json: string) => void) | null>(null)
+  const rtcConfig = useRef<RTCConfiguration>({})
 
   // Phoenix Channel for signaling (initial offer/leave). DataChannel remains for in-call negotiation.
   const { join: joinTopic, leave: leaveTopic } = useRealTimeSocket()
@@ -125,7 +126,11 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
   const ensureRtc = useCallback(() => {
     if (!rtcRef.current) {
-      const rtc = new RTCPeerConnection()
+
+    console.log("Creating new RTCPeerConnection with config", rtcConfig.current)
+
+      const rtc = new RTCPeerConnection(rtcConfig.current)
+
       // ICE state
       rtc.oniceconnectionstatechange = () => {
         const state = rtc.iceConnectionState
@@ -199,31 +204,24 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       if (server === server && session === sess && iceStatus === "connected") return
       setServer(server)
       setSession(sess)
-      const rtc = ensureRtc()
-      setChannelStatus(`Joining session ${sess} as endpoint`)
-      setJoined(true)
-
-      const dataChannel = rtc.createDataChannel("offer/answer")
-      dataChannel.onmessage = (event) => {
-        const json = JSON.parse(event.data)
-        if (json.type === "offer") {
-          void handleOffer(event.data)
-        } else if (json.type === "answer") {
-          negotiateCallbackRef.current?.(event.data)
-          negotiateCallbackRef.current = null
-        }
-      }
-      dataChannel.onopen = () => {
-        setChannelStatus(`Joined session ${sess}`)
-        setCamEnabled(false)
-        setMicEnabled(false)
-      }
-      dataChannelRef.current = dataChannel
 
       // Join Phoenix channel topic and perform initial offer/answer via channel
       const topic = `voice-channel:${sess}`
       channelTopicRef.current = topic
-      const channel = joinTopic(topic)
+
+      // Wait for channel join callback to complete before setting up RTC
+      const channel = await new Promise<ReturnType<typeof joinTopic>>((resolve) => {
+        const ch = joinTopic(topic, undefined, (response) => {
+          const parsed = response as { rtc_configuration: RTCConfiguration }
+          console.log("Joined channel", response)
+          rtcConfig.current = parsed.rtc_configuration
+          console.log("RTC Configuration from join response:", rtcConfig.current)
+          resolve(ch)
+        })
+      })
+
+      console.log("RTC Configuration received from server:", rtcConfig.current)
+
       presenceRef.current = new Presence(channel)
 
       presenceRef.current.onSync(() => {
@@ -246,6 +244,27 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
           })
         })
       })
+
+      const rtc = ensureRtc()
+      setChannelStatus(`Joining session ${sess} as endpoint`)
+      setJoined(true)
+
+      const dataChannel = rtc.createDataChannel("offer/answer")
+      dataChannel.onmessage = (event) => {
+        const json = JSON.parse(event.data)
+        if (json.type === "offer") {
+          void handleOffer(event.data)
+        } else if (json.type === "answer") {
+          negotiateCallbackRef.current?.(event.data)
+          negotiateCallbackRef.current = null
+        }
+      }
+      dataChannel.onopen = () => {
+        setChannelStatus(`Joined session ${sess}`)
+        setCamEnabled(false)
+        setMicEnabled(false)
+      }
+      dataChannelRef.current = dataChannel
 
       const offer = await rtc.createOffer()
       await rtc.setLocalDescription(offer)

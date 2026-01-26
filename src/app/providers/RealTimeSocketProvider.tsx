@@ -43,7 +43,7 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
 
-  const join = useCallback((topic: string, params?: ChannelParams) => {
+  const join = useCallback((topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void) => {
     const socket = socketRef.current
     if (!socket) throw new Error("Socket not initialized yet")
     const existing = channelsRef.current.get(topic)
@@ -52,7 +52,7 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
     const channel = socket.channel(topic, params)
     channel
       .join()
-      .receive("ok", () => {})
+      .receive("ok", joinCallback ?? (() => {}))
       .receive("error", (err) => {
         console.error(`[RealTimeSocket] Failed to join channel ${topic}`, err)
       })
