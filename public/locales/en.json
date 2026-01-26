@@ -225,5 +225,66 @@
   },
   "server": {
     "no_channels": "There are no channels on this server yet"
+  },
+  "rolePermissions": {
+    "title": "Manage permissions for",
+    "subtitle": "Configure what members with this role can do",
+    "save": "Save Changes",
+    "reset": "Reset",
+    "loading": "Loading role...",
+    "error_loading": "Failed to load role",
+    "error_loading_subtitle": "Please try again later",
+    "success_updating": "Role permissions updated successfully",
+    "error_updating": "Failed to update role permissions",
+    "permissions": {
+      "Administrator": {
+        "name": "Administrator",
+        "description": "Full access to all server features"
+      },
+      "ManageServer": {
+        "name": "Manage Server",
+        "description": "Edit server settings and information"
+      },
+      "ManageRoles": {
+        "name": "Manage Roles",
+        "description": "Create, edit, and delete roles"
+      },
+      "CreateInvitation": {
+        "name": "Create Invitation",
+        "description": "Create server invitations"
+      },
+      "ManageChannels": {
+        "name": "Manage Channels",
+        "description": "Create, edit, and delete channels"
+      },
+      "ManageWebhooks": {
+        "name": "Manage Webhooks",
+        "description": "Create and manage webhooks"
+      },
+      "ViewChannels": {
+        "name": "View Channels",
+        "description": "View channels in the server"
+      },
+      "SendMessages": {
+        "name": "Send Messages",
+        "description": "Send messages in channels"
+      },
+      "ManageNicknames": {
+        "name": "Manage Nicknames",
+        "description": "Change other members' nicknames"
+      },
+      "ChangeNickname": {
+        "name": "Change Nickname",
+        "description": "Change own nickname"
+      },
+      "ManageMessages": {
+        "name": "Manage Messages",
+        "description": "Delete and edit messages from others"
+      },
+      "AttachFiles": {
+        "name": "Attach Files",
+        "description": "Upload files and attachments"
+      }
+    }
   }
 }

@@ -6,5 +6,6 @@ export const Route = createFileRoute("/servers/$id/settings/roles/$roleId/permis
 })
 
 function RouteComponent() {
-  return <PageRolePermissionsSettingsFeature />
+  const { id, roleId } = Route.useParams()
+  return <PageRolePermissionsSettingsFeature serverId={id} roleId={roleId} />
 }

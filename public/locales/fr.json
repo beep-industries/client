@@ -225,5 +225,66 @@
   },
   "server": {
     "no_channels": "Il n'y a pas encore de salons sur ce serveur"
+  },
+  "rolePermissions": {
+    "title": "Gérer les permissions pour",
+    "subtitle": "Configurez ce que les membres avec ce rôle peuvent faire",
+    "save": "Enregistrer les modifications",
+    "reset": "Réinitialiser",
+    "loading": "Chargement du rôle...",
+    "error_loading": "Échec du chargement du rôle",
+    "error_loading_subtitle": "Veuillez réessayer plus tard",
+    "success_updating": "Permissions du rôle mises à jour avec succès",
+    "error_updating": "Échec de la mise à jour des permissions du rôle",
+    "permissions": {
+      "Administrator": {
+        "name": "Administrateur",
+        "description": "Accès complet à toutes les fonctionnalités du serveur"
+      },
+      "ManageServer": {
+        "name": "Gérer le serveur",
+        "description": "Modifier les paramètres et informations du serveur"
+      },
+      "ManageRoles": {
+        "name": "Gérer les rôles",
+        "description": "Créer, modifier et supprimer des rôles"
+      },
+      "CreateInvitation": {
+        "name": "Créer des invitations",
+        "description": "Créer des invitations au serveur"
+      },
+      "ManageChannels": {
+        "name": "Gérer les salons",
+        "description": "Créer, modifier et supprimer des salons"
+      },
+      "ManageWebhooks": {
+        "name": "Gérer les webhooks",
+        "description": "Créer et gérer des webhooks"
+      },
+      "ViewChannels": {
+        "name": "Voir les salons",
+        "description": "Voir les salons du serveur"
+      },
+      "SendMessages": {
+        "name": "Envoyer des messages",
+        "description": "Envoyer des messages dans les salons"
+      },
+      "ManageNicknames": {
+        "name": "Gérer les pseudos",
+        "description": "Changer les pseudos des autres membres"
+      },
+      "ChangeNickname": {
+        "name": "Changer de pseudo",
+        "description": "Changer son propre pseudo"
+      },
+      "ManageMessages": {
+        "name": "Gérer les messages",
+        "description": "Supprimer et modifier les messages des autres"
+      },
+      "AttachFiles": {
+        "name": "Joindre des fichiers",
+        "description": "Télécharger des fichiers et pièces jointes"
+      }
+    }
   }
 }
