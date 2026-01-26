@@ -126,6 +126,7 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
     if (messagesData) {
       const allFetchedMessages = messagesData.pages.flatMap((page) => page.data)
       dispatch({ type: "SET_FETCHED_MESSAGES", payload: allFetchedMessages })
+      dispatch({ type: "CLEAR_LIVE_MESSAGES" })
     }
   }, [messagesData])
 
