@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import { cn, formatDate } from "../lib/utils"
+import { formatDate } from "../lib/utils"
 import { useTranslation } from "react-i18next"
 import { useState } from "react"
 import MemberDialog, { type MemberData } from "./MemberDialog"
@@ -62,18 +62,13 @@ export default function MessageComponent({
   if (isCompact) {
     return (
       <div
-        className={`hover:bg-accent group flex h-6 w-full items-start gap-3 px-5 pl-16 ${messageBg}`}
+        className={`hover:bg-accent group relative flex w-full items-start gap-3 px-5 pl-16 ${messageBg}`}
       >
         <div className="flex w-full flex-col wrap-anywhere">
           <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
         </div>
-        <div className="ml-auto flex-shrink-0">
-          <MessageOptionsMenu
-            onDelete={onDelete}
-            onEdit={onEdit}
-            onPin={onPin}
-            className="-top-1"
-          />
+        <div className="absolute top-0 right-2 shrink-0">
+          <MessageOptionsMenu onDelete={onDelete} onEdit={onEdit} onPin={onPin} />
         </div>
       </div>
     )
@@ -99,7 +94,8 @@ export default function MessageComponent({
         </div>
         <p className="wrap-anywhere whitespace-pre-wrap">{content}</p>
       </div>
-      <div className="ml-auto flex-shrink-0">
+
+      <div className="absolute top-3 right-2 shrink-0">
         <MessageOptionsMenu onDelete={onDelete} onEdit={onEdit} onPin={onPin} />
       </div>
 
@@ -112,12 +108,10 @@ function MessageOptionsMenu({
   onEdit,
   onDelete,
   onPin,
-  className,
 }: {
   onEdit?: () => void
   onDelete?: () => void
   onPin?: () => void
-  className?: string
 }) {
   const [open, setOpen] = useState(false)
 
@@ -126,10 +120,7 @@ function MessageOptionsMenu({
       <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button
-            className={cn(
-              `dark:bg-oklch(1 0 0 / 15%) dark:border-input dark:hover:bg-oklch(1 0 0 / 15%) relative -top-2 h-8 w-8 opacity-100 ${open ? "block" : "hidden group-hover:block"}`,
-              className
-            )}
+            className={`dark:bg-oklch(1 0 0 / 15%) dark:border-input dark:hover:bg-oklch(1 0 0 / 15%) relative -top-1 h-8 w-8 opacity-100 ${open ? "block" : "hidden group-hover:block"}`}
             variant="outline"
             size="xs"
             aria-label="Message actions"
@@ -137,7 +128,7 @@ function MessageOptionsMenu({
             <Ellipsis />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" side="bottom" sideOffset={4} className="z-[9999]">
+        <DropdownMenuContent align="end" side="bottom" sideOffset={4} className="z-9999">
           <DropdownMenuGroup>
             {onEdit && (
               <DropdownMenuItem

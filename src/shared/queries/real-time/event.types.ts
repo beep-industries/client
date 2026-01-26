@@ -7,3 +7,8 @@ export interface MessageCreatedEvent {
   updated_at?: string
   reply_to_message_id?: string
 }
+
+export interface MessageDeletedEvent {
+  message_id: string
+  channel_id: string
+}
