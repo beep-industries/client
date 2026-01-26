@@ -10,5 +10,10 @@ export interface MessageCreatedEvent {
 
 export interface MessageDeletedEvent {
   message_id: string
-  channel_id: string
+}
+
+export interface MessageUpdatedEvent {
+  message_id: string
+  content: string
+  is_pinned?: boolean
 }
