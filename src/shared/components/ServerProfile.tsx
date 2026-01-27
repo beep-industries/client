@@ -25,6 +25,8 @@ import { type Server } from "../queries/community/community.types"
 import { AddChannelForm } from "../forms/AddChannel"
 import ServerInvitationDialog from "./ServerInvitationDialog"
 import { Skeleton } from "./ui/Skeleton"
+import { useRoles } from "@/app/providers/RoleProvider"
+import { Permission } from "../models/permissions"
 
 export function ServerProfileSkeleton() {
   return (
@@ -41,6 +43,7 @@ export function ServerProfileSkeleton() {
 }
 
 export function ServerProfile({ server }: { server: Server }) {
+  const { permissions } = useRoles()
   const [isOpen, setIsOpen] = useState(false)
   const [isCreateChannelModalOpen, setIsCreateChannelModalOpen] = useState(false)
   const [isFolder, setIsFolder] = useState(false)
@@ -99,30 +102,34 @@ export function ServerProfile({ server }: { server: Server }) {
                   </div>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsFolder(false)
-                  setIsCreateChannelModalOpen(true)
-                }}
-              >
-                <Plus className="size-4" />
-                {t("serverProfile.create_channel")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsFolder(true)
-                  setIsCreateChannelModalOpen(true)
-                }}
-              >
-                <Folder className="size-4" />
-                {t("serverProfile.create_folder")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {permissions.can(Permission.ManageChannels) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      setIsFolder(false)
+                      setIsCreateChannelModalOpen(true)
+                    }}
+                  >
+                    <Plus className="size-4" />
+                    {t("serverProfile.create_channel")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      setIsFolder(true)
+                      setIsCreateChannelModalOpen(true)
+                    }}
+                  >
+                    <Folder className="size-4" />
+                    {t("serverProfile.create_folder")}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
@@ -133,27 +140,33 @@ export function ServerProfile({ server }: { server: Server }) {
                 <IdCard className="size-4" />
                 {t("serverProfile.copy_server_id")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsInvitationDialogOpen(true)
-                }}
-              >
-                <UserPlus className="size-4" />
-                {t("serverProfile.user_plus")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link
-                  to="/servers/$id/settings/profile"
-                  params={{ id: String(server.id) }}
-                  className="text-responsive-base!"
+              {permissions.can(Permission.CreateInvitation) && (
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault()
+                    setIsOpen(false)
+                    setIsInvitationDialogOpen(true)
+                  }}
                 >
-                  <Settings className="size-4" />
-                  {t("serverProfile.settings")}
-                </Link>
-              </DropdownMenuItem>
+                  <UserPlus className="size-4" />
+                  {t("serverProfile.user_plus")}
+                </DropdownMenuItem>
+              )}
+              {permissions.can(Permission.ManageServer) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/servers/$id/settings/profile"
+                      params={{ id: String(server.id) }}
+                      className="text-responsive-base!"
+                    >
+                      <Settings className="size-4" />
+                      {t("serverProfile.settings")}
+                    </Link>
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </SidebarMenuItem>

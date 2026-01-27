@@ -61,6 +61,7 @@
     "create_channel": "Create a channel",
     "create_folder": "Create a folder",
     "delete_folder": "Delete the folder",
+    "no_view_permission": "You don't have permission to view channels in this server",
     "success_creating_channel": "Channel created successfully",
     "error_creating_channel": "An error occurred while creating the channel",
     "success_creating_folder": "Folder created successfully",

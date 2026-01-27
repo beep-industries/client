@@ -17,16 +17,22 @@ export type Permission = (typeof Permission)[keyof typeof Permission]
 
 export class Permissions {
   permissionMask: number
+  isOwner: boolean
 
-  constructor(permissionMask: number) {
+  constructor(permissionMask: number, isOwner: boolean = false) {
     this.permissionMask = permissionMask
+    this.isOwner = isOwner
   }
 
   can(permission: Permission): boolean {
+    if (this.isOwner) return true
     return (this.permissionMask & permission) === permission
   }
 
   permissions(): Permission[] {
+    if (this.isOwner) {
+      return Object.values(Permission) as Permission[]
+    }
     const permissions: Permission[] = []
     for (const perm in Permission) {
       const permValue = Permission[perm as keyof typeof Permission]

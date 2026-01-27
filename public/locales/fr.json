@@ -61,6 +61,7 @@
     "create_channel": "Créer un salon",
     "create_folder": "Créer un dossier",
     "delete_folder": "Supprimer le dossier",
+    "no_view_permission": "Vous n'avez pas la permission de voir les salons de ce serveur",
     "success_creating_channel": "Salon créé avec succès",
     "error_creating_channel": "Une erreur est survenue lors de la création du salon",
     "success_creating_folder": "Dossier créé avec succès",
