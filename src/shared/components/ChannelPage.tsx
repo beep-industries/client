@@ -26,9 +26,13 @@ export default function ChannelPage() {
     }
   }, [channelId, id, join, connected, channel, setChannelType])
 
-  return channel?.channel_type === "ServerText" ? (
-    <PageMessagesFeature channelId={channelId} serverId={id} />
+  return channel ? (
+    channel?.channel_type === "ServerText" ? (
+      <PageMessagesFeature channelId={channelId} serverId={id} />
+    ) : (
+      <PageAudioChannel />
+    )
   ) : (
-    <PageAudioChannel />
+    <></>
   )
 }

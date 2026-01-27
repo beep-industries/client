@@ -47,6 +47,7 @@ export default function MessageFeature({
         content={content}
         profilePictureUrl={undefined}
         author="Loading..."
+        authorId={author_id}
         date={created_at}
         edited={!!updated_at}
         replyTo={reply_to_message_id || undefined}
@@ -66,6 +67,7 @@ export default function MessageFeature({
       content={content}
       profilePictureUrl={undefined}
       author={author?.display_name || "Unknown"}
+      authorId={author_id}
       date={created_at}
       edited={!!updated_at}
       replyTo={reply_to_message_id || undefined}

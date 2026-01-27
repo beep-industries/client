@@ -24,7 +24,6 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
       // caller can use useRealTimeSocket().getChannel(topic) to access
       cleanups.push(() => {
         try {
-          console.log("leaving ch ", JSON.stringify(ch.topic))
           leave(ch.topic)
         } catch {
           /* empty */

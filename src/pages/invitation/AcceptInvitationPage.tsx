@@ -39,13 +39,6 @@ export default function AcceptInvitationPage({ invitationId }: AcceptInvitationP
     }
   }, [isSuccess, data, navigate])
 
-  const handleGoToServer = () => {
-    if (data && isSuccess) {
-      const response = data as { server_id: string }
-      navigate({ to: `/servers/${response.server_id}` })
-    }
-  }
-
   const handleGoHome = () => {
     navigate({ to: "/explore" })
   }
@@ -76,7 +69,6 @@ export default function AcceptInvitationPage({ invitationId }: AcceptInvitationP
               {t("serverInvitation.accept_success")}
             </p>
             <div className="mt-4 flex gap-2">
-              <Button onClick={handleGoToServer}>{t("serverInvitation.go_to_server")}</Button>
               <Button variant="outline" onClick={handleGoHome}>
                 {t("serverInvitation.go_home")}
               </Button>
