@@ -10,7 +10,7 @@ export interface RealTimeTopicProviderProps {
 
 export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProviderProps) {
   const { isAuthenticated, user } = useAuth()
-  const { join, connected } = useRealTimeSocket()
+  const { join, connected, leave } = useRealTimeSocket()
 
   useEffect(() => {
     if (!isAuthenticated || !topics || topics.length === 0 || !connected) return
@@ -24,7 +24,8 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
       // caller can use useRealTimeSocket().getChannel(topic) to access
       cleanups.push(() => {
         try {
-          ch.leave()
+          console.log("leaving ch ", JSON.stringify(ch.topic))
+          leave(ch.topic)
         } catch {
           /* empty */
         }
@@ -34,7 +35,7 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
     return () => {
       cleanups.forEach((fn) => fn())
     }
-  }, [isAuthenticated, topics, join, user, connected])
+  }, [isAuthenticated, topics, join, user, connected, leave])
 
   return <>{children}</>
 }
