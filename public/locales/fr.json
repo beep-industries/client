@@ -1,4 +1,8 @@
 {
+  "settings": {
+		  "save_changes": "Appliquer les changements",
+		  "cancel": "Annuler"
+  },
   "common": {
     "loading": "Chargement...",
     "load_more": "Charger plus"

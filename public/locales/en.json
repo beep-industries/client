@@ -1,4 +1,8 @@
 {
+  "settings": {
+		  "save_changes": "Save changes",
+		  "cancel": "Cancel"
+  },
   "common": {
     "loading": "Loading...",
     "load_more": "Load more"

@@ -36,9 +36,9 @@ export function UserSettingsDialog({ children }: UserSettingsDialogProps) {
           </div>
           <DialogFooter className="align-left flex w-full">
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="outline">{t("settings.cancel")}</Button>
             </DialogClose>
-            <Button type="submit">Save changes</Button>
+            <Button type="submit">{t("settings.save_changes")}</Button>
           </DialogFooter>
         </div>
       </DialogContent>
