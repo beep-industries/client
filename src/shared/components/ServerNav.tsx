@@ -196,9 +196,6 @@ export default function ServerNav() {
               >
                 {t("serverNav.create_server")}
               </DropdownMenuItem>
-              <DropdownMenuItem className="text-responsive-base!">
-                {t("serverNav.join_server")}
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </Tooltip>
