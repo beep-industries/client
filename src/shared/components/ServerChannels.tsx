@@ -23,6 +23,26 @@ import { useQueryClient } from "@tanstack/react-query"
 import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
 import type { TopicJoinSpec } from "@/shared/models/real-time.ts"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
+import { Skeleton } from "./ui/Skeleton"
+
+function ChannelSkeleton() {
+  return (
+    <div className="flex items-center gap-2 px-2 py-1.5">
+      <Skeleton className="h-4 w-4" />
+      <Skeleton className="h-4 w-24" />
+    </div>
+  )
+}
+
+export function ServerChannelsSkeleton() {
+  return (
+    <SidebarMenu className="gap-2">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <ChannelSkeleton key={index} />
+      ))}
+    </SidebarMenu>
+  )
+}
 
 export interface Folder {
   id: string

@@ -24,6 +24,21 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
 import { type Server } from "../queries/community/community.types"
 import { AddChannelForm } from "../forms/AddChannel"
 import ServerInvitationDialog from "./ServerInvitationDialog"
+import { Skeleton } from "./ui/Skeleton"
+
+export function ServerProfileSkeleton() {
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <SidebarMenuButton size="lg" className="cursor-default">
+          <Skeleton className="h-8 w-8 rounded-lg" />
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="ml-auto h-4 w-4" />
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  )
+}
 
 export function ServerProfile({ server }: { server: Server }) {
   const [isOpen, setIsOpen] = useState(false)

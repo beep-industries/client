@@ -1,8 +1,8 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 import { useEffect, useState, useMemo } from "react"
 import { useSidebarContent } from "@/app/providers/SidebarContentProvider"
-import { ServerProfile } from "@/shared/components/ServerProfile"
-import ServerChannels from "@/shared/components/ServerChannels"
+import { ServerProfile, ServerProfileSkeleton } from "@/shared/components/ServerProfile"
+import ServerChannels, { ServerChannelsSkeleton } from "@/shared/components/ServerChannels"
 import { useServerById, useServerMembers } from "@/shared/queries/community/community.queries"
 import { useUsersBatch } from "@/shared/queries/user/user.queries"
 import TopBarServers from "@/shared/components/TopBarServers"
@@ -11,6 +11,7 @@ import type { MemberData } from "@/shared/components/MemberDialog"
 import { useDocumentTitle } from "@/hooks/use-document-title"
 import { ChannelTypeProvider, useChannelType } from "@/shared/components/ChannelTypeContext"
 import SearchSidebar from "@/shared/components/SearchSidebar"
+import { useSkeletonLoading } from "@/shared/hooks/UseDelayedLoading"
 
 export const Route = createFileRoute("/servers/$id")({
   component: (props) => (
@@ -23,7 +24,8 @@ export const Route = createFileRoute("/servers/$id")({
 function ServerLayout() {
   const { id } = Route.useParams()
   const { setHeader, setContent } = useSidebarContent()
-  const { data: server } = useServerById(id)
+  const { data: server, isLoading: isServerLoading } = useServerById(id)
+  const { showSkeleton } = useSkeletonLoading(isServerLoading)
   const {
     data: membersData,
     isLoading: isMembersLoading,
@@ -69,15 +71,18 @@ function ServerLayout() {
   }, [membersData, usersData])
 
   useEffect(() => {
-    if (server) {
+    if (server && !showSkeleton) {
       setHeader(<ServerProfile server={server} />)
       setContent(<ServerChannels serverId={id} />)
+    } else {
+      setHeader(<ServerProfileSkeleton />)
+      setContent(<ServerChannelsSkeleton />)
     }
     return () => {
       setHeader(null)
       setContent(null)
     }
-  }, [setHeader, setContent, server, id])
+  }, [setHeader, setContent, server, id, showSkeleton])
 
   return (
     <>
