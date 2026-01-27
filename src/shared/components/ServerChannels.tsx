@@ -20,9 +20,6 @@ import { useEffect, useMemo, useState } from "react"
 import { useFolder } from "@/shared/hooks/UseFolder.ts"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
-import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
-import type { TopicJoinSpec } from "@/shared/models/real-time.ts"
-import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { Skeleton } from "./ui/Skeleton"
 
 function ChannelSkeleton() {
