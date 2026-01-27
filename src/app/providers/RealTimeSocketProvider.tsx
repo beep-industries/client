@@ -42,9 +42,19 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const userChannelRef = useRef<Channel | null>(null)
   const subscribeToTokenRefreshRef = useRef(subscribeToTokenRefresh)
   subscribeToTokenRefreshRef.current = subscribeToTokenRefresh
+  const channelsLocked = useRef<Map<string, string>>(new Map())
 
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
+
+  const lockChannel = useCallback((topic: string, owner: string) => {
+    channelsLocked.current.set(topic, owner)
+  }, [])
+
+  const unlockChannel = useCallback((topic: string, owner: string) => {
+    if (owner !== channelsLocked.current.get(topic)) return
+    channelsLocked.current.delete(topic)
+  }, [])
 
   const join = useCallback(
     (
@@ -132,6 +142,7 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   }, [isAuthenticated, join, socketUrl, user?.id])
 
   const leave = useCallback((topic: string) => {
+    if (channelsLocked.current.has(topic)) return
     const ch = channelsRef.current.get(topic)
     if (ch) {
       try {
@@ -155,8 +166,17 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const getChannel = useCallback((topic: string) => channelsRef.current.get(topic), [])
 
   const value = useMemo<RealTimeSocketState>(
-    () => ({ socket: socketRef.current, connected, join, leave, getChannel, presences }),
-    [connected, join, leave, getChannel, presences]
+    () => ({
+      socket: socketRef.current,
+      connected,
+      join,
+      leave,
+      getChannel,
+      presences,
+      lockChannel,
+      unlockChannel,
+    }),
+    [connected, join, leave, getChannel, presences, lockChannel, unlockChannel]
   )
 
   return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

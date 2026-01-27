@@ -25,6 +25,8 @@ export interface RealTimeSocketState {
   ) => Channel
   leave: (topic: string) => void
   getChannel: (topic: string) => Channel | undefined
+  lockChannel: (topic: string, owner: string) => void
+  unlockChannel: (topic: string, owner: string) => void
   presences: PresenceSkeleton
 }
 

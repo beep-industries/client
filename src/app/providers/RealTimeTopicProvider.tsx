@@ -34,7 +34,7 @@ export function RealTimeTopicProvider({ children, topics }: RealTimeTopicProvide
     return () => {
       cleanups.forEach((fn) => fn())
     }
-  }, [isAuthenticated, topics, join, user, connected, leave])
+  }, [isAuthenticated, topics, user, connected, join, leave])
 
   return <>{children}</>
 }
