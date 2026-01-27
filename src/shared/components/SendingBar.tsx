@@ -161,6 +161,7 @@ export default function SendingBar({
     key: "Escape",
     element: textareaRef.current,
     onKeyDown: () => {
+      if (showMentionPopover) return
       if (replyingMessage && setReplyingMessage) {
         setReplyingMessage()
       }
