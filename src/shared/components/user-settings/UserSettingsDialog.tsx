@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next"
 import { PictureForm, PicturePreview } from "../PictureForm"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/Avatar"
 import { Button } from "../ui/Button"
 import {
   DialogClose,
@@ -20,26 +19,19 @@ interface UserSettingsDialogProps {
   }
 }
 
-export function UserSettingsDialog({ children, user }: UserSettingsDialogProps) {
+export function UserSettingsDialog({ children }: UserSettingsDialogProps) {
   const { t } = useTranslation()
   return (
     <>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-xs">
+      <DialogContent className="gap-0 overflow-hidden p-0 sm:max-w-110">
         <div className="flex flex-col items-start justify-between gap-5 p-4">
           <DialogHeader>
             <DialogTitle>{t("userNav.change_picture")}</DialogTitle>
           </DialogHeader>
-          <div className="relative w-full">
+          <div className="relative h-full w-full">
             <PictureForm className="flex w-full flex-col items-center justify-center">
-              <PicturePreview className="size-50">
-                <Avatar className="h-full w-full rounded-md">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="text-responsive-xl size-50 h-full w-full">
-                    {user.name.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </PicturePreview>
+              <PicturePreview className="h-100 w-100" boxClassName="w-100 h-100" />
             </PictureForm>
           </div>
           <DialogFooter className="align-left flex w-full">
