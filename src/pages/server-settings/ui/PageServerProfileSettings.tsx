@@ -2,6 +2,8 @@ import ServerCard from "@/shared/components/ServerCard"
 import { Skeleton } from "@/shared/components/ui/Skeleton"
 import type { Server } from "@/shared/queries/community/community.types"
 import UpdateDescriptionDialog from "./UpdateDescriptionDialog"
+import UpdateBannerDialog from "./UpdateBannerDialog"
+import UpdatePictureDialog from "./UpdatePictureDialog"
 import type { Dispatch, SetStateAction } from "react"
 
 interface PageServerProfileSettingsProps {
@@ -14,6 +16,14 @@ interface PageServerProfileSettingsProps {
   onDescriptionSave: (description: string) => void
   isDescriptionDialogOpen: boolean
   setIsDescriptionDialogOpen: Dispatch<SetStateAction<boolean>>
+  onBannerClick: () => void
+  onBannerSave: (blob: Blob) => void
+  isBannerDialogOpen: boolean
+  setIsBannerDialogOpen: Dispatch<SetStateAction<boolean>>
+  onPictureClick: () => void
+  onPictureSave: (blob: Blob) => void
+  isPictureDialogOpen: boolean
+  setIsPictureDialogOpen: Dispatch<SetStateAction<boolean>>
 }
 export function PageServerProfileSettings({
   server,
@@ -24,6 +34,14 @@ export function PageServerProfileSettings({
   onDescriptionSave,
   isDescriptionDialogOpen,
   setIsDescriptionDialogOpen,
+  onBannerClick,
+  onBannerSave,
+  isBannerDialogOpen,
+  setIsBannerDialogOpen,
+  onPictureClick,
+  onPictureSave,
+  isPictureDialogOpen,
+  setIsPictureDialogOpen,
 }: PageServerProfileSettingsProps) {
   return (
     <div className="flex w-full justify-center">
@@ -35,6 +53,8 @@ export function PageServerProfileSettings({
               server={server}
               onNameChange={onNameChange}
               onDescriptionClick={onDescriptionClick}
+              onBannerClick={onBannerClick}
+              onPictureClick={onPictureClick}
               descriptionSize="large"
             />
           </div>
@@ -43,6 +63,16 @@ export function PageServerProfileSettings({
             onOpenChange={setIsDescriptionDialogOpen}
             server={server}
             onSave={onDescriptionSave}
+          />
+          <UpdateBannerDialog
+            isOpen={isBannerDialogOpen}
+            onOpenChange={setIsBannerDialogOpen}
+            onSave={onBannerSave}
+          />
+          <UpdatePictureDialog
+            isOpen={isPictureDialogOpen}
+            onOpenChange={setIsPictureDialogOpen}
+            onSave={onPictureSave}
           />
         </>
       )}
