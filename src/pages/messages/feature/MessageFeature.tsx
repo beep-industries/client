@@ -1,5 +1,9 @@
 import MessageComponent from "@/shared/components/Message"
-import { useDeleteMessage, useUpdateMessage } from "@/shared/queries/message/message.queries"
+import {
+  useDeleteMessage,
+  useMessage,
+  useUpdateMessage,
+} from "@/shared/queries/message/message.queries"
 import type { Message } from "@/shared/queries/message/message.types"
 import { useUserBySub } from "@/shared/queries/user/user.queries"
 import type { MentionMember } from "@/shared/components/MentionPopover"
@@ -15,6 +19,7 @@ interface MessageFeatureProps extends Message {
   status?: "pending" | "sent"
   currentUserDisplayName?: string
   members?: MentionMember[]
+  setReplyingMessage?: () => void
 }
 
 export default function MessageFeature({
@@ -28,10 +33,12 @@ export default function MessageFeature({
   status,
   currentUserDisplayName,
   members = [],
+  setReplyingMessage,
 }: MessageFeatureProps) {
   const { data: author, isLoading } = useUserBySub(author_id)
   const deleteMessageMutation = useDeleteMessage()
   const updateMessageMutation = useUpdateMessage()
+  const { data: replyTo } = useMessage(reply_to_message_id || "")
 
   const onDelete = () => {
     deleteMessageMutation.mutate(_id)
@@ -50,7 +57,7 @@ export default function MessageFeature({
         authorId={author_id}
         date={created_at}
         edited={!!updated_at}
-        replyTo={reply_to_message_id || undefined}
+        replyTo={replyTo || undefined}
         key={_id}
         isCompact={isCompact}
         status={status}
@@ -58,6 +65,7 @@ export default function MessageFeature({
         onEdit={onEdit}
         currentUserDisplayName={currentUserDisplayName}
         members={members}
+        setReplyingMessage={setReplyingMessage}
       />
     )
   }
@@ -70,7 +78,7 @@ export default function MessageFeature({
       authorId={author_id}
       date={created_at}
       edited={!!updated_at}
-      replyTo={reply_to_message_id || undefined}
+      replyTo={replyTo || undefined}
       key={_id}
       isCompact={isCompact}
       status={status}
@@ -78,6 +86,7 @@ export default function MessageFeature({
       onEdit={onEdit}
       currentUserDisplayName={currentUserDisplayName}
       members={members}
+      setReplyingMessage={setReplyingMessage}
     />
   )
 }

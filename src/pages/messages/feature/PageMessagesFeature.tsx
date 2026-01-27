@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useMemo, useEffect } from "react"
+import { useReducer, useCallback, useMemo, useEffect, useState } from "react"
 import PageMessages from "../ui/PageMessages"
 import { messagesReducer, initialMessagesState } from "../reducers/MessageReducer"
 
@@ -24,6 +24,7 @@ interface PageMessagesFeatureProps {
 
 export default function PageMessagesFeature({ channelId, serverId }: PageMessagesFeatureProps) {
   const [messagesState, dispatch] = useReducer(messagesReducer, initialMessagesState)
+  const [replyingMessage, setReplyingMessage] = useState<Message | null>(null)
   const { accessToken } = useAuth()
 
   // Get current user for mention highlighting
@@ -173,6 +174,18 @@ export default function PageMessagesFeature({ channelId, serverId }: PageMessage
     onEventUpdatedHandler(payload as MessageUpdatedEvent)
   }
 
+  function handleSetReplyingMessage(id: string | null) {
+    if (id === null) {
+      setReplyingMessage(null)
+    } else {
+      const msg =
+        allMessages.find((m) => m._id === id) ||
+        messagesState.liveMessages.find((m) => m._id === id) ||
+        null
+      setReplyingMessage(msg)
+    }
+  }
+
   return (
     <RealTimeEventProvider
       topic={`text-channel:${channelId}`}
@@ -190,6 +203,8 @@ export default function PageMessagesFeature({ channelId, serverId }: PageMessage
         fetchNextPage={fetchNextPage}
         members={mentionMembers}
         currentUserDisplayName={currentUser?.display_name}
+        replyingMessage={replyingMessage}
+        setReplyingMessage={handleSetReplyingMessage}
       />
     </RealTimeEventProvider>
   )

@@ -142,7 +142,9 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Envoyer un message"
+    "placeholder": "Envoyer un message",
+    "replying_to": "En réponse à",
+    "cancel": "Annuler"
   },
   "searchSidebar": {
     "search_placeholder": "Rechercher des messages...",
@@ -155,7 +157,8 @@
     "delete": "Supprimer",
     "pin": "Épingler le message",
     "save": "Enregistrer",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "reply": "Répondre"
   },
   "videoConference": {
     "participants": "participant",

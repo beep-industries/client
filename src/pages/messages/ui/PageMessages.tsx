@@ -1,6 +1,6 @@
 import SendingBar from "@/shared/components/SendingBar"
 import MessageSkeleton from "@/shared/components/MessageSkeleton"
-import { useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef } from "react"
 import MessageFeature from "../feature/MessageFeature"
 import type { Message } from "../reducers/MessageReducer"
 import type { CreateMessageRequest } from "@/shared/queries/message/message.types"
@@ -17,6 +17,8 @@ interface PageMessagesProps {
   fetchNextPage?: () => void
   members?: MentionMember[]
   currentUserDisplayName?: string
+  replyingMessage?: Message | null
+  setReplyingMessage: (message_id: string | null) => void
 }
 
 export default function PageMessages({
@@ -27,9 +29,21 @@ export default function PageMessages({
   fetchNextPage,
   members = [],
   currentUserDisplayName,
+  replyingMessage,
+  setReplyingMessage,
 }: PageMessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
   const { ref: topRef, inView } = useInView()
+
+  useEffect(() => {
+    if (replyingMessage && textareaRef.current) {
+      // Delay focus to ensure DOM is updated
+      setTimeout(() => {
+        textareaRef.current?.focus()
+      }, 100)
+    }
+  }, [replyingMessage])
 
   const sortedMessages = useMemo(() => {
     // Sort oldest to newest, then reverse for flex-reverse display
@@ -65,6 +79,7 @@ export default function PageMessages({
               isCompact={shouldBeCompact(msg, index, sortedMessages)}
               currentUserDisplayName={currentUserDisplayName}
               members={members}
+              setReplyingMessage={() => setReplyingMessage(msg._id)}
             />
           </div>
         ))}
@@ -78,7 +93,15 @@ export default function PageMessages({
         {hasNextPage && <div ref={topRef} className="h-1" />}
       </div>
       <div className="flex justify-center p-4">
-        <SendingBar sendMessage={sendMessage} members={members} />
+        <SendingBar
+          sendMessage={sendMessage}
+          members={members}
+          replyingMessage={replyingMessage}
+          setReplyingMessage={() => {
+            setReplyingMessage(null)
+          }}
+          textareaRef={textareaRef}
+        />
       </div>
     </div>
   )
