@@ -17,7 +17,7 @@ export function PageServerProfileSettingsFeature({
   const updateServerMutation = useUpdateServer(serverId)
   const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false)
 
-  const handleNameChange = async (server: Server, newName: string) => {
+  const handleNameChange = async (_server: Server, newName: string) => {
     if (!newName.trim()) {
       toast.error(t("serverNav.validation.name_required"))
       return
