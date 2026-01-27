@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import { MessageSquare, UserPlus } from "lucide-react"
+import { UserPlus } from "lucide-react"
 import { Button } from "./ui/Button"
 import { useTranslation } from "react-i18next"
 import { cn } from "../lib/utils"
@@ -63,12 +63,6 @@ export default function MemberDialog({ member, open, onOpenChange }: MemberDialo
 
           {/* Description */}
           {member.description && <p className="text-responsive-base">{member.description}</p>}
-
-          {/* Message button */}
-          <Button className="text-foreground mt-2 w-full font-semibold">
-            <MessageSquare className="mr-2 size-4" />
-            {t("member.send_message")}
-          </Button>
         </div>
       </DialogContent>
     </Dialog>

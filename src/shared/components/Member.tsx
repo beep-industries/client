@@ -8,7 +8,7 @@ import {
   ContextMenuTrigger,
 } from "./ui/ContextMenu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import { MessageSquare, UserPlus, User } from "lucide-react"
+import { UserPlus, User } from "lucide-react"
 import { cn } from "../lib/utils"
 import MemberDialog, { type MemberData } from "./MemberDialog"
 
@@ -66,10 +66,6 @@ export default function Member({ member }: MemberProps) {
           <ContextMenuItem>
             <UserPlus className="mr-2 size-4" />
             {t("member.add_friend")}
-          </ContextMenuItem>
-          <ContextMenuItem>
-            <MessageSquare className="mr-2 size-4" />
-            {t("member.send_message")}
           </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
