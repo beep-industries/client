@@ -128,7 +128,7 @@ export const useSearchMessage = (channelId: string, query: string) => {
       if (lastPage.page * 5 < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!channelId && query.length > 0,
-    gcTime: 0,
-    staleTime: 0,
+    gcTime: 1000 * 60 * 5, // cache for 5 minutes
+    staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
   })
 }
