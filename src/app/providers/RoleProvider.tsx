@@ -1,4 +1,5 @@
 import { createContext, useContext, useMemo, type PropsWithChildren } from "react"
+import { useParams } from "@tanstack/react-router"
 import { useUserRolesInServer, useServerById } from "@/shared/queries/community/community.queries"
 import type { Role } from "@/shared/queries/community/community.types"
 import { aggregateRolePermissions } from "@/shared/lib/permissions"
@@ -15,7 +16,8 @@ interface RoleContextProps {
 
 const RoleContext = createContext<RoleContextProps | null>(null)
 
-export function RoleProvider({ children, serverId }: PropsWithChildren<{ serverId: string }>) {
+export function RoleProvider({ children }: PropsWithChildren) {
+  const { id: serverId } = useParams({ strict: false }) as { id: string }
   const { user } = useAuth()
   const {
     data: roles = [],

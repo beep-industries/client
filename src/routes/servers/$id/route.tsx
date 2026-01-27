@@ -116,7 +116,7 @@ function ServerLayout() {
 
   return (
     <>
-      <RoleProvider serverId={id}>
+      <RoleProvider>
         <TopBarServers
           onToggleMembers={() => handleToggleSidebar("members")}
           onToggleSearch={() => handleToggleSidebar("search")}
