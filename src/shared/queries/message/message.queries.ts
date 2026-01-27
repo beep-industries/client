@@ -5,6 +5,7 @@ import {
   deleteMessage,
   getMessage,
   listMessages,
+  searchMessages,
   updateMessage,
 } from "./message.api"
 import type {
@@ -100,5 +101,34 @@ export const useDeleteMessage = () => {
     mutationFn: (messageId: string) => {
       return deleteMessage(accessToken!, messageId)
     },
+  })
+}
+
+export const useSearchMessage = (channelId: string, query: string) => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: [...messageKeys.list(channelId), "search", query],
+    queryFn: async ({ pageParam }): Promise<PaginatedMessagesResponse> => {
+      try {
+        const response = await searchMessages(accessToken!, channelId, query, {
+          page: pageParam,
+          limit: 5,
+        })
+
+        return response as PaginatedMessagesResponse
+      } catch (error) {
+        console.error("Error searching messages:", error)
+        throw new Error("Error searching messages")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * 5 < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken && !!channelId && query.length > 0,
+    gcTime: 0,
+    staleTime: 0,
   })
 }

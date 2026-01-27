@@ -43,33 +43,36 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
 
-  const join = useCallback((topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void) => {
-    const socket = socketRef.current
-    if (!socket) throw new Error("Socket not initialized yet")
-    const existing = channelsRef.current.get(topic)
-    if (existing) return existing
+  const join = useCallback(
+    (topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void) => {
+      const socket = socketRef.current
+      if (!socket) throw new Error("Socket not initialized yet")
+      const existing = channelsRef.current.get(topic)
+      if (existing) return existing
 
-    const channel = socket.channel(topic, params)
-    channel
-      .join()
-      .receive("ok", joinCallback ?? (() => {}))
-      .receive("error", (err) => {
-        console.error(`[RealTimeSocket] Failed to join channel ${topic}`, err)
-      })
+      const channel = socket.channel(topic, params)
+      channel
+        .join()
+        .receive("ok", joinCallback ?? (() => {}))
+        .receive("error", (err) => {
+          console.error(`[RealTimeSocket] Failed to join channel ${topic}`, err)
+        })
 
-    channelsRef.current.set(topic, channel)
+      channelsRef.current.set(topic, channel)
 
-    // Set up presence tracking
-    if (!presenceRefs.current.has(topic)) {
-      const presence = new Presence(channel)
-      presence.onSync(() => {
-        setPresences((prev) => ({ ...prev, [topic]: presence.list() }))
-      })
-      presenceRefs.current.set(topic, presence)
-    }
+      // Set up presence tracking
+      if (!presenceRefs.current.has(topic)) {
+        const presence = new Presence(channel)
+        presence.onSync(() => {
+          setPresences((prev) => ({ ...prev, [topic]: presence.list() }))
+        })
+        presenceRefs.current.set(topic, presence)
+      }
 
-    return channel
-  }, [])
+      return channel
+    },
+    []
+  )
   // Connect / disconnect the socket based on auth state
   useEffect(() => {
     if (!socketRef.current || !socketRef.current.isConnected()) {

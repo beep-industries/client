@@ -54,7 +54,12 @@ export default function PageMessages({
         }}
       >
         {sortedMessages.map((msg, index) => (
-          <div key={msg._id} data-message-id={msg._id} style={{ contain: "layout" }}>
+          <div
+            key={msg._id}
+            data-message-id={msg._id}
+            style={{ contain: "layout" }}
+            className="p-0"
+          >
             <MessageFeature {...msg} isCompact={shouldBeCompact(msg, index, sortedMessages)} />
           </div>
         ))}

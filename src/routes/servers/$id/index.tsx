@@ -1,6 +1,6 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import PageServer from "@/pages/server/ui/PageServer"
 import { useChannels } from "@/shared/queries/community/community.queries"
+import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect } from "react"
 
 export const Route = createFileRoute("/servers/$id/")({

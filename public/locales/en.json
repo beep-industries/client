@@ -102,6 +102,7 @@
   "topBar": {
     "show_users": "Show users",
     "members": "Members",
+    "search": "Search",
     "notifications": "Notifications",
     "add_friend": "Add a friend",
     "friend_requests": "Friend requests",
@@ -186,6 +187,12 @@
   },
   "sendingBar": {
     "placeholder": "Send a message"
+  },
+  "searchSidebar": {
+    "search_placeholder": "Search messages...",
+    "no_results": "No messages found",
+    "loading": "Loading messages...",
+    "load_more": "Loading more messages"
   },
   "messages": {
     "edit": "Edit",
