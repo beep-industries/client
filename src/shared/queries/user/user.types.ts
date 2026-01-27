@@ -6,6 +6,10 @@ export interface UserBasicInfo {
   description: string
 }
 
+export interface ProfilePictureRequest {
+  url: string
+}
+
 // User full info (includes Keycloak data)
 export interface UserFullInfo extends UserBasicInfo {
   username: string

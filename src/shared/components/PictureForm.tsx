@@ -72,6 +72,8 @@ interface PictureFormProps {
   children: React.ReactNode
   className?: string
   compressionOptions?: CompressionOptions
+  handleImageChange?: (file: File) => Promise<void>
+  handleSubmit?: (data: FormValues) => Promise<void>
 }
 
 interface PicturePreviewProps {
@@ -81,14 +83,17 @@ interface PicturePreviewProps {
 
 interface FormValues {
   picture: FileList
+  url: string
 }
 
 interface PictureFormContextProps {
   control: Control<FormValues, unknown, FormValues>
-  handleSubmit: UseFormHandleSubmit<FormValues, FormValues>
+  handleFormSubmit: UseFormHandleSubmit<FormValues, FormValues>
+  handleSubmit?: (data: FormValues) => Promise<void>
   compressedImage: Blob | null
   setCompressedImage: (blob: Blob | null) => void
   compressionOptions?: CompressionOptions
+  handleImageChange?: (file: File) => Promise<void>
 }
 
 const PictureFormContext = createContext<PictureFormContextProps>({} as PictureFormContextProps)
@@ -101,21 +106,37 @@ export function usePictureForm() {
   return context
 }
 
-export function PictureForm({ children, className, compressionOptions }: PictureFormProps) {
-  const { control, handleSubmit } = useForm<FormValues>()
+export function PictureForm({
+  children,
+  className,
+  compressionOptions,
+  handleImageChange,
+  handleSubmit,
+}: PictureFormProps) {
+  const { control, handleSubmit: handleFormSubmit } = useForm<FormValues>()
   const [compressedImage, setCompressedImage] = useState<Blob | null>(null)
+
+  const onSubmit = async (data: FormValues) => {
+    if (handleSubmit) {
+      await handleSubmit(data)
+    }
+  }
 
   return (
     <PictureFormContext.Provider
       value={{
         control,
         handleSubmit,
+        handleFormSubmit,
         compressedImage,
         setCompressedImage,
         compressionOptions,
+        handleImageChange,
       }}
     >
-      <form className={className}>{children}</form>
+      <form className={className} onSubmit={handleFormSubmit(onSubmit)}>
+        {children}
+      </form>
     </PictureFormContext.Provider>
   )
 }
@@ -124,7 +145,8 @@ export function PicturePreview({ className, boxClassName }: PicturePreviewProps)
   const [preview, setPreview] = useState<string>()
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { control, setCompressedImage, compressionOptions } = useContext(PictureFormContext)
+  const { control, setCompressedImage, compressionOptions, handleImageChange } =
+    useContext(PictureFormContext)
 
   const handleClick = () => {
     fileInputRef.current?.click()
@@ -137,6 +159,7 @@ export function PicturePreview({ className, boxClassName }: PicturePreviewProps)
       const compressed = await compressImage(file, compressionOptions)
       setCompressedImage(compressed)
       setPreview(URL.createObjectURL(compressed))
+      if (handleImageChange) handleImageChange(compressed as File)
     } catch (error) {
       console.error("Failed to compress image:", error)
       setCompressedImage(null)

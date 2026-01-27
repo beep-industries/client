@@ -1,6 +1,7 @@
 import ky from "ky"
 import type {
   UserBasicInfo,
+  ProfilePictureRequest,
   UserFullInfo,
   UpdateUserRequest,
   UserSettings,
@@ -23,6 +24,11 @@ export const getCurrentUser = (accessToken: string, query?: FullInfoQuery) => {
   const api = createUserApi(accessToken)
   const searchParams = query?.full_info ? { full_info: "true" } : undefined
   return api.get("users/me", { searchParams }).json<UserBasicInfo | UserFullInfo>()
+}
+
+export const getProfilePictureSignedURL = (accessToken: string) => {
+  const api = createUserApi(accessToken)
+  return api.post("users/me/profile-picture").json<ProfilePictureRequest>()
 }
 
 // PUT /users/me
