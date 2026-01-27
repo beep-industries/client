@@ -77,7 +77,7 @@ export function UserNav({
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left">
-                  <UserSettingsDialog user={user}>
+                  <UserSettingsDialog user={user} setOpen={setIsDialogOpen}>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <Avatar

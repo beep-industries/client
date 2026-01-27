@@ -6,6 +6,7 @@ import {
   updateCurrentUserSettings,
   getUserBySub,
   getUsersBatch,
+  getProfilePictureSignedURL,
 } from "./user.api"
 import type { UpdateUserRequest, UpdateUserSettingsRequest } from "./user.types"
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
@@ -34,10 +35,21 @@ export const useUpdateCurrentUser = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
+    mutationKey: userKeys.meFullInfo(),
     mutationFn: (data: UpdateUserRequest) => updateCurrentUser(accessToken!, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.me() })
     },
+  })
+}
+
+export const useGetProfilePictureSignedURL = () => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: userKeys.me(),
+    queryFn: () => getProfilePictureSignedURL(accessToken!),
+    enabled: !!accessToken,
   })
 }
 

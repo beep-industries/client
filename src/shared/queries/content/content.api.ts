@@ -6,15 +6,20 @@ const createContentApi = () =>
     timeout: 30000,
   })
 
-export const uploadFile = (signedURL: string, file: File, contentType: string) => {
+export const uploadFile = async (signedURL: string, file: File) => {
   const url = new URL(signedURL)
-  const endpoint = url.pathname + url.search
+  const pathname = url.pathname.substring(1)
+  const endpoint = pathname + url.search
   const api = createContentApi()
+  const content = await file.arrayBuffer()
 
-  return api.put(endpoint, {
-    body: file,
-    headers: {
-      "Content-Type": contentType,
-    },
-  })
+  const response = await api
+    .put(endpoint, {
+      body: content,
+      headers: {
+        "content-type": file.type,
+      },
+    })
+    .text()
+  return response
 }
