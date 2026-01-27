@@ -354,7 +354,13 @@
       "title": "Update Server Description",
       "label": "Description",
       "placeholder": "Enter server description...",
-      "save": "Save"
+      "save": "Save",
+      "success": "Server description updated successfully",
+      "error": "Failed to update server description"
+    },
+    "updateName": {
+      "success": "Server name updated successfully",
+      "error": "Failed to update server name"
     }
   }
 }

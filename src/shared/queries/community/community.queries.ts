@@ -1,5 +1,5 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
-import { useInfiniteQuery, useMutation, useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   acceptFriendRequest,
   createFriendRequest,
@@ -56,6 +56,7 @@ import type {
   UpdateRoleRequest,
   AssignRoleRequest,
   UnassignRoleRequest,
+  UpdateServerRequest,
 } from "./community.types"
 import {
   MAXIMUM_FRIEND_INVITATIONS_PER_API_CALL,
@@ -145,13 +146,17 @@ export const useCreateServer = () => {
 
 export const useUpdateServer = (serverId: string) => {
   const { accessToken } = useAuth()
+  const queryClient = useQueryClient()
 
-  return {
-    mutate: (body: CreateServerRequest) => {
+  return useMutation({
+    mutationFn: (body: UpdateServerRequest) => {
       return updateServer(accessToken!, serverId, body)
     },
-    isLoading: !!accessToken,
-  }
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: communityKeys.server(serverId) })
+      queryClient.invalidateQueries({ queryKey: communityKeys.servers() })
+    },
+  })
 }
 
 export const useDeleteServer = (serverId: string) => {

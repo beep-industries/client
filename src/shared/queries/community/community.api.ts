@@ -49,7 +49,7 @@ export const createServer = (accessToken: string, body: CreateServerRequest) => 
 
 export const updateServer = (accessToken: string, serverId: string, body: UpdateServerRequest) => {
   const api = createCommunityApi(accessToken)
-  return api.patch(`servers/${serverId}`, { json: body }).json()
+  return api.put(`servers/${serverId}`, { json: body }).json()
 }
 
 export const deleteServer = (accessToken: string, serverId: string) => {
