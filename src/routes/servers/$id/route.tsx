@@ -9,9 +9,15 @@ import TopBarServers from "@/shared/components/TopBarServers"
 import MembersSidebar from "@/shared/components/MembersSidebar"
 import type { MemberData } from "@/shared/components/MemberDialog"
 import { useDocumentTitle } from "@/hooks/use-document-title"
+import { ChannelTypeProvider, useChannelType } from "@/shared/components/ChannelTypeContext"
+import SearchSidebar from "@/shared/components/SearchSidebar"
 
 export const Route = createFileRoute("/servers/$id")({
-  component: ServerLayout,
+  component: (props) => (
+    <ChannelTypeProvider>
+      <ServerLayout {...props} />
+    </ChannelTypeProvider>
+  ),
 })
 
 function ServerLayout() {
@@ -25,7 +31,8 @@ function ServerLayout() {
     hasNextPage,
     isFetchingNextPage,
   } = useServerMembers(id)
-  const [showMembers, setShowMembers] = useState(false)
+  const [sideBar, setSideBar] = useState<"search" | "members" | null>(null)
+  const { channelType } = useChannelType()
 
   useDocumentTitle(server?.name)
 
@@ -75,21 +82,25 @@ function ServerLayout() {
   return (
     <>
       <TopBarServers
-        onToggleMembers={() => setShowMembers((prev) => !prev)}
-        showMembers={showMembers}
+        onToggleMembers={() => setSideBar((prev) => (prev === "members" ? null : "members"))}
+        onToggleSearch={() => setSideBar((prev) => (prev === "search" ? null : "search"))}
+        showMembers={sideBar === "members"}
+        showSearch={sideBar === "search"}
+        isTextChannel={channelType === "ServerText"}
       />
       <div className="flex flex-1 overflow-hidden">
         <div className="flex-1 overflow-auto">
           <Outlet />
         </div>
         <MembersSidebar
-          open={showMembers}
+          open={sideBar === "members"}
           members={members}
           isLoading={isUsersLoading || isMembersLoading}
           onLoadMore={fetchNextPage}
           hasMore={hasNextPage}
           isFetchingMore={isFetchingNextPage}
         />
+        <SearchSidebar open={sideBar === "search"} />
       </div>
     </>
   )

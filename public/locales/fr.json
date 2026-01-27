@@ -1,4 +1,8 @@
 {
+  "settings": {
+		  "save_changes": "Appliquer les changements",
+		  "cancel": "Annuler"
+  },
   "common": {
     "loading": "Chargement...",
     "load_more": "Charger plus",
@@ -41,7 +45,8 @@
     "french": "Français",
     "english": "Anglais",
     "settings": "Paramètres",
-    "log_out": "Se déconnecter"
+    "log_out": "Se déconnecter",
+	"change_picture": "Changer de photo"
   },
   "serverProfile": {
     "create_folder": "Créer un dossier",
@@ -102,6 +107,7 @@
   "topBar": {
     "show_users": "Afficher les utilisateurs",
     "members": "Membres",
+    "search": "Rechercher",
     "notifications": "Notifications",
     "add_friend": "Ajouter un ami",
     "friend_requests": "Demandes d'amis",
@@ -137,6 +143,12 @@
   },
   "sendingBar": {
     "placeholder": "Envoyer un message"
+  },
+  "searchSidebar": {
+    "search_placeholder": "Rechercher des messages...",
+    "no_results": "Aucun message trouvé",
+    "loading": "Chargement des messages...",
+    "load_more": "Charger plus de messages"
   },
   "messages": {
     "edit": "Modifier",

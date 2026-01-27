@@ -5,6 +5,7 @@ import {
   deleteMessage,
   getMessage,
   listMessages,
+  searchMessages,
   updateMessage,
 } from "./message.api"
 import type {
@@ -15,6 +16,7 @@ import type {
 } from "./message.types"
 
 const MESSAGES_PER_PAGE = 50
+const SEARCH_MESSAGES_PER_PAGE = 5
 
 export const messageKeys = {
   all: [] as const,
@@ -100,5 +102,34 @@ export const useDeleteMessage = () => {
     mutationFn: (messageId: string) => {
       return deleteMessage(accessToken!, messageId)
     },
+  })
+}
+
+export const useSearchMessage = (channelId: string, query: string) => {
+  const { accessToken } = useAuth()
+
+  return useInfiniteQuery({
+    queryKey: [...messageKeys.list(channelId), "search", query],
+    queryFn: async ({ pageParam }): Promise<PaginatedMessagesResponse> => {
+      try {
+        const response = await searchMessages(accessToken!, channelId, query, {
+          page: pageParam,
+          limit: SEARCH_MESSAGES_PER_PAGE,
+        })
+
+        return response as PaginatedMessagesResponse
+      } catch (error) {
+        console.error("Error searching messages:", error)
+        throw new Error("Error searching messages")
+      }
+    },
+    initialPageParam: 1,
+    getPreviousPageParam: (firstPage) => firstPage.page - 1,
+    getNextPageParam: (lastPage) => {
+      if (lastPage.page * SEARCH_MESSAGES_PER_PAGE < lastPage.total) return lastPage.page + 1
+    },
+    enabled: !!accessToken && !!channelId && query.length > 0,
+    gcTime: 1000 * 60 * 5, // cache for 5 minutes
+    staleTime: 1000 * 60 * 5, // data is fresh for 5 minutes
   })
 }

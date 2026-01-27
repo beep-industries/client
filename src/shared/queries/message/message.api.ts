@@ -31,6 +31,23 @@ export const listMessages = (
     .json<PaginatedMessagesResponse>()
 }
 
+export const searchMessages = (
+  accessToken: string,
+  channelId: string,
+  queryString: string,
+  query: MessagePagination
+): Promise<PaginatedMessagesResponse> => {
+  const api = createMessageApi(accessToken)
+  const searchParams = {
+    q: queryString,
+    page: query.page.toString(),
+    limit: query.limit.toString(),
+  }
+  return api
+    .get(`channels/${channelId}/messages/search`, { searchParams })
+    .json<PaginatedMessagesResponse>()
+}
+
 export const getMessage = (accessToken: string, messageId: string): Promise<Message> => {
   const api = createMessageApi(accessToken)
   return api.get(`messages/${messageId}`).json<Message>()
