@@ -1,4 +1,4 @@
-import { Compass, Ellipsis, Inbox, type LucideIcon } from "lucide-react"
+import { Compass, Ellipsis, Users, type LucideIcon } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Link, useNavigate } from "@tanstack/react-router"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip"
@@ -169,7 +169,7 @@ export default function ServerNav() {
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
       <StaggerSlideIn index={0} direction="right">
-        <NavLinkButton to="/messages" icon={Inbox} tooltip={t("serverNav.messages")} />
+        <NavLinkButton to="/friends" icon={Users} tooltip={t("serverNav.friends")} />
       </StaggerSlideIn>
       <StaggerSlideIn index={1} direction="right">
         <NavLinkButton to="/explore" icon={Compass} tooltip={t("serverNav.explore")} />

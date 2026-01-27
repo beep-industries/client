@@ -12,7 +12,7 @@
   "serverNav": {
     "create_server": "Create a server",
     "join_server": "Join a server",
-    "messages": "Messages",
+    "friends": "Friends",
     "explore": "Explore",
     "more_options": "More options",
     "success_creating_server": "Server created",
