@@ -348,5 +348,13 @@
   "roleTabs": {
     "permissions": "Permissions",
     "members": "Membres"
+  },
+  "serverSettings": {
+    "updateDescription": {
+      "title": "Modifier la description du serveur",
+      "label": "Description",
+      "placeholder": "Entrez la description du serveur...",
+      "save": "Enregistrer"
+    }
   }
 }

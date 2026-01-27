@@ -87,7 +87,7 @@ export default function PageExploreFeature() {
       onNextPage={handleNextPage}
       onPreviousPage={handlePreviousPage}
       isFetching={activeQuery.isFetching}
-      handleServerClick={(server: Server) => handleServerClick(server)}
+      handleServerClick={handleServerClick}
     />
   )
 }

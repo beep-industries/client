@@ -6,5 +6,6 @@ export const Route = createFileRoute("/servers/$id/settings/profile/")({
 })
 
 function RouteComponent() {
-  return <PageServerProfileSettingsFeature />
+  const { id } = Route.useParams()
+  return <PageServerProfileSettingsFeature serverId={id} />
 }

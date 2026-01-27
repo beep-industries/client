@@ -16,16 +16,15 @@ export type SettingPages = (typeof SettingPages)[keyof typeof SettingPages]
 
 export function PageServerSettingsFeature({ id, origin }: PageServerSettingsFeatureProps) {
   const [selectSettingPage, setSelectSettingPage] = useState<SettingPages>(SettingPages.Profile)
-  const location = useLocation()
+  const { pathname } = useLocation()
 
   useEffect(() => {
-    const pathname = location.pathname
     if (pathname.endsWith("/profile")) {
       setSelectSettingPage(SettingPages.Profile)
     } else if (pathname.endsWith("/roles")) {
       setSelectSettingPage(SettingPages.Roles)
     }
-  }, [location.pathname])
+  }, [pathname])
 
   return (
     <PageServerSettings
