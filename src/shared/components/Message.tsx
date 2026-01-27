@@ -480,13 +480,13 @@ export function ReplyTo({
   return (
     <div className={cn("flex", variant === "muted" ? "text-muted-foreground" : "")}>
       <span className="mr-2">↪︎ </span>
-      <span>{t("sendingBar.replying_to")}</span>
+      <span className="hidden sm:block">{t("sendingBar.replying_to")}</span>
       <strong className="ml-1">
         {isLoading ? "..." : author ? author.display_name : "Unknown User"}
       </strong>
       :
       <span
-        className="ml-1 inline-block max-w-[16rem] truncate align-middle hover:cursor-pointer hover:underline"
+        className="ml-1 inline-block max-w-1/2 truncate align-middle hover:cursor-pointer hover:underline"
         style={{ verticalAlign: "middle" }}
         onClick={(e) => {
           // Prevent click from triggering on cancel button
