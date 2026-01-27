@@ -1,9 +1,14 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import { UserPlus } from "lucide-react"
+import { Loader2, UserPlus } from "lucide-react"
 import { Button } from "./ui/Button"
 import { useTranslation } from "react-i18next"
 import { cn } from "../lib/utils"
+import { communityKeys, useCreateFriendRequest } from "../queries/community/community.queries"
+import { useQueryClient } from "@tanstack/react-query"
+import { toast } from "sonner"
+import { useEffect, useCallback } from "react"
+import { useCurrentUser } from "../queries/user/user.queries"
 
 export interface MemberData {
   id: string
@@ -28,6 +33,47 @@ const statusColors: Record<NonNullable<MemberData["status"]>, string> = {
 
 export default function MemberDialog({ member, open, onOpenChange }: MemberDialogProps) {
   const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const { data: currentUser } = useCurrentUser()
+  const isCurrentUser = currentUser?.sub === member.id
+
+  const {
+    mutateAsync: createFriendRequest,
+    isPending: isCreatingFriendRequest,
+    error: createFriendRequestError,
+    isSuccess: isCreateFriendRequestSuccess,
+  } = useCreateFriendRequest()
+
+  const handleError = useCallback(
+    async (error: unknown, defaultMessage: string) => {
+      if (error && typeof error === "object" && "response" in error) {
+        const bodyData = await (error.response as Response).json()
+        if (bodyData.error_code && bodyData.error_code.trim().length > 0) {
+          toast.error(t("friendRequests.errors." + bodyData.error_code))
+        } else if (bodyData.status === 404) {
+          toast.error(t("topBar.modal.create_friend_request.errors_user_not_found"))
+        } else {
+          toast.error(defaultMessage)
+        }
+      } else {
+        toast.error(defaultMessage)
+      }
+    },
+    [t]
+  )
+
+  const handleAddFriend = () => {
+    createFriendRequest({ user_pseudo_invited: member.username })
+  }
+
+  useEffect(() => {
+    if (isCreateFriendRequestSuccess) {
+      queryClient.invalidateQueries({ queryKey: communityKeys.friendRequests() })
+      toast.success(t("topBar.modal.create_friend_request.success"))
+    } else if (createFriendRequestError) {
+      handleError(createFriendRequestError, t("topBar.modal.create_friend_request.error"))
+    }
+  }, [isCreateFriendRequestSuccess, createFriendRequestError, queryClient, t, handleError])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -55,10 +101,22 @@ export default function MemberDialog({ member, open, onOpenChange }: MemberDialo
           </div>
           <div className="flex w-full items-center justify-between">
             <h3 className="text-responsive-lg font-bold">{member.username}</h3>
-            <Button variant="outline" size="icon" className="shrink-0">
-              <UserPlus className="size-4" />
-              <span className="sr-only">{t("member.add_friend")}</span>
-            </Button>
+            {member.id && !isCurrentUser && (
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0"
+                onClick={handleAddFriend}
+                disabled={isCreatingFriendRequest}
+              >
+                {isCreatingFriendRequest ? (
+                  <Loader2 className="size-4 animate-spin" />
+                ) : (
+                  <UserPlus className="size-4" />
+                )}
+                <span className="sr-only">{t("member.add_friend")}</span>
+              </Button>
+            )}
           </div>
 
           {/* Description */}

@@ -126,8 +126,6 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
   const ensureRtc = useCallback(() => {
     if (!rtcRef.current) {
-      console.log("Creating new RTCPeerConnection with config", rtcConfig.current)
-
       const rtc = new RTCPeerConnection(rtcConfig.current)
 
       // ICE state
@@ -178,7 +176,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     try {
       await rtc.setRemoteDescription(answer)
     } catch (err) {
-      console.log("rtc.setRemoteDescription(answer) error", err)
+      console.error("rtc.setRemoteDescription(answer) error", err)
     }
   }, [ensureRtc])
 
@@ -189,7 +187,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       try {
         await rtc.setRemoteDescription(offer)
       } catch (err) {
-        console.log("rtc.setRemoteDescription(offer) error", err)
+        console.error("rtc.setRemoteDescription(offer) error", err)
       }
       const answer = await rtc.createAnswer()
       await rtc.setLocalDescription(answer)
@@ -212,14 +210,10 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       const channel = await new Promise<ReturnType<typeof joinTopic>>((resolve) => {
         const ch = joinTopic(topic, undefined, (response) => {
           const parsed = response as { rtc_configuration: RTCConfiguration }
-          console.log("Joined channel", response)
           rtcConfig.current = parsed.rtc_configuration
-          console.log("RTC Configuration from join response:", rtcConfig.current)
           resolve(ch)
         })
       })
-
-      console.log("RTC Configuration received from server:", rtcConfig.current)
 
       presenceRef.current = new Presence(channel)
 

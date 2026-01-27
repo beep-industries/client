@@ -25,8 +25,6 @@ function createComponent(componentName: string) {
       console.error(`Error executing command: ${error.message}`)
       return
     }
-    if (stdout) console.log(`${stdout}`)
-    if (stderr) console.log(`${stderr}`)
 
     const oldFilePath = resolve(base, `${componentName}.tsx`)
     const newFilePath = resolve(base, `${renamer(componentName)}.tsx`)
@@ -47,6 +45,5 @@ function renameFile(oldPath: string, newPath: string) {
       console.error(`Error renaming file: ${err}`)
       return
     }
-    console.log(`File renamed to ${newPath}`)
   })
 }
