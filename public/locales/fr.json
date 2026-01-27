@@ -1,4 +1,8 @@
 {
+  "settings": {
+		  "save_changes": "Appliquer les changements",
+		  "cancel": "Annuler"
+  },
   "common": {
     "loading": "Chargement...",
     "load_more": "Charger plus",
@@ -41,7 +45,8 @@
     "french": "Français",
     "english": "Anglais",
     "settings": "Paramètres",
-    "log_out": "Se déconnecter"
+    "log_out": "Se déconnecter",
+	"change_picture": "Changer de photo"
   },
   "serverProfile": {
     "create_folder": "Créer un dossier",
