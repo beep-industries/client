@@ -7,10 +7,11 @@ import { routeTree } from "@/routeTree.gen"
 import { ThemeProvider } from "@/app/providers/ThemeProvider"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { AuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
-import { WebStorageStateStore } from "oidc-client-ts"
+import { WebStorageStateStore, type User as OidcClientUser } from "oidc-client-ts"
 import { type AuthState, mapOidcUserToUser } from "@/app/providers/KeycloakAuthProvider"
 import { SidebarContentProvider } from "@/app/providers/SidebarContentProvider"
 import { Toaster } from "./shared/components/ui/Sonner"
+import { useCallback } from "react"
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -55,6 +56,19 @@ const rootElement = document.getElementById("root")!
 function AuthenticatedRouter() {
   const oidcAuth = useOidcAuth()
 
+  const subscribeToTokenRefresh = useCallback(
+    (callback: (token: string) => void) => {
+      const handler = (user: OidcClientUser | null) => {
+        if (user?.access_token) {
+          callback(user.access_token)
+        }
+      }
+      oidcAuth.events.addUserLoaded(handler)
+      return () => oidcAuth.events.removeUserLoaded(handler)
+    },
+    [oidcAuth.events]
+  )
+
   const auth: AuthState = {
     isAuthenticated: oidcAuth.isAuthenticated,
     isLoading: oidcAuth.isLoading,
@@ -62,6 +76,11 @@ function AuthenticatedRouter() {
     accessToken: oidcAuth.user?.access_token ?? null,
     login: () => oidcAuth.signinRedirect(),
     logout: () => oidcAuth.signoutRedirect(),
+    signinSilent: async () => {
+      const user = await oidcAuth.signinSilent()
+      return user?.access_token ?? null
+    },
+    subscribeToTokenRefresh,
     error: oidcAuth.error ?? null,
     activeNavigator: oidcAuth.activeNavigator,
   }

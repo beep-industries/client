@@ -17,7 +17,11 @@ export type PresenceSkeleton = Record<
 export interface RealTimeSocketState {
   socket: Socket | null
   connected: boolean
-  join: (topic: string, params?: ChannelParams, joinCallback?: (response: unknown) => void) => Channel
+  join: (
+    topic: string,
+    params?: ChannelParams,
+    joinCallback?: (response: unknown) => void
+  ) => Channel
   leave: (topic: string) => void
   getChannel: (topic: string) => Channel | undefined
   presences: PresenceSkeleton
