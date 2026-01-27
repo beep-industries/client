@@ -15,6 +15,7 @@ export interface PresenceDesc {
   user_id: string
   video: boolean
   audio: boolean
+  presence_only?: boolean
 }
 
 export interface RemoteState {
@@ -200,6 +201,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const join = useCallback(
     async (server: string, sess: string) => {
       if (server === server && session === sess && iceStatus === "connected") return
+      if (joined) await leave()
       setJoined(true)
       setSession(sess)
       setServer(server)
@@ -228,7 +230,9 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       presenceRef.current.onSync(() => {
         const tracks: PresenceDesc[] = []
         presenceRef.current?.list().forEach((user: { metas: PresenceDesc[] }) => {
-          tracks.push({ ...user.metas[0] })
+          if (!user.metas[0].presence_only) {
+            tracks.push({ ...user.metas[0] })
+          }
         })
 
         setRemoteTracks((prev) => {
