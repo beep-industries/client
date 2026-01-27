@@ -131,7 +131,7 @@ export function ServerProfile({ server }: { server: Server }) {
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link
-                  to="/servers/$id/settings"
+                  to="/servers/$id/settings/profile"
                   params={{ id: String(server.id) }}
                   className="text-responsive-base!"
                 >

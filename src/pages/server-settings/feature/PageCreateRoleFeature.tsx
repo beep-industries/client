@@ -54,8 +54,6 @@ export function PageCreateRoleFeature({ serverId }: PageCreateRoleFeatureProps) 
   }, [isSuccess, isError, navigate, serverId, t, queryClient])
 
   const onSubmit = (values: z.infer<typeof addRoleFormSchema>) => {
-    console.log("onSubmit called with values:", values)
-
     // Convert permissions object to bitfield
     let permissionsBitfield = 0
     for (const [key, value] of Object.entries(values.permissions)) {
@@ -66,11 +64,6 @@ export function PageCreateRoleFeature({ serverId }: PageCreateRoleFeatureProps) 
         }
       }
     }
-
-    console.log("Creating role with:", {
-      name: values.name,
-      permissions: permissionsBitfield,
-    })
 
     createRole({
       name: values.name,

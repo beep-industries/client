@@ -348,5 +348,19 @@
   "roleTabs": {
     "permissions": "Permissions",
     "members": "Members"
+  },
+  "serverSettings": {
+    "updateDescription": {
+      "title": "Update Server Description",
+      "label": "Description",
+      "placeholder": "Enter server description...",
+      "save": "Save",
+      "success": "Server description updated successfully",
+      "error": "Failed to update server description"
+    },
+    "updateName": {
+      "success": "Server name updated successfully",
+      "error": "Failed to update server name"
+    }
   }
 }
