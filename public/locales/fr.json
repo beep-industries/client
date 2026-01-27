@@ -137,7 +137,8 @@
   },
   "sendingBar": {
     "placeholder": "Envoyer un message",
-    "profile": "Profil"
+    "profile": "Profil",
+    "noMembersFound": "Aucun membre trouvé"
   },
   "messages": {
     "edit": "Modifier",

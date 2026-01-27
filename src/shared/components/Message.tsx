@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import { cn, formatDate } from "../lib/utils"
 import { useTranslation } from "react-i18next"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import MemberDialog, { type MemberData } from "./MemberDialog"
 import { Button } from "./ui/Button"
 import { Ellipsis } from "lucide-react"
@@ -15,6 +15,92 @@ import {
   DropdownMenuGroup,
 } from "./ui/DropdownMenu"
 import { useKeyboard } from "../hooks/UseKeyboard"
+
+// Regex to match @mentions (username can contain letters, numbers, underscores, but NOT spaces)
+const MENTION_REGEX = /@(\w+)/g
+
+interface MentionMember {
+  userId: string
+  displayName: string
+  avatarUrl?: string
+}
+
+function parseMentions(
+  text: string,
+  members: MentionMember[],
+  onMentionClick?: (member: MentionMember) => void
+): React.ReactNode[] {
+  const parts: React.ReactNode[] = []
+  let lastIndex = 0
+  let match
+
+  const regex = new RegExp(MENTION_REGEX.source, "g")
+
+  while ((match = regex.exec(text)) !== null) {
+    const username = match[1]
+    // Only style mentions for members that actually exist
+    const member = members.find((m) => m.displayName.toLowerCase() === username.toLowerCase())
+
+    // Add text before the mention
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index))
+    }
+
+    if (member) {
+      // Member exists - render styled mention
+      parts.push(
+        <span
+          key={`mention-${match.index}`}
+          className={cn(
+            "bg-primary/20 text-primary rounded px-1 py-0.5 font-medium",
+            onMentionClick && "cursor-pointer hover:underline"
+          )}
+          onClick={
+            onMentionClick
+              ? (e) => {
+                  e.stopPropagation()
+                  onMentionClick(member)
+                }
+              : undefined
+          }
+        >
+          @{username}
+        </span>
+      )
+    } else {
+      // Member doesn't exist - render as plain text
+      parts.push(match[0])
+    }
+
+    lastIndex = regex.lastIndex
+  }
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex))
+  }
+
+  return parts.length > 0 ? parts : [text]
+}
+
+function checkIfMentioned(
+  content: string,
+  currentUserDisplayName?: string,
+  members?: MentionMember[]
+): boolean {
+  if (!currentUserDisplayName || !members) return false
+  const regex = new RegExp(MENTION_REGEX.source, "g")
+  let match
+  while ((match = regex.exec(content)) !== null) {
+    const username = match[1]
+    // Only count as mentioned if the member actually exists
+    const memberExists = members.some((m) => m.displayName.toLowerCase() === username.toLowerCase())
+    if (memberExists && username.toLowerCase() === currentUserDisplayName.toLowerCase()) {
+      return true
+    }
+  }
+  return false
+}
 
 interface MessageProps {
   content: string
@@ -31,6 +117,8 @@ interface MessageProps {
   onDelete?: () => void
   onEdit?: (newContent: string) => void
   onPin?: () => void
+  currentUserDisplayName?: string
+  members?: MentionMember[]
 }
 
 export default function MessageComponent({
@@ -46,10 +134,13 @@ export default function MessageComponent({
   onDelete,
   onEdit,
   onPin,
+  currentUserDisplayName,
+  members = [],
 }: MessageProps) {
   const { t, i18n } = useTranslation()
   const [showProfile, setShowProfile] = useState(false)
   const [editMode, setEditMode] = useState(false)
+  const [mentionProfileMember, setMentionProfileMember] = useState<MentionMember | null>(null)
 
   const memberData: MemberData = {
     id: authorId || "",
@@ -59,9 +150,45 @@ export default function MessageComponent({
     description: authorDescription,
   }
 
+  // Check if current user is mentioned in this message
+  const isMentioned = useMemo(
+    () => checkIfMentioned(content, currentUserDisplayName, members),
+    [content, currentUserDisplayName, members]
+  )
+
   // Couleur selon le status
   let messageBg = ""
   if (status === "pending") messageBg = "text-muted-foreground"
+
+  // Handle click on a mention
+  const handleMentionClick = useCallback((member: MentionMember) => {
+    setMentionProfileMember(member)
+  }, [])
+
+  // Custom component to render text with mentions
+  const TextWithMentions = useMemo(
+    () =>
+      ({ children }: { children?: React.ReactNode }) => {
+        if (typeof children === "string") {
+          return <>{parseMentions(children, members, handleMentionClick)}</>
+        }
+        if (Array.isArray(children)) {
+          return (
+            <>
+              {children.map((child, i) =>
+                typeof child === "string" ? (
+                  <span key={i}>{parseMentions(child, members, handleMentionClick)}</span>
+                ) : (
+                  child
+                )
+              )}
+            </>
+          )
+        }
+        return <>{children}</>
+      },
+    [members, handleMentionClick]
+  )
 
   // Shared message content
   const messageContent = editMode ? (
@@ -76,7 +203,17 @@ export default function MessageComponent({
     />
   ) : (
     <article className="prose dark:prose-invert prose-headings:my-0 prose-headings:leading-tight prose-p:my-0 prose-p:leading-normal prose-ul:my-0 prose-ol:my-0 prose-li:my-0 prose-li:leading-normal prose-blockquote:my-0 prose-pre:my-0 prose-hr:my-0 wrap-anywhere *:my-0! *:mt-0! *:mb-0! **:my-0!">
-      <Markdown remarkPlugins={[remarkGfm]}>{content}</Markdown>
+      <Markdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: TextWithMentions,
+          li: TextWithMentions,
+          td: TextWithMentions,
+          th: TextWithMentions,
+        }}
+      >
+        {content}
+      </Markdown>
     </article>
   )
 
@@ -85,6 +222,15 @@ export default function MessageComponent({
     <MessageOptionsMenu onDelete={onDelete} onEdit={() => setEditMode(true)} onPin={onPin} />
   )
 
+  // Create member data for mention profile dialog
+  const mentionMemberData: MemberData | null = mentionProfileMember
+    ? {
+        id: mentionProfileMember.userId,
+        username: mentionProfileMember.displayName,
+        avatar_url: mentionProfileMember.avatarUrl,
+      }
+    : null
+
   return (
     <div
       className={cn(
@@ -92,7 +238,8 @@ export default function MessageComponent({
           ? "group relative flex w-full items-start gap-3 px-5 py-1 pl-16"
           : "group mt-3 flex h-fit w-full items-start gap-3 px-5 py-1",
         messageBg,
-        !editMode && "hover:bg-accent"
+        !editMode && "hover:bg-accent",
+        isMentioned && "bg-primary/10"
       )}
     >
       {!isCompact && (
@@ -124,6 +271,13 @@ export default function MessageComponent({
       </div>
       {!isCompact && (
         <MemberDialog member={memberData} open={showProfile} onOpenChange={setShowProfile} />
+      )}
+      {mentionMemberData && (
+        <MemberDialog
+          member={mentionMemberData}
+          open={!!mentionProfileMember}
+          onOpenChange={(open) => !open && setMentionProfileMember(null)}
+        />
       )}
     </div>
   )

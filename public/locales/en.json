@@ -185,7 +185,8 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Send a message"
+    "placeholder": "Send a message",
+    "noMembersFound": "No members found"
   },
   "messages": {
     "edit": "Edit",
