@@ -229,9 +229,6 @@ export default function MessageComponent({
         remarkPlugins={[remarkGfm]}
         components={{
           p: TextWithMentions,
-          li: TextWithMentions,
-          td: TextWithMentions,
-          th: TextWithMentions,
         }}
       >
         {content}
