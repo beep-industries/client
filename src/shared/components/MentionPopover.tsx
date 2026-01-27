@@ -12,7 +12,6 @@ interface MentionPopoverProps {
   members: MentionMember[]
   searchQuery: string
   onSelect: (member: MentionMember) => void
-  position: { top: number; left: number }
   selectedIndex: number
 }
 
@@ -20,7 +19,6 @@ export default function MentionPopover({
   members,
   searchQuery,
   onSelect,
-  position,
   selectedIndex,
 }: MentionPopoverProps) {
   const listRef = useRef<HTMLDivElement>(null)
@@ -40,13 +38,7 @@ export default function MentionPopover({
   }
 
   return (
-    <div
-      className="bg-popover border-border absolute z-50 w-64 overflow-hidden rounded-md border shadow-lg"
-      style={{
-        bottom: position.top,
-        left: position.left,
-      }}
-    >
+    <div className="bg-popover border-border absolute bottom-12 left-0 z-50 w-64 overflow-hidden rounded-md border shadow-lg">
       <div ref={listRef} className="max-h-[300px] overflow-y-auto p-1">
         {filteredMembers.map((member, index) => (
           <div

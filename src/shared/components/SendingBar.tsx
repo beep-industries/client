@@ -171,7 +171,6 @@ export default function SendingBar({ sendMessage, members = [] }: SendingBarProp
           members={members}
           searchQuery={mentionQuery}
           onSelect={insertMention}
-          position={{ top: 60, left: 0 }}
           selectedIndex={selectedMentionIndex}
         />
       )}
