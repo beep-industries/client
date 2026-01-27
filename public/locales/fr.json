@@ -107,6 +107,7 @@
   "topBar": {
     "show_users": "Afficher les utilisateurs",
     "members": "Membres",
+    "search": "Rechercher",
     "notifications": "Notifications",
     "add_friend": "Ajouter un ami",
     "friend_requests": "Demandes d'amis",
@@ -143,6 +144,12 @@
   "sendingBar": {
     "placeholder": "Envoyer un message",
     "profile": "Profil"
+  },
+  "searchSidebar": {
+    "search_placeholder": "Rechercher des messages...",
+    "no_results": "Aucun message trouvé",
+    "loading": "Chargement des messages...",
+    "load_more": "Charger plus de messages"
   },
   "messages": {
     "edit": "Modifier",

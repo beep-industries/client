@@ -126,8 +126,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
   const ensureRtc = useCallback(() => {
     if (!rtcRef.current) {
-
-    console.log("Creating new RTCPeerConnection with config", rtcConfig.current)
+      console.log("Creating new RTCPeerConnection with config", rtcConfig.current)
 
       const rtc = new RTCPeerConnection(rtcConfig.current)
 
