@@ -191,7 +191,9 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Send a message"
+    "placeholder": "Send a message",
+    "replying_to": "Replying to",
+    "cancel": "Cancel"
   },
   "searchSidebar": {
     "search_placeholder": "Search messages...",
@@ -204,7 +206,8 @@
     "delete": "Delete",
     "pin": "Pin Message",
     "save": "Save",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "reply": "Reply"
   },
   "date": {
     "today_at": "Today at",

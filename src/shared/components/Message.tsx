@@ -16,6 +16,8 @@ import {
 } from "./ui/DropdownMenu"
 import { useKeyboard } from "../hooks/UseKeyboard"
 import type { MentionMember } from "./MentionPopover"
+import type { Message } from "../queries/message/message.types"
+import { useUserBySub } from "../queries/user/user.queries"
 
 // Find all mentions in text based on known member display names
 function findMentions(
@@ -127,7 +129,7 @@ function checkIfMentioned(
 interface MessageProps {
   content: string
   author: string
-  replyTo?: string
+  replyTo?: Message
   date: string
   edited: boolean
   profilePictureUrl?: string
@@ -141,6 +143,7 @@ interface MessageProps {
   onPin?: () => void
   currentUserDisplayName?: string
   members?: MentionMember[]
+  setReplyingMessage?: () => void
 }
 
 export default function MessageComponent({
@@ -150,6 +153,7 @@ export default function MessageComponent({
   date,
   isCompact = false,
   authorId,
+  replyTo,
   authorStatus,
   authorDescription,
   status,
@@ -158,6 +162,7 @@ export default function MessageComponent({
   onPin,
   currentUserDisplayName,
   members = [],
+  setReplyingMessage,
 }: MessageProps) {
   const { t, i18n } = useTranslation()
   const [showProfile, setShowProfile] = useState(false)
@@ -238,7 +243,12 @@ export default function MessageComponent({
 
   // Shared options menu
   const optionsMenu = (
-    <MessageOptionsMenu onDelete={onDelete} onEdit={() => setEditMode(true)} onPin={onPin} />
+    <MessageOptionsMenu
+      onDelete={onDelete}
+      onEdit={() => setEditMode(true)}
+      onPin={onPin}
+      setReplyingMessage={setReplyingMessage}
+    />
   )
 
   // Create member data for mention profile dialog
@@ -271,6 +281,7 @@ export default function MessageComponent({
         </Avatar>
       )}
       <div className="flex w-full flex-col wrap-anywhere">
+        {replyTo && <ReplyTo replyingMessage={replyTo} t={t} variant="muted" />}
         {!isCompact && (
           <div className="flex items-center gap-2">
             <h3 className="cursor-pointer font-semibold" onClick={() => setShowProfile(true)}>
@@ -384,10 +395,12 @@ function MessageOptionsMenu({
   onEdit,
   onDelete,
   onPin,
+  setReplyingMessage,
 }: {
   onEdit?: () => void
   onDelete?: () => void
   onPin?: () => void
+  setReplyingMessage?: () => void
 }) {
   const [open, setOpen] = useState(false)
   const t = useTranslation().t
@@ -416,6 +429,15 @@ function MessageOptionsMenu({
                 {t("messages.edit")}
               </DropdownMenuItem>
             )}
+            {setReplyingMessage && (
+              <DropdownMenuItem
+                onSelect={() => {
+                  setReplyingMessage()
+                }}
+              >
+                {t("messages.reply")}
+              </DropdownMenuItem>
+            )}
             {onPin && (
               <DropdownMenuItem
                 onSelect={() => {
@@ -438,6 +460,58 @@ function MessageOptionsMenu({
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
+    </div>
+  )
+}
+
+export function ReplyTo({
+  replyingMessage,
+  setReplyingMessage,
+  t,
+  variant = "default",
+}: {
+  replyingMessage: Message
+  setReplyingMessage?: () => void
+  t: (key: string) => string
+  variant?: "default" | "muted"
+}) {
+  const { data: author, isLoading } = useUserBySub(replyingMessage.author_id)
+
+  return (
+    <div className={cn("flex", variant === "muted" ? "text-muted-foreground" : "")}>
+      <span className="mr-2">↪︎ </span>
+      <span>{t("sendingBar.replying_to")}</span>
+      <strong className="ml-1">
+        {isLoading ? "..." : author ? author.display_name : "Unknown User"}
+      </strong>
+      :
+      <span
+        className="ml-1 inline-block max-w-[16rem] truncate align-middle hover:cursor-pointer hover:underline"
+        style={{ verticalAlign: "middle" }}
+        onClick={(e) => {
+          // Prevent click from triggering on cancel button
+          if ((e.target as HTMLElement).tagName === "BUTTON") return
+          const el = document.querySelector(`[data-message-id='${replyingMessage._id}']`)
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" })
+            el.classList.add("bg-primary/10")
+            setTimeout(() => {
+              el.classList.remove("bg-primary/10")
+            }, 1500)
+          }
+        }}
+        title={replyingMessage.content}
+      >
+        {` ${replyingMessage.content}`}
+      </span>
+      {variant === "default" && setReplyingMessage && (
+        <button
+          className="text-destructive ml-2 hover:cursor-pointer hover:underline"
+          onClick={() => setReplyingMessage && setReplyingMessage()}
+        >
+          {t("sendingBar.cancel")}
+        </button>
+      )}
     </div>
   )
 }
