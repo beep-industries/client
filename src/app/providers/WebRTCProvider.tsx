@@ -81,12 +81,6 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const channelTopicRef = useRef<string | null>(null)
 
   const leave = useCallback(async () => {
-    const sess = session
-    setIceStatus("new")
-    setChannelStatus("Click Join Button...")
-    setJoined(false)
-    setCamEnabled(false)
-    setMicEnabled(false)
     await camTransceiverRef.current?.sender.replaceTrack(null)
     camTransceiverRef.current = null
     camStreamRef.current?.getTracks().forEach((t) => t.stop())
@@ -104,15 +98,14 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     // Close rtc
     rtcRef.current?.close()
     rtcRef.current = null
-    setRemoteTracks([])
     // Notify backend via Phoenix channel and leave topic
-    if (sess != null && channelTopicRef.current) {
+    if (session != null && channelTopicRef.current) {
       const topic = channelTopicRef.current
       const ch = joinTopic(topic)
       try {
         await new Promise<void>((resolve) => {
           ch?.push("leave", {
-            session_id: String(sess),
+            session_id: String(session),
           })
             .receive("ok", () => resolve())
             .receive("error", () => resolve()) // resolve anyway
@@ -122,6 +115,13 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
         channelTopicRef.current = null
       }
     }
+    setSession(null)
+    setRemoteTracks([])
+    setIceStatus("new")
+    setChannelStatus("Click Join Button...")
+    setJoined(false)
+    setCamEnabled(false)
+    setMicEnabled(false)
   }, [joinTopic, leaveTopic, session])
 
   const ensureRtc = useCallback(() => {
@@ -162,7 +162,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       rtcRef.current = rtc
     }
     return rtcRef.current!
-  }, [leave])
+  }, [])
 
   const negotiate = useCallback(async () => {
     const rtc = ensureRtc()

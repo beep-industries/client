@@ -9,6 +9,8 @@ export interface AuthState {
   accessToken: string | null
   login: () => void
   logout: () => void
+  signinSilent: () => Promise<string | null>
+  subscribeToTokenRefresh: (callback: (token: string) => void) => () => void
   error: Error | null
   activeNavigator: string | undefined
 }

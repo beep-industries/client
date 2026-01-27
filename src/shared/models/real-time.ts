@@ -20,7 +20,8 @@ export interface RealTimeSocketState {
   join: (
     topic: string,
     params?: ChannelParams,
-    joinCallback?: (response: unknown) => void
+    joinCallback?: (response: unknown) => void,
+    force?: boolean
   ) => Channel
   leave: (topic: string) => void
   getChannel: (topic: string) => Channel | undefined

@@ -11,7 +11,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import type { Server } from "../queries/community/community.types"
 import { Button } from "./ui/Button"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { communityKeys, useCreateServer, useServers } from "../queries/community/community.queries"
 import { useInView } from "react-intersection-observer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
@@ -158,6 +158,14 @@ export default function ServerNav() {
     }
   }, [isCreateServerModalOpen, addServerForm])
 
+  const serverTopics = useMemo(
+    () =>
+      servers?.pages
+        .flatMap((page) => page.data)
+        .map((server) => ({ topic: `server:${server.id}` })),
+    [servers]
+  )
+
   return (
     <nav className="bg-sidebar border-sidebar-border flex h-screen flex-col items-center gap-2 border-l p-2">
       <StaggerSlideIn index={0} direction="right">
@@ -210,11 +218,7 @@ export default function ServerNav() {
               </StaggerSlideIn>
             ))
           ) : (
-            <RealTimeTopicProvider
-              topics={servers?.pages
-                .flatMap((page) => page.data)
-                .map((server) => ({ topic: `server:${server.id}` }))}
-            >
+            <RealTimeTopicProvider topics={serverTopics}>
               {servers?.pages
                 .flatMap((page) => page.data)
                 .map((server, index) => (
