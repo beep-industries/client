@@ -33,12 +33,15 @@ export interface RealTimeSocketProviderProps {
 const SocketContext = createContext<RealTimeSocketState | undefined>(undefined)
 
 export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocketProviderProps) {
-  const { isAuthenticated, accessToken, user } = useAuth()
+  const { isAuthenticated, accessToken, user, subscribeToTokenRefresh } = useAuth()
   const [connected, setConnected] = useState(false)
   const socketRef = useRef<Socket | null>(null)
   const channelsRef = useRef<Map<string, Channel>>(new Map())
   const [presences, setPresences] = useState<PresenceSkeleton>({})
   const presenceRefs = useRef<Map<string, Presence>>(new Map())
+  const userChannelRef = useRef<Channel | null>(null)
+  const subscribeToTokenRefreshRef = useRef(subscribeToTokenRefresh)
+  subscribeToTokenRefreshRef.current = subscribeToTokenRefresh
 
   const backendHttpUrl = (httpBaseUrl ?? (import.meta.env.VITE_REAL_TIME_URL as string)) as string
   const socketUrl = useMemo(() => buildSocketUrl(backendHttpUrl), [backendHttpUrl])
@@ -88,12 +91,16 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
     }
 
     const socket = socketRef.current!
+    let unsubscribe: (() => void) | null = null
 
     if (isAuthenticated) {
       socket.connect()
-      const channel = join(`user:${user?.id}`)
-      channel.on("token_expired", () => {
-        channel.push("refresh_token", { token: accessToken })
+      const userChannel = join(`user:${user?.id}`)
+      userChannelRef.current = userChannel
+
+      // Subscribe to token refresh events from OIDC
+      unsubscribe = subscribeToTokenRefreshRef.current((freshToken: string) => {
+        userChannel.push("refresh_token", { token: freshToken })
       })
     } else {
       // Leave all channels and disconnect
@@ -109,8 +116,15 @@ export function RealTimeSocketProvider({ children, httpBaseUrl }: RealTimeSocket
       setPresences({})
       socket.disconnect(() => void 0)
       setConnected(false)
+      userChannelRef.current = null
     }
-  }, [accessToken, isAuthenticated, join, socketUrl, user?.id])
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe()
+      }
+    }
+  }, [isAuthenticated, join, socketUrl, user?.id])
 
   const leave = useCallback((topic: string) => {
     const ch = channelsRef.current.get(topic)
