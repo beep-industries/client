@@ -7,6 +7,8 @@ import type { CreateMessageRequest, Message } from "../queries/message/message.t
 import MentionPopover, { type MentionMember } from "./MentionPopover"
 import { ReplyTo } from "./Message"
 import { Button } from "./ui/Button"
+import { useRoles } from "@/app/providers/RoleProvider"
+import { Permission } from "../models/permissions"
 
 interface SendingBarProps {
   sendMessage: (messageData: Omit<CreateMessageRequest, "channel_id">) => Promise<Message>
@@ -23,12 +25,15 @@ export default function SendingBar({
   setReplyingMessage,
   textareaRef: externalTextareaRef,
 }: SendingBarProps) {
+  const { permissions } = useRoles()
   const internalTextareaRef = useRef<HTMLTextAreaElement | null>(null)
   const textareaRef = externalTextareaRef || internalTextareaRef
   const [showMentionPopover, setShowMentionPopover] = useState(false)
   const [mentionQuery, setMentionQuery] = useState("")
   const [mentionStartIndex, setMentionStartIndex] = useState<number | null>(null)
   const [selectedMentionIndex, setSelectedMentionIndex] = useState(0)
+
+  const canSendMessages = permissions.can(Permission.SendMessages)
 
   useEffect(() => {
     const textarea = textareaRef.current
@@ -184,7 +189,8 @@ export default function SendingBar({
           className={cn(
             "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-            "flex h-fit min-h-10 items-end gap-2 pb-2"
+            "flex h-fit min-h-10 items-end gap-2 pb-2",
+            !canSendMessages && "cursor-not-allowed opacity-50"
           )}
         >
           <Plus className="text-neutral-600" />
@@ -192,15 +198,16 @@ export default function SendingBar({
             ref={textareaRef}
             className="h-6 w-full resize-none self-center pt-1 outline-none"
             rows={1}
-            placeholder={t("sendingBar.placeholder")}
+            placeholder={canSendMessages ? t("sendingBar.placeholder") : "You can't send messages"}
             onInput={handleInput}
             onKeyDown={handleKeyDown}
+            disabled={!canSendMessages}
           />
         </div>
-        <Button className="ml-2 h-10" onClick={handleSend}>
+        <Button className="ml-2 h-10" onClick={handleSend} disabled={!canSendMessages}>
           <Send />
         </Button>
-        {showMentionPopover && (
+        {showMentionPopover && canSendMessages && (
           <MentionPopover
             members={members}
             searchQuery={mentionQuery}

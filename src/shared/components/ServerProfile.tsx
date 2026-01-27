@@ -102,30 +102,34 @@ export function ServerProfile({ server }: { server: Server }) {
                   </div>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsFolder(false)
-                  setIsCreateChannelModalOpen(true)
-                }}
-              >
-                <Plus className="size-4" />
-                {t("serverProfile.create_channel")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsFolder(true)
-                  setIsCreateChannelModalOpen(true)
-                }}
-              >
-                <Folder className="size-4" />
-                {t("serverProfile.create_folder")}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              {permissions.can(Permission.ManageChannels) && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      setIsFolder(false)
+                      setIsCreateChannelModalOpen(true)
+                    }}
+                  >
+                    <Plus className="size-4" />
+                    {t("serverProfile.create_channel")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      setIsFolder(true)
+                      setIsCreateChannelModalOpen(true)
+                    }}
+                  >
+                    <Folder className="size-4" />
+                    {t("serverProfile.create_folder")}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                </>
+              )}
               <DropdownMenuItem
                 onSelect={(e) => {
                   e.preventDefault()
@@ -136,16 +140,18 @@ export function ServerProfile({ server }: { server: Server }) {
                 <IdCard className="size-4" />
                 {t("serverProfile.copy_server_id")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault()
-                  setIsOpen(false)
-                  setIsInvitationDialogOpen(true)
-                }}
-              >
-                <UserPlus className="size-4" />
-                {t("serverProfile.user_plus")}
-              </DropdownMenuItem>
+              {permissions.can(Permission.CreateInvitation) && (
+                <DropdownMenuItem
+                  onSelect={(e) => {
+                    e.preventDefault()
+                    setIsOpen(false)
+                    setIsInvitationDialogOpen(true)
+                  }}
+                >
+                  <UserPlus className="size-4" />
+                  {t("serverProfile.user_plus")}
+                </DropdownMenuItem>
+              )}
               {permissions.can(Permission.ManageServer) && (
                 <>
                   <DropdownMenuSeparator />
