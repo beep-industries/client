@@ -16,6 +16,7 @@ import type {
 } from "./message.types"
 
 const MESSAGES_PER_PAGE = 50
+const SEARCH_MESSAGES_PER_PAGE = 5
 
 export const messageKeys = {
   all: [] as const,
@@ -113,7 +114,7 @@ export const useSearchMessage = (channelId: string, query: string) => {
       try {
         const response = await searchMessages(accessToken!, channelId, query, {
           page: pageParam,
-          limit: 5,
+          limit: SEARCH_MESSAGES_PER_PAGE,
         })
 
         return response as PaginatedMessagesResponse
@@ -125,7 +126,7 @@ export const useSearchMessage = (channelId: string, query: string) => {
     initialPageParam: 1,
     getPreviousPageParam: (firstPage) => firstPage.page - 1,
     getNextPageParam: (lastPage) => {
-      if (lastPage.page * 5 < lastPage.total) return lastPage.page + 1
+      if (lastPage.page * SEARCH_MESSAGES_PER_PAGE < lastPage.total) return lastPage.page + 1
     },
     enabled: !!accessToken && !!channelId && query.length > 0,
     gcTime: 1000 * 60 * 5, // cache for 5 minutes

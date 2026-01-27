@@ -99,9 +99,9 @@ export default function SearchSidebar({ open }: SearchSidebarProps) {
                   const el = document.querySelector(`[data-message-id='${msg._id}']`)
                   if (el) {
                     el.scrollIntoView({ behavior: "smooth", block: "center" })
-                    el.classList.add("background", "bg-primary/10")
+                    el.classList.add("bg-primary/10")
                     setTimeout(() => {
-                      el.classList.remove("background", "bg-primary/10")
+                      el.classList.remove("bg-primary/10")
                     }, 1500)
                   }
                 }}
