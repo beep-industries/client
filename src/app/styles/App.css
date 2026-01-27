@@ -143,6 +143,10 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  ::selection {
+    @apply bg-primary text-primary-foreground;
+  }
 }
 
 @utility text-responsive-2xl {
