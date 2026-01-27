@@ -32,6 +32,7 @@ import {
   assignRole,
   unassignRole,
   getRoleMembers,
+  getUserRolesInServer,
 } from "./community.api"
 import type {
   AcceptFriendRequestRequest,
@@ -77,6 +78,7 @@ export const communityKeys = {
   roles: (serverId: string) => [...communityKeys.all, `roles-${serverId}`] as const,
   role: (roleId: string) => [...communityKeys.all, `role-${roleId}`] as const,
   roleMembers: (roleId: string) => [...communityKeys.all, `role-members-${roleId}`] as const,
+  userRoles: (serverId: string) => [...communityKeys.all, `user-roles-${serverId}`] as const,
   friends: () => [...communityKeys.all, "friends"] as const,
   friendRequests: () => [...communityKeys.all, "friend-requests"] as const,
   friendInvitations: () => [...communityKeys.all, "friend-invitations"] as const,
@@ -550,6 +552,23 @@ export const useRole = (roleId: string) => {
       }
     },
     enabled: !!accessToken && !!roleId,
+  })
+}
+
+export const useUserRolesInServer = (serverId: string) => {
+  const { accessToken } = useAuth()
+
+  return useQuery({
+    queryKey: communityKeys.userRoles(serverId),
+    queryFn: async (): Promise<Role[]> => {
+      try {
+        const response = await getUserRolesInServer(accessToken!, serverId)
+        return response as Role[]
+      } catch {
+        throw new Error("Error fetching user roles")
+      }
+    },
+    enabled: !!accessToken && !!serverId,
   })
 }
 

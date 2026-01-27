@@ -231,3 +231,8 @@ export const getRoleMembers = (accessToken: string, roleId: string, query: Commu
   }
   return api.get(`roles/${roleId}/members`, { searchParams }).json()
 }
+
+export const getUserRolesInServer = (accessToken: string, serverId: string) => {
+  const api = createCommunityApi(accessToken)
+  return api.get(`servers/${serverId}/roles/@me`).json()
+}
