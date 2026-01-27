@@ -1,4 +1,5 @@
 import { Permission } from "@/shared/models/permissions"
+import type { Role } from "@/shared/queries/community/community.types"
 
 export interface PermissionMetadata {
   key: string
@@ -102,4 +103,10 @@ export function recordToPermissions(record: Record<string, boolean>): number {
   })
 
   return permissionMask
+}
+
+export function aggregateRolePermissions(roles: Role[]): number {
+  return roles.reduce((aggregated, role) => {
+    return aggregated | role.permissions
+  }, 0)
 }

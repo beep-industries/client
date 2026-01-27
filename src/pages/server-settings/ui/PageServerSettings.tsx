@@ -10,6 +10,7 @@ interface PageServerSettingsProps {
   origin: "/servers/$id/settings"
   selectedSettingPage: SettingPages
   setSelectSettingPage: Dispatch<SetStateAction<SettingPages>>
+  canManageRole: boolean
 }
 
 export default function PageServerSettings({
@@ -17,6 +18,7 @@ export default function PageServerSettings({
   origin,
   selectedSettingPage,
   setSelectSettingPage,
+  canManageRole,
 }: PageServerSettingsProps) {
   return (
     <div className="flex h-full flex-col space-y-12 p-4">
@@ -41,25 +43,27 @@ export default function PageServerSettings({
               Profile
             </Link>
           </Button>
-          <Button
-            variant={"ghost"}
-            className={cn(
-              "text-responsive-lg! truncate text-left",
-              selectedSettingPage === SettingPages.Roles && "bg-accent"
-            )}
-            asChild
-          >
-            <Link
-              from={origin}
-              to="./roles"
-              params={{ id }}
-              onClick={() => {
-                setSelectSettingPage(SettingPages.Roles)
-              }}
+          {canManageRole && (
+            <Button
+              variant={"ghost"}
+              className={cn(
+                "text-responsive-lg! truncate text-left",
+                selectedSettingPage === SettingPages.Roles && "bg-accent"
+              )}
+              asChild
             >
-              Roles
-            </Link>
-          </Button>
+              <Link
+                from={origin}
+                to="./roles"
+                params={{ id }}
+                onClick={() => {
+                  setSelectSettingPage(SettingPages.Roles)
+                }}
+              >
+                Roles
+              </Link>
+            </Button>
+          )}
         </div>
         <Separator orientation="vertical" />
         <div className="flex w-3/4 flex-col p-4">
