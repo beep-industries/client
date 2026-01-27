@@ -11,19 +11,48 @@ import type {
   MessageDeletedEvent,
   MessageUpdatedEvent,
 } from "@/shared/queries/real-time/event.types"
+import { useServerMembers } from "@/shared/queries/community/community.queries"
+import type { GetServerMembersResponse } from "@/shared/queries/community/community.types"
+import { useCurrentUser, useUsersBatch } from "@/shared/queries/user/user.queries"
+import type { UserBasicInfo } from "@/shared/queries/user/user.types"
+import type { MentionMember } from "@/shared/components/MentionPopover"
 
 interface PageMessagesFeatureProps {
   channelId: string
+  serverId: string
 }
 
-export default function PageMessagesFeature({ channelId }: PageMessagesFeatureProps) {
+export default function PageMessagesFeature({ channelId, serverId }: PageMessagesFeatureProps) {
   const [messagesState, dispatch] = useReducer(messagesReducer, initialMessagesState)
   const { accessToken } = useAuth()
+
+  // Get current user for mention highlighting
+  const { data: currentUser } = useCurrentUser()
 
   // Aggregate fetched and live messages into oneKeycloakAuthRepository list
   const allMessages = useMemo(() => {
     return [...messagesState.fetchedMessages, ...messagesState.liveMessages]
   }, [messagesState.fetchedMessages, messagesState.liveMessages])
+
+  // Fetch server members for mentions
+  const { data: membersData } = useServerMembers(serverId)
+  const memberUserIds = useMemo(() => {
+    if (!membersData?.pages) return []
+    return membersData.pages.flatMap((page: GetServerMembersResponse) =>
+      page.data.map((member) => member.user_id)
+    )
+  }, [membersData])
+
+  const { data: usersData } = useUsersBatch(memberUserIds)
+
+  const mentionMembers: MentionMember[] = useMemo(() => {
+    if (!usersData) return []
+    return usersData.map((user: UserBasicInfo) => ({
+      userId: user.sub,
+      displayName: user.display_name,
+      avatarUrl: user.profile_picture,
+    }))
+  }, [usersData])
 
   // Fetch messages from API
   const {
@@ -159,6 +188,8 @@ export default function PageMessagesFeature({ channelId }: PageMessagesFeaturePr
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
         fetchNextPage={fetchNextPage}
+        members={mentionMembers}
+        currentUserDisplayName={currentUser?.display_name}
       />
     </RealTimeEventProvider>
   )

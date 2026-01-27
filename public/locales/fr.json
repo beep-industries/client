@@ -142,8 +142,7 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Envoyer un message",
-    "profile": "Profil"
+    "placeholder": "Envoyer un message"
   },
   "searchSidebar": {
     "search_placeholder": "Rechercher des messages...",

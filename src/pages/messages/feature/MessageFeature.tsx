@@ -2,6 +2,7 @@ import MessageComponent from "@/shared/components/Message"
 import { useDeleteMessage, useUpdateMessage } from "@/shared/queries/message/message.queries"
 import type { Message } from "@/shared/queries/message/message.types"
 import { useUserBySub } from "@/shared/queries/user/user.queries"
+import type { MentionMember } from "@/shared/components/MentionPopover"
 
 interface MessageFeatureProps extends Message {
   content: string
@@ -12,6 +13,8 @@ interface MessageFeatureProps extends Message {
   _id: string
   isCompact?: boolean
   status?: "pending" | "sent"
+  currentUserDisplayName?: string
+  members?: MentionMember[]
 }
 
 export default function MessageFeature({
@@ -23,6 +26,8 @@ export default function MessageFeature({
   _id,
   isCompact = false,
   status,
+  currentUserDisplayName,
+  members = [],
 }: MessageFeatureProps) {
   const { data: author, isLoading } = useUserBySub(author_id)
   const deleteMessageMutation = useDeleteMessage()
@@ -50,6 +55,8 @@ export default function MessageFeature({
         status={status}
         onDelete={onDelete}
         onEdit={onEdit}
+        currentUserDisplayName={currentUserDisplayName}
+        members={members}
       />
     )
   }
@@ -67,6 +74,8 @@ export default function MessageFeature({
       status={status}
       onDelete={onDelete}
       onEdit={onEdit}
+      currentUserDisplayName={currentUserDisplayName}
+      members={members}
     />
   )
 }

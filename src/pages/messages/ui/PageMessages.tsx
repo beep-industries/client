@@ -7,6 +7,7 @@ import type { CreateMessageRequest } from "@/shared/queries/message/message.type
 import { shouldBeCompact } from "../utils"
 import { useScrollingBehavior } from "../utils/ScrollingBehavior"
 import { useInView } from "react-intersection-observer"
+import type { MentionMember } from "@/shared/components/MentionPopover"
 
 interface PageMessagesProps {
   messages: Message[]
@@ -14,6 +15,8 @@ interface PageMessagesProps {
   hasNextPage?: boolean
   isFetchingNextPage?: boolean
   fetchNextPage?: () => void
+  members?: MentionMember[]
+  currentUserDisplayName?: string
 }
 
 export default function PageMessages({
@@ -22,6 +25,8 @@ export default function PageMessages({
   hasNextPage,
   isFetchingNextPage,
   fetchNextPage,
+  members = [],
+  currentUserDisplayName,
 }: PageMessagesProps) {
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const { ref: topRef, inView } = useInView()
@@ -54,13 +59,13 @@ export default function PageMessages({
         }}
       >
         {sortedMessages.map((msg, index) => (
-          <div
-            key={msg._id}
-            data-message-id={msg._id}
-            style={{ contain: "layout" }}
-            className="p-0"
-          >
-            <MessageFeature {...msg} isCompact={shouldBeCompact(msg, index, sortedMessages)} />
+          <div key={msg._id} data-message-id={msg._id} style={{ contain: "layout" }}>
+            <MessageFeature
+              {...msg}
+              isCompact={shouldBeCompact(msg, index, sortedMessages)}
+              currentUserDisplayName={currentUserDisplayName}
+              members={members}
+            />
           </div>
         ))}
         {showSkeletons && (
@@ -73,7 +78,7 @@ export default function PageMessages({
         {hasNextPage && <div ref={topRef} className="h-1" />}
       </div>
       <div className="flex justify-center p-4">
-        <SendingBar sendMessage={sendMessage} />
+        <SendingBar sendMessage={sendMessage} members={members} />
       </div>
     </div>
   )
