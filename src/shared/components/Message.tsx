@@ -507,7 +507,7 @@ export function ReplyTo({
       {variant === "default" && setReplyingMessage && (
         <button
           className="text-primary ml-2 hover:cursor-pointer hover:underline"
-          onClick={() => setReplyingMessage && setReplyingMessage()}
+          onClick={() => setReplyingMessage()}
         >
           {t("sendingBar.cancel")}
         </button>
