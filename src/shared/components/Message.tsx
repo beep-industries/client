@@ -506,7 +506,7 @@ export function ReplyTo({
       </span>
       {variant === "default" && setReplyingMessage && (
         <button
-          className="text-destructive ml-2 hover:cursor-pointer hover:underline"
+          className="text-primary ml-2 hover:cursor-pointer hover:underline"
           onClick={() => setReplyingMessage && setReplyingMessage()}
         >
           {t("sendingBar.cancel")}
