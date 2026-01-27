@@ -15,14 +15,52 @@ import {
   DropdownMenuGroup,
 } from "./ui/DropdownMenu"
 import { useKeyboard } from "../hooks/UseKeyboard"
+import type { MentionMember } from "./MentionPopover"
 
-// Regex to match @mentions (username can contain letters, numbers, underscores, but NOT spaces)
-const MENTION_REGEX = /@(\w+)/g
+// Find all mentions in text based on known member display names
+function findMentions(
+  text: string,
+  members: MentionMember[]
+): { start: number; end: number; member: MentionMember; mentionText: string }[] {
+  const mentions: { start: number; end: number; member: MentionMember; mentionText: string }[] = []
+  const lowerText = text.toLowerCase()
 
-interface MentionMember {
-  userId: string
-  displayName: string
-  avatarUrl?: string
+  // Sort members by display name length (longest first) to match "John Doe" before "John"
+  const sortedMembers = [...members].sort((a, b) => b.displayName.length - a.displayName.length)
+
+  for (const member of sortedMembers) {
+    const pattern = `@${member.displayName.toLowerCase()}`
+    let searchIndex = 0
+
+    while (searchIndex < lowerText.length) {
+      const foundIndex = lowerText.indexOf(pattern, searchIndex)
+      if (foundIndex === -1) break
+
+      // Check if @ is at start or preceded by whitespace
+      const isValidStart = foundIndex === 0 || /\s/.test(text[foundIndex - 1])
+
+      // Check if mention ends at string end or is followed by whitespace/punctuation
+      const endIndex = foundIndex + pattern.length
+      const isValidEnd = endIndex >= text.length || /[\s.,!?;:]/.test(text[endIndex])
+
+      // Check this position isn't already covered by another mention
+      const isOverlapping = mentions.some((m) => foundIndex < m.end && endIndex > m.start)
+
+      if (isValidStart && isValidEnd && !isOverlapping) {
+        mentions.push({
+          start: foundIndex,
+          end: endIndex,
+          member,
+          mentionText: text.slice(foundIndex, endIndex),
+        })
+      }
+
+      searchIndex = foundIndex + 1
+    }
+  }
+
+  // Sort by position in text
+  return mentions.sort((a, b) => a.start - b.start)
 }
 
 function parseMentions(
@@ -30,49 +68,40 @@ function parseMentions(
   members: MentionMember[],
   onMentionClick?: (member: MentionMember) => void
 ): React.ReactNode[] {
+  const mentions = findMentions(text, members)
+  if (mentions.length === 0) return [text]
+
   const parts: React.ReactNode[] = []
   let lastIndex = 0
-  let match
 
-  const regex = new RegExp(MENTION_REGEX.source, "g")
-
-  while ((match = regex.exec(text)) !== null) {
-    const username = match[1]
-    // Only style mentions for members that actually exist
-    const member = members.find((m) => m.displayName.toLowerCase() === username.toLowerCase())
-
+  for (const mention of mentions) {
     // Add text before the mention
-    if (match.index > lastIndex) {
-      parts.push(text.slice(lastIndex, match.index))
+    if (mention.start > lastIndex) {
+      parts.push(text.slice(lastIndex, mention.start))
     }
 
-    if (member) {
-      // Member exists - render styled mention
-      parts.push(
-        <span
-          key={`mention-${match.index}`}
-          className={cn(
-            "bg-primary/20 text-primary rounded px-1 py-0.5 font-medium",
-            onMentionClick && "cursor-pointer hover:underline"
-          )}
-          onClick={
-            onMentionClick
-              ? (e) => {
-                  e.stopPropagation()
-                  onMentionClick(member)
-                }
-              : undefined
-          }
-        >
-          @{username}
-        </span>
-      )
-    } else {
-      // Member doesn't exist - render as plain text
-      parts.push(match[0])
-    }
+    // Add styled mention
+    parts.push(
+      <span
+        key={`mention-${mention.start}`}
+        className={cn(
+          "bg-primary/20 text-primary rounded px-1 py-0.5 font-medium",
+          onMentionClick && "cursor-pointer hover:underline"
+        )}
+        onClick={
+          onMentionClick
+            ? (e) => {
+                e.stopPropagation()
+                onMentionClick(mention.member)
+              }
+            : undefined
+        }
+      >
+        {mention.mentionText}
+      </span>
+    )
 
-    lastIndex = regex.lastIndex
+    lastIndex = mention.end
   }
 
   // Add remaining text
@@ -80,7 +109,7 @@ function parseMentions(
     parts.push(text.slice(lastIndex))
   }
 
-  return parts.length > 0 ? parts : [text]
+  return parts
 }
 
 function checkIfMentioned(
@@ -89,17 +118,10 @@ function checkIfMentioned(
   members?: MentionMember[]
 ): boolean {
   if (!currentUserDisplayName || !members) return false
-  const regex = new RegExp(MENTION_REGEX.source, "g")
-  let match
-  while ((match = regex.exec(content)) !== null) {
-    const username = match[1]
-    // Only count as mentioned if the member actually exists
-    const memberExists = members.some((m) => m.displayName.toLowerCase() === username.toLowerCase())
-    if (memberExists && username.toLowerCase() === currentUserDisplayName.toLowerCase()) {
-      return true
-    }
-  }
-  return false
+  const mentions = findMentions(content, members)
+  return mentions.some(
+    (m) => m.member.displayName.toLowerCase() === currentUserDisplayName.toLowerCase()
+  )
 }
 
 interface MessageProps {

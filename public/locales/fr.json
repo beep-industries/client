@@ -136,9 +136,7 @@
     "notifications": "Notifications"
   },
   "sendingBar": {
-    "placeholder": "Envoyer un message",
-    "profile": "Profil",
-    "noMembersFound": "Aucun membre trouvé"
+    "placeholder": "Envoyer un message"
   },
   "messages": {
     "edit": "Modifier",
