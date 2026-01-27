@@ -18,20 +18,48 @@ export default function PageServerSettings({
   selectedSettingPage,
   setSelectSettingPage,
 }: PageServerSettingsProps) {
+  console.log("PageServerSettings render", { selectedSettingPage })
   return (
     <div className="flex h-full flex-col space-y-12 p-4">
       <div className="flex h-full w-full flex-row">
         <div className="flex w-1/4 flex-col gap-y-2 p-4">
           <Button
             variant={"ghost"}
-            onClick={() => setSelectSettingPage(SettingPages.Roles)}
+            className={cn(
+              "text-responsive-lg! truncate text-left",
+              selectedSettingPage === SettingPages.Profile && "bg-accent"
+            )}
+            asChild
+          >
+            <Link
+              from={origin}
+              to="./profile"
+              params={{ id }}
+              onClick={() => {
+                console.log("Profile link clicked")
+                setSelectSettingPage(SettingPages.Profile)
+              }}
+            >
+              Profile
+            </Link>
+          </Button>
+          <Button
+            variant={"ghost"}
             className={cn(
               "text-responsive-lg! truncate text-left",
               selectedSettingPage === SettingPages.Roles && "bg-accent"
             )}
             asChild
           >
-            <Link from={origin} to="./roles" params={{ id }}>
+            <Link
+              from={origin}
+              to="./roles"
+              params={{ id }}
+              onClick={() => {
+                console.log("Roles link clicked")
+                setSelectSettingPage(SettingPages.Roles)
+              }}
+            >
               Roles
             </Link>
           </Button>

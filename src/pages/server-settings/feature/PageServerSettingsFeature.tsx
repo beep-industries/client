@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
+import { useLocation } from "@tanstack/react-router"
 import PageServerSettings from "../ui/PageServerSettings"
-import { useNavigate } from "@tanstack/react-router"
 
 interface PageServerSettingsFeatureProps {
   id: string
@@ -9,19 +9,24 @@ interface PageServerSettingsFeatureProps {
 
 export const SettingPages = {
   Roles: "roles",
+  Profile: "profile",
 } as const
 
 export type SettingPages = (typeof SettingPages)[keyof typeof SettingPages]
 
 export function PageServerSettingsFeature({ id, origin }: PageServerSettingsFeatureProps) {
-  const [selectSettingPage, setSelectSettingPage] = useState<SettingPages>(SettingPages.Roles)
-  const navigate = useNavigate()
+  const [selectSettingPage, setSelectSettingPage] = useState<SettingPages>(SettingPages.Profile)
+  const location = useLocation()
 
-  // Navigate to the role page by default
-  // If some settings pages are added later feel free to change it
   useEffect(() => {
-    navigate({ to: `/servers/${id}/settings/${selectSettingPage}` })
-  })
+    const pathname = location.pathname
+    if (pathname.endsWith("/profile")) {
+      setSelectSettingPage(SettingPages.Profile)
+    } else if (pathname.endsWith("/roles")) {
+      setSelectSettingPage(SettingPages.Roles)
+    }
+  }, [location.pathname])
+
   return (
     <PageServerSettings
       id={id}
