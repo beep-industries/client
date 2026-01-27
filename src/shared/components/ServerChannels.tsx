@@ -56,7 +56,6 @@ interface ServerChannelsProps {
 export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { t } = useTranslation()
   const { setFolders, folders } = useFolder()
-  const { session, joined } = useWebRTC()
 
   const {
     mutateAsync: deleteFolder,
@@ -70,8 +69,10 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const [isFolder, setIsFolder] = useState(false)
   const [parentId, setParentId] = useState<string | undefined>(undefined)
 
-  const channelsWithoutFolder = channelsData.filter(
-    (c) => c.parent_id === null && c.channel_type !== ChannelTypes.FOLDER
+  const channelsWithoutFolder = useMemo(
+    () =>
+      channelsData.filter((c) => c.parent_id === null && c.channel_type !== ChannelTypes.FOLDER),
+    [channelsData]
   )
 
   useEffect(() => {
@@ -97,95 +98,79 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
     }
   }, [channelsData, setFolders, folders])
 
-  const watchedTopicSpecs: TopicJoinSpec[] = useMemo(() => {
-    const result: TopicJoinSpec[] = []
-    channelsWithoutFolder.forEach((channel) => {
-      if (channel.channel_type === ChannelTypes.TEXT) {
-        result.push({ topic: `text-channel:${channel.id}` })
-      } else {
-        if (!(joined && session === channel.id)) {
-          result.push({ topic: `voice-channel:${channel.id}`, params: { presence_only: true } })
-        }
-      }
-    })
-    return result
-  }, [channelsWithoutFolder, joined, session])
-
   return (
-    <RealTimeTopicProvider topics={watchedTopicSpecs}>
-      <ContextMenu>
-        <ContextMenuTrigger className="flex h-full flex-col gap-2">
-          {/* Channels without folder */}
-          {channelsWithoutFolder.length > 0 && (
-            <SidebarMenu className="gap-2">
-              {channelsWithoutFolder.map((channel) =>
-                channel.channel_type === ChannelTypes.TEXT ? (
-                  <TextChannel key={channel.id} channel={channel} isChildren={false} />
-                ) : (
-                  <VoiceChannel key={channel.id} channel={channel} />
-                )
-              )}
-            </SidebarMenu>
-          )}
-          {/* Folders with their channels */}
-          {folders.map((folder) => (
-            <ContextMenu key={folder.id}>
-              <ContextMenuTrigger>
-                <FolderComponent
-                  id={folder.id}
-                  name={folder.name}
-                  channels={channelsData.filter((c) => c.parent_id === folder.id)}
-                />
-              </ContextMenuTrigger>
-              <ContextMenuContent>
-                <ContextMenuItem
-                  onClick={() => {
-                    setParentId(folder.id)
-                    setIsFolder(false)
-                    setIsCreateChannelModalOpen(true)
-                  }}
-                >
-                  {t("serverChannels.create_channel")}
-                </ContextMenuItem>
-                <ContextMenuItem
-                  onClick={(e) => {
-                    e.preventDefault()
-                    deleteFolder(folder.id)
-                  }}
-                >
-                  {t("serverChannels.delete_folder")}
-                </ContextMenuItem>
-              </ContextMenuContent>
-            </ContextMenu>
-          ))}
-        </ContextMenuTrigger>
-        <ContextMenuContent>
-          <ContextMenuItem
-            onClick={() => {
-              setIsFolder(false)
-              setIsCreateChannelModalOpen(true)
-            }}
-          >
-            {t("serverChannels.create_channel")}
-          </ContextMenuItem>
-          <ContextMenuItem
-            onClick={() => {
-              setIsFolder(true)
-              setIsCreateChannelModalOpen(true)
-            }}
-          >
-            {t("serverChannels.create_folder")}
-          </ContextMenuItem>
-        </ContextMenuContent>
-        <AddChannelForm
-          serverId={serverId}
-          open={isCreateChannelModalOpen}
-          parentId={parentId}
-          setParentId={setParentId}
-          isFolder={isFolder}
-          onOpenChange={setIsCreateChannelModalOpen}
-        />
-      </ContextMenu>
-    </RealTimeTopicProvider>
+    <ContextMenu>
+      <ContextMenuTrigger className="flex h-full flex-col gap-2">
+        {/* Channels without folder */}
+        {channelsWithoutFolder.length > 0 && (
+          <SidebarMenu className="gap-2">
+            {channelsWithoutFolder.map((channel) =>
+              channel.channel_type === ChannelTypes.TEXT ? (
+                <TextChannel key={channel.id} channel={channel} isChildren={false} />
+              ) : (
+                <VoiceChannel key={channel.id} channel={channel} />
+              )
+            )}
+          </SidebarMenu>
+        )}
+        {/* Folders with their channels */}
+        {folders.map((folder) => (
+          <ContextMenu key={folder.id}>
+            <ContextMenuTrigger>
+              <FolderComponent
+                id={folder.id}
+                name={folder.name}
+                channels={channelsData.filter((c) => c.parent_id === folder.id)}
+              />
+            </ContextMenuTrigger>
+            <ContextMenuContent>
+              <ContextMenuItem
+                onClick={() => {
+                  setParentId(folder.id)
+                  setIsFolder(false)
+                  setIsCreateChannelModalOpen(true)
+                }}
+              >
+                {t("serverChannels.create_channel")}
+              </ContextMenuItem>
+              <ContextMenuItem
+                onClick={(e) => {
+                  e.preventDefault()
+                  deleteFolder(folder.id)
+                }}
+              >
+                {t("serverChannels.delete_folder")}
+              </ContextMenuItem>
+            </ContextMenuContent>
+          </ContextMenu>
+        ))}
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem
+          onClick={() => {
+            setIsFolder(false)
+            setIsCreateChannelModalOpen(true)
+          }}
+        >
+          {t("serverChannels.create_channel")}
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => {
+            setIsFolder(true)
+            setIsCreateChannelModalOpen(true)
+          }}
+        >
+          {t("serverChannels.create_folder")}
+        </ContextMenuItem>
+      </ContextMenuContent>
+      <AddChannelForm
+        serverId={serverId}
+        open={isCreateChannelModalOpen}
+        parentId={parentId}
+        setParentId={setParentId}
+        isFolder={isFolder}
+        onOpenChange={setIsCreateChannelModalOpen}
+      />
+    </ContextMenu>
   )
 }

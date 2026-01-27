@@ -77,7 +77,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const rtcConfig = useRef<RTCConfiguration>({})
 
   // Phoenix Channel for signaling (initial offer/leave). DataChannel remains for in-call negotiation.
-  const { join: joinTopic, leave: leaveTopic } = useRealTimeSocket()
+  const { join: joinTopic, leave: leaveTopic, lockChannel, unlockChannel } = useRealTimeSocket()
   const channelTopicRef = useRef<string | null>(null)
 
   const leave = useCallback(async () => {
@@ -101,6 +101,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     // Notify backend via Phoenix channel and leave topic
     if (session != null && channelTopicRef.current) {
       const topic = channelTopicRef.current
+      unlockChannel(topic, "webrtc")
       const ch = joinTopic(topic)
       try {
         await new Promise<void>((resolve) => {
@@ -117,7 +118,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     }
     setSession(null)
     setRemoteTracks([])
-    setIceStatus("new")
+    setIceStatus("disconnected")
     setChannelStatus("Click Join Button...")
     setJoined(false)
     setCamEnabled(false)
@@ -199,20 +200,27 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const join = useCallback(
     async (server: string, sess: string) => {
       if (server === server && session === sess && iceStatus === "connected") return
-      setServer(server)
+      setJoined(true)
       setSession(sess)
+      setServer(server)
 
       // Join Phoenix channel topic and perform initial offer/answer via channel
       const topic = `voice-channel:${sess}`
+      lockChannel(topic, "webrtc")
       channelTopicRef.current = topic
 
       // Wait for channel join callback to complete before setting up RTC
       const channel = await new Promise<ReturnType<typeof joinTopic>>((resolve) => {
-        const ch = joinTopic(topic, undefined, (response) => {
-          const parsed = response as { rtc_configuration: RTCConfiguration }
-          rtcConfig.current = parsed.rtc_configuration
-          resolve(ch)
-        })
+        const ch = joinTopic(
+          topic,
+          undefined,
+          (response) => {
+            const parsed = response as { rtc_configuration: RTCConfiguration }
+            rtcConfig.current = parsed.rtc_configuration
+            resolve(ch)
+          },
+          true
+        )
       })
 
       presenceRef.current = new Presence(channel)
@@ -240,7 +248,6 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
 
       const rtc = ensureRtc()
       setChannelStatus(`Joining session ${sess} as endpoint`)
-      setJoined(true)
 
       const dataChannel = rtc.createDataChannel("offer/answer")
       dataChannel.onmessage = (event) => {
@@ -279,6 +286,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
           })
           .receive("error", (err: unknown) => {
             console.error("join error", err)
+            setIceStatus("failed")
             reject(err)
           })
       })
