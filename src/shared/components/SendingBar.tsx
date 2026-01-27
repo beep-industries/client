@@ -112,6 +112,7 @@ export default function SendingBar({ sendMessage, members = [] }: SendingBarProp
       if (!showMentionPopover) return
 
       const filteredMembers = getFilteredMembers()
+      if (filteredMembers.length === 0) return
 
       if (event.key === "ArrowDown") {
         event.preventDefault()
