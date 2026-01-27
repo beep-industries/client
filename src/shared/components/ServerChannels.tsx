@@ -21,6 +21,9 @@ import { useFolder } from "@/shared/hooks/UseFolder.ts"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 import { Skeleton } from "./ui/Skeleton"
+import { useRoles } from "@/app/providers/RoleProvider"
+import { Permission } from "../models/permissions"
+import { EyeOff } from "lucide-react"
 
 function ChannelSkeleton() {
   return (
@@ -52,6 +55,7 @@ interface ServerChannelsProps {
 
 export default function ServerChannels({ serverId }: ServerChannelsProps) {
   const { t } = useTranslation()
+  const { permissions } = useRoles()
   const { setFolders, folders } = useFolder()
 
   const {
@@ -94,6 +98,15 @@ export default function ServerChannels({ serverId }: ServerChannelsProps) {
       setFolders(newFolders)
     }
   }, [channelsData, setFolders, folders])
+
+  if (!permissions.can(Permission.ViewChannels)) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-3 px-4 py-8 text-center">
+        <EyeOff className="text-muted-foreground h-12 w-12" />
+        <p className="text-muted-foreground text-sm">{t("serverChannels.no_view_permission")}</p>
+      </div>
+    )
+  }
 
   return (
     <ContextMenu>
