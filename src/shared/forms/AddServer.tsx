@@ -14,6 +14,8 @@ import { DialogClose, DialogFooter } from "../components/ui/Dialog"
 import { Button } from "../components/ui/Button"
 import { Switch } from "../components/ui/Switch"
 import { useTranslation } from "react-i18next"
+import ServerPictureDialog from "../components/ServerPictureDialog"
+import ServerBannerDialog from "../components/ServerBannerDialog"
 
 interface AddServerFormProps {
   form: UseFormReturn<z.infer<typeof addServerFormSchema>>
@@ -61,7 +63,7 @@ export function AddServerForm({ form, loading, onSubmit }: AddServerFormProps) {
               <FormItem className="w-full">
                 <FormLabel>{t("serverNav.modal.image_url")}</FormLabel>
                 <FormControl>
-                  <Input type="text" id="picture_url" {...field} />
+                  <ServerPictureDialog value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -74,7 +76,7 @@ export function AddServerForm({ form, loading, onSubmit }: AddServerFormProps) {
               <FormItem className="w-full">
                 <FormLabel>{t("serverNav.modal.banner_url")}</FormLabel>
                 <FormControl>
-                  <Input type="text" id="banner_url" {...field} />
+                  <ServerBannerDialog value={field.value} onChange={field.onChange} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

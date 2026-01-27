@@ -34,7 +34,12 @@
       "public": "Public",
       "private": "Privé",
       "cancel": "Annuler",
-      "create": "Créer le serveur"
+      "create": "Créer le serveur",
+      "save": "Enregistrer",
+      "picture_upload": "Télécharger l'image du serveur",
+      "banner_upload": "Télécharger la bannière du serveur",
+      "click_to_upload": "Cliquez pour télécharger",
+      "click_to_upload_banner": "Cliquez pour télécharger la bannière"
     }
   },
   "userNav": {
@@ -360,6 +365,18 @@
     "updateName": {
       "success": "Nom du serveur mis à jour avec succès",
       "error": "Échec de la mise à jour du nom du serveur"
+    },
+    "updateBanner": {
+      "title": "Modifier la bannière du serveur",
+      "save": "Enregistrer",
+      "success": "Bannière du serveur mise à jour avec succès",
+      "error": "Échec de la mise à jour de la bannière du serveur"
+    },
+    "updatePicture": {
+      "title": "Modifier l'image du serveur",
+      "save": "Enregistrer",
+      "success": "Image du serveur mise à jour avec succès",
+      "error": "Échec de la mise à jour de l'image du serveur"
     }
   }
 }

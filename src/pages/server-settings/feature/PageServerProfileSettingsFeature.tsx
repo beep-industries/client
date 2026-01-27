@@ -16,6 +16,17 @@ export function PageServerProfileSettingsFeature({
   const { data, isError, isSuccess, isLoading } = useServerById(serverId)
   const updateServerMutation = useUpdateServer(serverId)
   const [isDescriptionDialogOpen, setIsDescriptionDialogOpen] = useState(false)
+  const [isBannerDialogOpen, setIsBannerDialogOpen] = useState(false)
+  const [isPictureDialogOpen, setIsPictureDialogOpen] = useState(false)
+
+  const blobToDataUrl = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onloadend = () => resolve(reader.result as string)
+      reader.onerror = reject
+      reader.readAsDataURL(blob)
+    })
+  }
 
   const handleNameChange = async (_server: Server, newName: string) => {
     if (!newName.trim()) {
@@ -51,6 +62,36 @@ export function PageServerProfileSettingsFeature({
     }
   }
 
+  const handleBannerClick = () => {
+    setIsBannerDialogOpen(true)
+  }
+
+  const handleBannerSave = async (blob: Blob) => {
+    try {
+      const dataUrl = await blobToDataUrl(blob)
+      await updateServerMutation.mutateAsync({ banner_url: dataUrl })
+      toast.success(t("serverSettings.updateBanner.success"))
+    } catch (error) {
+      console.error("Error updating server banner:", error)
+      toast.error(t("serverSettings.updateBanner.error"))
+    }
+  }
+
+  const handlePictureClick = () => {
+    setIsPictureDialogOpen(true)
+  }
+
+  const handlePictureSave = async (blob: Blob) => {
+    try {
+      const dataUrl = await blobToDataUrl(blob)
+      await updateServerMutation.mutateAsync({ picture_url: dataUrl })
+      toast.success(t("serverSettings.updatePicture.success"))
+    } catch (error) {
+      console.error("Error updating server picture:", error)
+      toast.error(t("serverSettings.updatePicture.error"))
+    }
+  }
+
   return (
     <PageServerProfileSettings
       server={data}
@@ -62,6 +103,14 @@ export function PageServerProfileSettingsFeature({
       onDescriptionSave={handleDescriptionSave}
       isDescriptionDialogOpen={isDescriptionDialogOpen}
       setIsDescriptionDialogOpen={setIsDescriptionDialogOpen}
+      onBannerClick={handleBannerClick}
+      onBannerSave={handleBannerSave}
+      isBannerDialogOpen={isBannerDialogOpen}
+      setIsBannerDialogOpen={setIsBannerDialogOpen}
+      onPictureClick={handlePictureClick}
+      onPictureSave={handlePictureSave}
+      isPictureDialogOpen={isPictureDialogOpen}
+      setIsPictureDialogOpen={setIsPictureDialogOpen}
     />
   )
 }
