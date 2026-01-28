@@ -273,7 +273,7 @@ export default function MessageComponent({
     >
       {!isCompact && (
         <Avatar
-          className="mt-1 h-8 w-8 cursor-pointer rounded-lg grayscale"
+          className="mt-1 h-8 w-8 cursor-pointer rounded-lg"
           onClick={() => setShowProfile(true)}
         >
           <AvatarImage src={profilePictureUrl} alt={author} />
