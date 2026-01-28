@@ -18,7 +18,7 @@ export default function Friend({ id, name, avatar }: FriendProps) {
           "flex w-full flex-row items-center gap-3 rounded-md p-2 bg-sidebar-accent text-sidebar-accent-foreground",
       }}
     >
-      <Avatar className="h-7 w-7 rounded-lg grayscale">
+      <Avatar className="h-7 w-7 rounded-lg">
         <AvatarImage src={avatar} alt={name} />
         <AvatarFallback className="rounded-lg">{name.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>

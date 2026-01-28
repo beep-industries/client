@@ -106,7 +106,7 @@ export default function FriendRequest({ user_id, status, type }: FriendRequestPr
   return (
     <div className="group hover:bg-sidebar-accent hover:text-sidebar-accent-foreground flex w-full flex-row items-center justify-between rounded-md p-2">
       <div className="flex flex-row items-center gap-3">
-        <Avatar className="h-9 w-9 rounded-lg grayscale">
+        <Avatar className="h-9 w-9 rounded-lg">
           <AvatarImage
             src={data?.profile_picture}
             alt={data?.display_name || t("friendRequests.default_user_name")}

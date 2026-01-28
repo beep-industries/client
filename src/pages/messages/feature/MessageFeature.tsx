@@ -73,7 +73,7 @@ export default function MessageFeature({
   return (
     <MessageComponent
       content={content}
-      profilePictureUrl={undefined}
+      profilePictureUrl={author?.profile_picture}
       author={author?.display_name || "Unknown"}
       authorId={author_id}
       date={created_at}
