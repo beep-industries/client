@@ -24,6 +24,8 @@ import { cn } from "@/shared/lib/utils"
 import { VideoStream } from "./VideoStream"
 import { AudioStream } from "./AudioStream"
 import type { ParticipantStream } from "@/pages/channel/types"
+import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
+import { useEffect, useRef, useState } from "react"
 
 interface ParticipantCardProps {
   participant: ParticipantStream
@@ -49,7 +51,61 @@ export function ParticipantCard({
   onFullscreen,
 }: ParticipantCardProps) {
   const { t } = useTranslation()
-  const { user, tracks, video, audio } = participant
+  const { transcriptionUpdates } = useWebRTC()
+  const { voiceId, user, tracks, video, audio } = participant
+  const [now, setNow] = useState(Date.now())
+
+  // Track when each transcription was first received
+  const transcriptionTimestamps = useRef<Map<string, number>>(new Map())
+
+  // Update timestamps when new transcriptions arrive
+  useEffect(() => {
+    const currentTime = Date.now()
+    transcriptionUpdates?.forEach((t) => {
+      const key = `${t.endpoint_id}-${t.start_ms}`
+      if (!transcriptionTimestamps.current.has(key)) {
+        transcriptionTimestamps.current.set(key, currentTime)
+      }
+    })
+  }, [transcriptionUpdates])
+
+  // Update current time every second to check for expired transcriptions
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(Date.now())
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Get transcriptions for this participant within a time window
+  const timeWindowMs = 10000 // 10 seconds window
+
+  // Filter transcriptions for this participant
+  const allParticipantTranscriptions =
+    transcriptionUpdates?.filter((u) => Number(u.endpoint_id) === voiceId) ?? []
+
+  // Filter based on real time
+  const participantTranscriptions = allParticipantTranscriptions
+    .filter((t) => {
+      const key = `${t.endpoint_id}-${t.start_ms}`
+      const receivedAt = transcriptionTimestamps.current.get(key)
+      return receivedAt && now - receivedAt <= timeWindowMs
+    })
+    .slice(-3)
+
+  // Clean up old entries from the map
+  useEffect(() => {
+    const validKeys = new Set(
+      allParticipantTranscriptions.map((t) => `${t.endpoint_id}-${t.start_ms}`)
+    )
+    for (const key of transcriptionTimestamps.current.keys()) {
+      if (!validKeys.has(key)) {
+        transcriptionTimestamps.current.delete(key)
+      }
+    }
+  }, [allParticipantTranscriptions])
+
+  const transcriptionText = participantTranscriptions.map((t) => t.text).join(" ")
 
   // For current user, don't show audio-related controls
   const showAudioControls = !isCurrentUser && audio
@@ -214,6 +270,15 @@ export function ParticipantCard({
             {isCurrentUser && ` ${t("videoConference.status.you")}`}
           </span>
         </div>
+
+        {!isThumbnail && transcriptionText && (
+          <div className="absolute right-2 bottom-10 left-2 rounded-md bg-black/70 p-2">
+            <p className="line-clamp-3 text-xs leading-relaxed text-gray-300">
+              {transcriptionText}
+            </p>
+          </div>
+        )}
+
         <div className="flex items-center gap-1">
           {/* Audio status - for current user just show their mic state, for others show mute state */}
           {isCurrentUser ? (

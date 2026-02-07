@@ -1,4 +1,5 @@
 export interface ParticipantStream {
+  voiceId: number
   userId: string
   user: {
     display_name: string

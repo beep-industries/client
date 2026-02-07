@@ -11,6 +11,8 @@ import {
   Signal,
   SignalLow,
   SignalZero,
+  Captions,
+  CaptionsOff,
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/Avatar"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
@@ -45,6 +47,9 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
     leave,
     joined,
     iceStatus,
+    transcriptionEnabled,
+    enableTranscription,
+    disableTranscription,
   } = useWebRTC()
 
   const getConnectionIcon = () => {
@@ -131,6 +136,20 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
               <ScreenShareOff className="h-5 w-5" />
             )}
           </button>
+          {joined && (
+            <button
+              type="button"
+              onClick={transcriptionEnabled ? disableTranscription : () => enableTranscription()}
+              aria-label={transcriptionEnabled ? "Disable transcription" : "Enable transcription"}
+              className={`transition-colors ${transcriptionEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
+            >
+              {transcriptionEnabled ? (
+                <Captions className="h-5 w-5" />
+              ) : (
+                <CaptionsOff className="h-5 w-5" />
+              )}
+            </button>
+          )}
         </div>
         {joined && (
           <div className="flex items-center gap-3">

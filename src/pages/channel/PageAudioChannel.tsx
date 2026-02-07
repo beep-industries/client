@@ -23,6 +23,7 @@ export default function PageAudioChannel() {
   const streams: ParticipantStream[] = useMemo(() => {
     return remoteTracks.map((track) => {
       return {
+        voiceId: track.id,
         userId: track.userId,
         user: usersIn.find((user) => user?.data?.sub === track.userId)?.data || {
           display_name: "Unknown",
