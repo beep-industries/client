@@ -2,7 +2,7 @@
 # Uses Alpine Linux for minimal size and implements rootless security
 
 # Base stage with pnpm and user setup
-FROM node:22-alpine AS base
+FROM node:25.6-alpine AS base
 
 # Create a non-root user for security
 RUN addgroup -g 1001 -S nodejs
@@ -65,7 +65,7 @@ USER reactuser
 RUN pnpm run build
 
 # Stage 3: Production stage
-FROM nginxinc/nginx-unprivileged:1.29.2-alpine AS production
+FROM nginxinc/nginx-unprivileged:1.29.5-alpine AS production
 
 # Copy built application from builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
