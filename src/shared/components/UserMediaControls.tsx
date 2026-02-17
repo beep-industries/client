@@ -13,11 +13,31 @@ import {
   SignalZero,
   Captions,
   CaptionsOff,
+  ChevronDown,
 } from "lucide-react"
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/Avatar"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip.tsx"
 import { useChannel, useServerById } from "@/shared/queries/community/community.queries.ts"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/shared/components/ui/Dialog"
+import { Button } from "@/shared/components/ui/Button"
+import { Label } from "@/shared/components/ui/Label"
+import { Input } from "@/shared/components/ui/Input"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/components/ui/DropdownMenu"
+import { useState } from "react"
 
 interface UserMediaControlsProps {
   serverProfileUrl?: string
@@ -51,6 +71,30 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
     enableTranscription,
     disableTranscription,
   } = useWebRTC()
+
+  // Form state
+  const [transcriptionBackend, setTranscriptionBackend] = useState<string>("openai")
+  const [simulStreamingAddr, setSimulStreamingAddr] = useState<string>("")
+  const [openaiApiKey, setOpenaiApiKey] = useState<string>("")
+  const [openaiBaseUrl, setOpenaiBaseUrl] = useState<string>("")
+  const [openaiModel, setOpenaiModel] = useState<string>("")
+  const [transcriptionLanguage, setTranscriptionLanguage] = useState<string>("auto")
+  const [isDiaOpen, setIsDiaOpen] = useState(false)
+
+  const handleEnableTranscription = async () => {
+    try {
+      await enableTranscription(transcriptionLanguage, {
+        backend: transcriptionBackend,
+        simul_streaming_addr: simulStreamingAddr || undefined,
+        openai_api_key: openaiApiKey || undefined,
+        openai_base_url: openaiBaseUrl || undefined,
+        openai_model: openaiModel || undefined,
+      })
+      setIsDiaOpen(false)
+    } catch (e) {
+      console.error("Failed to enable transcription", e)
+    }
+  }
 
   const getConnectionIcon = () => {
     switch (iceStatus) {
@@ -136,20 +180,139 @@ export function UserMediaControls({ callDuration }: UserMediaControlsProps) {
               <ScreenShareOff className="h-5 w-5" />
             )}
           </button>
-          {joined && (
-            <button
-              type="button"
-              onClick={transcriptionEnabled ? disableTranscription : () => enableTranscription()}
-              aria-label={transcriptionEnabled ? "Disable transcription" : "Enable transcription"}
-              className={`transition-colors ${transcriptionEnabled ? "text-muted-foreground hover:text-foreground" : "text-primary"}`}
-            >
-              {transcriptionEnabled ? (
+          {joined &&
+            (transcriptionEnabled ? (
+              <button
+                type="button"
+                onClick={disableTranscription}
+                aria-label="Disable transcription"
+                className="text-muted-foreground hover:text-foreground transition-colors"
+              >
                 <Captions className="h-5 w-5" />
-              ) : (
-                <CaptionsOff className="h-5 w-5" />
-              )}
-            </button>
-          )}
+              </button>
+            ) : (
+              <Dialog open={isDiaOpen} onOpenChange={setIsDiaOpen}>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => setIsDiaOpen(true)}
+                    aria-label="Enable transcription"
+                    className="text-primary transition-colors"
+                  >
+                    <CaptionsOff className="h-5 w-5" />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Enable Transcription</DialogTitle>
+                    <DialogDescription>
+                      Configure transcription settings for this session.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="backend" className="text-right">
+                        Backend
+                      </Label>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="outline" className="w-[280px] justify-between">
+                            {transcriptionBackend === "openai"
+                              ? "OpenAI"
+                              : transcriptionBackend === "simul_streaming"
+                                ? "Simul Streaming"
+                                : "Select backend"}
+                            <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-[280px]">
+                          <DropdownMenuItem onSelect={() => setTranscriptionBackend("openai")}>
+                            OpenAI
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onSelect={() => setTranscriptionBackend("simul_streaming")}
+                          >
+                            Simul Streaming
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                      <Label htmlFor="language" className="text-right">
+                        Language
+                      </Label>
+                      <Input
+                        id="language"
+                        placeholder="auto"
+                        value={transcriptionLanguage}
+                        onChange={(e) => setTranscriptionLanguage(e.target.value)}
+                        className="col-span-3"
+                      />
+                    </div>
+                    {transcriptionBackend === "simul_streaming" && (
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="simul-addr" className="text-right">
+                          Address
+                        </Label>
+                        <Input
+                          id="simul-addr"
+                          placeholder="ws://..."
+                          value={simulStreamingAddr}
+                          onChange={(e) => setSimulStreamingAddr(e.target.value)}
+                          className="col-span-3"
+                        />
+                      </div>
+                    )}
+                    {transcriptionBackend === "openai" && (
+                      <>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="api-key" className="text-right">
+                            API Key
+                          </Label>
+                          <Input
+                            id="api-key"
+                            type="password"
+                            placeholder="sk-..."
+                            value={openaiApiKey}
+                            onChange={(e) => setOpenaiApiKey(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="model" className="text-right">
+                            Model
+                          </Label>
+                          <Input
+                            id="model"
+                            placeholder="whisper-1"
+                            value={openaiModel}
+                            onChange={(e) => setOpenaiModel(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="base-url" className="text-right">
+                            Base URL
+                          </Label>
+                          <Input
+                            id="base-url"
+                            placeholder="https://api.openai.com/v1"
+                            value={openaiBaseUrl}
+                            onChange={(e) => setOpenaiBaseUrl(e.target.value)}
+                            className="col-span-3"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  <DialogFooter>
+                    <Button type="button" onClick={handleEnableTranscription}>
+                      Enable
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            ))}
         </div>
         {joined && (
           <div className="flex items-center gap-3">

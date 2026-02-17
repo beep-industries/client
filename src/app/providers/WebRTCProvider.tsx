@@ -26,6 +26,14 @@ export interface RemoteState {
   video: boolean
 }
 
+export interface TranscriptionOptions {
+  backend?: string
+  simul_streaming_addr?: string
+  openai_api_key?: string
+  openai_base_url?: string
+  openai_model?: string
+}
+
 export interface WebRTCState {
   // UI/status
   server: string | null
@@ -50,7 +58,7 @@ export interface WebRTCState {
   stopCam: () => void
   startMic: () => Promise<void>
   stopMic: () => void
-  enableTranscription: (language?: string) => Promise<void>
+  enableTranscription: (language?: string, options?: TranscriptionOptions) => Promise<void>
   disableTranscription: () => Promise<void>
 }
 
@@ -308,21 +316,45 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       channel.push("subscribe_transcription", {})
       channel.on("transcription_update", (msg) => {
         console.log("transcription_update", JSON.stringify(msg))
-        setTranscripionUpdates((old) => [...old, msg])
+        setTranscripionUpdates((old) => {
+          // Add new message
+          const newHistory = [...old, msg]
+
+          // Calculate total words and prune if necessary
+          let totalWords = 0
+          let cutIndex = 0
+
+          // Iterate backwards to find how many messages we need to keep to have ~20 words
+          for (let i = newHistory.length - 1; i >= 0; i--) {
+            const wordCount = newHistory[i].text.trim().split(/\s+/).length
+            totalWords += wordCount
+            if (totalWords > 20) {
+              cutIndex = i
+              break
+            }
+          }
+
+          // If we exceeded the word limit significantly, slice the array
+          // We keep from cutIndex to the end.
+          // Note: This matches whole messages, so we might keep slightly more than 20 words
+          // to avoid cutting a sentence in half, or we could just enforce a max array length as safeguard.
+          // If totalWords never exceeded 20, cutIndex remains 0 (keep all).
+          return newHistory.slice(cutIndex)
+        })
       })
     },
     [ensureRtc, handleOffer, joinTopic, session, iceStatus, setTranscripionUpdates]
   )
 
   const enableTranscription = useCallback(
-    async (language: string = "auto") => {
+    async (language: string = "auto", options?: TranscriptionOptions) => {
       if (!joined || !channelTopicRef.current) {
         throw new Error("Not joined to a session")
       }
 
       await new Promise<void>((resolve, reject) => {
         joinTopic(channelTopicRef.current!)
-          .push("enable_transcription", { language })
+          .push("enable_transcription", { language, ...options })
           .receive("ok", () => {
             setTranscriptionEnabled(true)
             resolve()

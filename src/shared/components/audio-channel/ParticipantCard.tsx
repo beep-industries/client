@@ -78,7 +78,7 @@ export function ParticipantCard({
   }, [])
 
   // Get transcriptions for this participant within a time window
-  const timeWindowMs = 10000 // 10 seconds window
+  const timeWindowMs = 100000 // 10 seconds window
 
   // Filter transcriptions for this participant
   const allParticipantTranscriptions =
