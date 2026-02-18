@@ -26,6 +26,14 @@ export interface RemoteState {
   video: boolean
 }
 
+export interface TranscriptionOptions {
+  backend?: string
+  simul_streaming_addr?: string
+  openai_api_key?: string
+  openai_base_url?: string
+  openai_model?: string
+}
+
 export interface WebRTCState {
   // UI/status
   server: string | null
@@ -37,8 +45,10 @@ export interface WebRTCState {
   camEnabled: boolean
   micEnabled: boolean
   screenShareEnabled: boolean
+  transcriptionEnabled: boolean
   // Media
   remoteTracks: RemoteState[]
+  transcriptionUpdates: { text: string; endpoint_id: string; start_ms: string; end_ms: string }[]
   // Actions
   join: (server: string, session: string) => Promise<void>
   leave: () => Promise<void>
@@ -48,6 +58,8 @@ export interface WebRTCState {
   stopCam: () => void
   startMic: () => Promise<void>
   stopMic: () => void
+  enableTranscription: (language?: string, options?: TranscriptionOptions) => Promise<void>
+  disableTranscription: () => Promise<void>
 }
 
 const WebRTCContext = createContext<WebRTCState | undefined>(undefined)
@@ -62,6 +74,10 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
   const [screenShareEnabled, setScreenShareEnabled] = useState(false)
   const [micEnabled, setMicEnabled] = useState(false)
   const [remoteTracks, setRemoteTracks] = useState<RemoteState[]>([])
+  const [transcriptionUpdates, setTranscripionUpdates] = useState<
+    { text: string; endpoint_id: string; start_ms: string; end_ms: string }[]
+  >([])
+  const [transcriptionEnabled, setTranscriptionEnabled] = useState(false)
 
   const rtcRef = useRef<RTCPeerConnection | null>(null)
   const presenceRef = useRef<Presence | null>(null)
@@ -124,6 +140,8 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
     setJoined(false)
     setCamEnabled(false)
     setMicEnabled(false)
+    setTranscriptionEnabled(false)
+    setTranscripionUpdates([])
   }, [joinTopic, leaveTopic, session])
 
   const ensureRtc = useCallback(() => {
@@ -294,9 +312,81 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
             reject(err)
           })
       })
+
+      channel.push("subscribe_transcription", {})
+      channel.on("transcription_update", (msg) => {
+        console.log("transcription_update", JSON.stringify(msg))
+        setTranscripionUpdates((old) => {
+          // Add new message
+          const newHistory = [...old, msg]
+
+          // Calculate total words and prune if necessary
+          let totalWords = 0
+          let cutIndex = 0
+
+          // Iterate backwards to find how many messages we need to keep to have ~20 words
+          for (let i = newHistory.length - 1; i >= 0; i--) {
+            const wordCount = newHistory[i].text.trim().split(/\s+/).length
+            totalWords += wordCount
+            if (totalWords > 20) {
+              cutIndex = i
+              break
+            }
+          }
+
+          // If we exceeded the word limit significantly, slice the array
+          // We keep from cutIndex to the end.
+          // Note: This matches whole messages, so we might keep slightly more than 20 words
+          // to avoid cutting a sentence in half, or we could just enforce a max array length as safeguard.
+          // If totalWords never exceeded 20, cutIndex remains 0 (keep all).
+          return newHistory.slice(cutIndex)
+        })
+      })
     },
-    [ensureRtc, handleOffer, joinTopic, session, iceStatus]
+    [ensureRtc, handleOffer, joinTopic, session, iceStatus, setTranscripionUpdates]
   )
+
+  const enableTranscription = useCallback(
+    async (language: string = "auto", options?: TranscriptionOptions) => {
+      if (!joined || !channelTopicRef.current) {
+        throw new Error("Not joined to a session")
+      }
+
+      await new Promise<void>((resolve, reject) => {
+        joinTopic(channelTopicRef.current!)
+          .push("enable_transcription", { language, ...options })
+          .receive("ok", () => {
+            setTranscriptionEnabled(true)
+            resolve()
+          })
+          .receive("error", (err: unknown) => {
+            console.error("enable_transcription error", err)
+            reject(err)
+          })
+      })
+    },
+    [joined, joinTopic]
+  )
+
+  const disableTranscription = useCallback(async () => {
+    if (!joined || !channelTopicRef.current) {
+      throw new Error("Not joined to a session")
+    }
+
+    await new Promise<void>((resolve, reject) => {
+      joinTopic(channelTopicRef.current!)
+        .push("disable_transcription", {})
+        .receive("ok", () => {
+          setTranscriptionEnabled(false)
+          setTranscripionUpdates([])
+          resolve()
+        })
+        .receive("error", (err: unknown) => {
+          console.error("disable_transcription error", err)
+          reject(err)
+        })
+    })
+  }, [joined, joinTopic])
 
   const stopScreenShare = useCallback(async () => {
     setScreenShareEnabled(false)
@@ -434,6 +524,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       screenShareEnabled,
       camEnabled,
       micEnabled,
+      transcriptionEnabled,
       remoteTracks,
       join,
       leave,
@@ -443,6 +534,9 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       stopScreenShare,
       startMic,
       stopMic,
+      transcriptionUpdates,
+      enableTranscription,
+      disableTranscription,
     }),
     [
       server,
@@ -454,6 +548,7 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       camEnabled,
       screenShareEnabled,
       micEnabled,
+      transcriptionEnabled,
       remoteTracks,
       join,
       leave,
@@ -463,6 +558,9 @@ export function WebRTCProvider({ children }: { children: React.ReactNode }) {
       stopScreenShare,
       startMic,
       stopMic,
+      transcriptionUpdates,
+      enableTranscription,
+      disableTranscription,
     ]
   )
 
