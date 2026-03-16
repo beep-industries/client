@@ -1,4 +1,4 @@
-import { useServerById } from "@/shared/queries/community/community.queries"
+import { useServerById } from "@/shared/queries/community"
 import { useTranslation } from "react-i18next"
 
 interface PageServerProps {

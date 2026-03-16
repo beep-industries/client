@@ -2,7 +2,7 @@ import TopBar from "@/shared/components/TopBar"
 import { Input } from "@/shared/components/ui/Input"
 import { useTranslation } from "react-i18next"
 import ServerCard from "@/shared/components/ServerCard"
-import type { Server } from "@/shared/queries/community/community.types"
+import type { Server } from "@/shared/queries/community"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 interface PageExploreProps {

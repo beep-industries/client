@@ -11,8 +11,8 @@ import type {
   MessageDeletedEvent,
   MessageUpdatedEvent,
 } from "@/shared/queries/real-time/event.types"
-import { useServerMembers } from "@/shared/queries/community/community.queries"
-import type { GetServerMembersResponse } from "@/shared/queries/community/community.types"
+import { useServerMembers } from "@/shared/queries/community"
+import type { GetServerMembersResponse } from "@/shared/queries/community"
 import { useCurrentUser, useUsersBatch } from "@/shared/queries/user/user.queries"
 import type { UserBasicInfo } from "@/shared/queries/user/user.types"
 import type { MentionMember } from "@/shared/components/MentionPopover"

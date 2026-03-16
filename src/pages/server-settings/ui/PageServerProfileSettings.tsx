@@ -1,6 +1,6 @@
 import ServerCard from "@/shared/components/ServerCard"
 import { Skeleton } from "@/shared/components/ui/Skeleton"
-import type { Server } from "@/shared/queries/community/community.types"
+import type { Server } from "@/shared/queries/community"
 import UpdateDescriptionDialog from "./UpdateDescriptionDialog"
 import type { Dispatch, SetStateAction } from "react"
 

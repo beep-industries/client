@@ -1,7 +1,4 @@
-import {
-  useFriendInvitations,
-  useFriendRequests,
-} from "@/shared/queries/community/community.queries"
+import { useFriendInvitations, useFriendRequests } from "@/shared/queries/community"
 import { createFileRoute } from "@tanstack/react-router"
 import FriendRequest from "@/shared/components/FriendRequest"
 import SectionNav from "@/shared/components/SectionNav"

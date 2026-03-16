@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useNavigate } from "@tanstack/react-router"
-import { useAcceptServerInvitation } from "@/shared/queries/community/community.queries"
+import { useAcceptServerInvitation } from "@/shared/queries/community"
 import { useTranslation } from "react-i18next"
 import { Loader2, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "@/shared/components/ui/Button"

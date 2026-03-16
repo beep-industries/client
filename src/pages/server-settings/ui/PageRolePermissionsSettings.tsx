@@ -1,4 +1,4 @@
-import type { Role } from "@/shared/queries/community/community.types"
+import type { Role } from "@/shared/queries/community"
 import { Form, FormField, FormControl } from "@/shared/components/ui/Form"
 import { Button } from "@/shared/components/ui/Button"
 import { PermissionSwitch } from "@/shared/components/PermissionSwitch"

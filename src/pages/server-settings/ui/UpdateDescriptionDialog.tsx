@@ -9,7 +9,7 @@ import {
   DialogClose,
 } from "@/shared/components/ui/Dialog"
 import { useTranslation } from "react-i18next"
-import type { Server } from "@/shared/queries/community/community.types"
+import type { Server } from "@/shared/queries/community"
 import { cn } from "@/shared/lib/utils"
 
 interface UpdateDescriptionDialogProps {

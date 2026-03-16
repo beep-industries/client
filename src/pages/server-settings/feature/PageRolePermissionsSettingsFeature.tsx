@@ -1,4 +1,4 @@
-import { useRoles, useUpdateRole } from "@/shared/queries/community/community.queries"
+import { useRoles, useUpdateRole } from "@/shared/queries/community"
 import { PageRolePermissionsSettings } from "../ui/PageRolePermissionsSettings"
 import { useMemo, useEffect } from "react"
 import { useForm } from "react-hook-form"
@@ -8,7 +8,7 @@ import { permissionsToRecord, recordToPermissions } from "@/shared/lib/permissio
 import type z from "zod"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
-import { communityKeys } from "@/shared/queries/community/community.queries"
+import { communityKeys } from "@/shared/queries/community"
 import { useTranslation } from "react-i18next"
 
 interface PageRolePermissionsSettingsProps {

@@ -1,6 +1,6 @@
 import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import FriendRequest from "@/shared/components/FriendRequest"
-import { useFriends } from "@/shared/queries/community/community.queries"
+import { useFriends } from "@/shared/queries/community"
 import { createFileRoute } from "@tanstack/react-router"
 
 export const Route = createFileRoute("/friends/")({
