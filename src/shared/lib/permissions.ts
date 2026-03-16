@@ -1,5 +1,5 @@
 import { Permission } from "@/shared/models/permissions"
-import type { Role } from "@/shared/queries/community/community.types"
+import type { Role } from "@/shared/queries/community"
 
 export interface PermissionMetadata {
   key: string

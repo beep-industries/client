@@ -9,8 +9,8 @@ import {
   DialogTitle,
   DialogClose,
 } from "./ui/Dialog"
-import { useCreateServerInvitationMutation } from "../queries/community/community.queries"
-import type { ExpirationOption } from "../queries/community/community.types"
+import { useCreateServerInvitationMutation } from "../queries/community"
+import type { ExpirationOption } from "../queries/community"
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -1,4 +1,4 @@
-import type { Friend as FriendType } from "../queries/community/community.types"
+import type { Friend as FriendType } from "../queries/community"
 import Friend from "./Friend"
 
 interface FriendsListProps {

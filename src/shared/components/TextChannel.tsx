@@ -1,6 +1,6 @@
 import { Hash } from "lucide-react"
 import Channel from "./Channel"
-import type { Channel as ChannelType } from "@/shared/queries/community/community.types.ts"
+import type { Channel as ChannelType } from "@/shared/queries/community"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
 import { useMemo } from "react"

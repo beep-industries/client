@@ -3,7 +3,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./ui/Collap
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu } from "./ui/Sidebar"
 import TextChannel from "./TextChannel"
 import VoiceChannel from "./VoiceChannel"
-import { type Channel, ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { type Channel, ChannelTypes } from "@/shared/queries/community"
 
 interface FolderProps {
   id: string

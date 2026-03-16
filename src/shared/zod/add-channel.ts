@@ -1,5 +1,5 @@
 import z from "zod"
-import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { ChannelTypes } from "@/shared/queries/community"
 
 export const addChannelFormSchema = z.object({
   name: z

@@ -7,7 +7,7 @@ import {
   useDeclineFriendRequest,
   useDeleteFriend,
   useDeleteFriendRequest,
-} from "../queries/community/community.queries"
+} from "../queries/community"
 import { useEffect, useCallback } from "react"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"

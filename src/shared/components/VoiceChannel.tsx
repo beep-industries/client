@@ -1,4 +1,4 @@
-import type { Channel as ChannelType } from "@/shared/queries/community/community.types.ts"
+import type { Channel as ChannelType } from "@/shared/queries/community"
 import { RealTimeTopicProvider } from "@/app/providers/RealTimeTopicProvider.tsx"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { Mic, MicOff, Video, VideoOff, Volume2 } from "lucide-react"
@@ -6,7 +6,7 @@ import Channel from "@/shared/components/Channel.tsx"
 import { useMemo } from "react"
 import { useRealTimeSocket } from "@/app/providers/RealTimeSocketProvider.tsx"
 import { Avatar, AvatarFallback, AvatarImage } from "@/shared/components/ui/Avatar.tsx"
-import { useServerMembers } from "@/shared/queries/community/community.queries.ts"
+import { useServerMembers } from "@/shared/queries/community"
 import { useUsersBatch } from "@/shared/queries/user/user.queries.ts"
 
 interface VoiceChannelProps {
