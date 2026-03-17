@@ -12,6 +12,9 @@ export * from "./role"
 import ky from "ky"
 
 class Api {
+  private communityApi?: ReturnType<typeof ky.create>
+  private accessToken?: string
+
   constructor() {}
   getStoredAccessToken(): string {
     const authority = import.meta.env.VITE_KEYCLOAK_AUTHORITY
@@ -37,18 +40,31 @@ class Api {
     return user.access_token
   }
 
-  createCommunityApi() {
+  createCommunityApi(accessToken: string) {
     return ky.create({
       prefixUrl: import.meta.env.VITE_COMMUNITY_SERVICE_URL,
       timeout: 30000,
       headers: {
-        Authorization: `Bearer ${this.getStoredAccessToken()}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     })
   }
 
+  resetRequester() {
+    this.communityApi = undefined
+    this.accessToken = undefined
+  }
+
   get requester() {
-    return this.createCommunityApi()
+    const accessToken = this.getStoredAccessToken()
+
+    if (this.communityApi && this.accessToken === accessToken) {
+      return this.communityApi
+    }
+
+    this.accessToken = accessToken
+    this.communityApi = this.createCommunityApi(accessToken)
+    return this.communityApi
   }
 }
 
