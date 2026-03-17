@@ -94,12 +94,9 @@ export const useUpdateServer = (serverId: string) => {
 }
 
 export const useDeleteServer = (serverId: string) => {
-  const { accessToken } = useAuth()
-
-  return {
-    mutate: () => deleteServer(serverId),
-    isLoading: !!accessToken,
-  }
+  return useMutation({
+    mutationFn: () => deleteServer(serverId),
+  })
 }
 
 export const useCreateServerInvitationMutation = () => {
