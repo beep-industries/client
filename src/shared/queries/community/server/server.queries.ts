@@ -30,10 +30,18 @@ export const serverKeys = {
     [...serverKeys.all, "discover-servers", `page-${page}`] as const,
 }
 
-export const useCreateServer = () =>
-  useMutation({
+export const useCreateServer = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
     mutationFn: (body: CreateServerRequest) => createServer(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: serverKeys.servers() })
+      queryClient.invalidateQueries({ queryKey: serverKeys.discoverServers() })
+      queryClient.invalidateQueries({ queryKey: [...serverKeys.all, "search-servers"] })
+    },
   })
+}
 
 export const useServerById = (serverId: string) => {
   const { accessToken } = useAuth()

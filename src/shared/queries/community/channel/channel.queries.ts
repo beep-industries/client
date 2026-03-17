@@ -1,4 +1,3 @@
-import { useAuth } from "@/app/providers/KeycloakAuthProvider"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { createChannel, deleteChannel, getChannel, getChannels, updateChannel } from "./channel.api"
 import type { CreateServerChannelRequest, UpdateServerChannelRequest } from "./channel.request"
@@ -11,8 +10,6 @@ export const channelKeys = {
 }
 
 export const useChannel = (channelId: string) => {
-  const { accessToken } = useAuth()
-
   return useQuery({
     queryKey: channelKeys.channel(channelId),
     queryFn: async (): Promise<Channel> => {
@@ -24,13 +21,11 @@ export const useChannel = (channelId: string) => {
         throw new Error("Error fetching channel by ID")
       }
     },
-    enabled: !!accessToken && !!channelId,
+    enabled: !!channelId,
   })
 }
 
 export const useChannels = (serverId: string | undefined) => {
-  const { accessToken } = useAuth()
-
   return useQuery({
     queryKey: channelKeys.channels(serverId!),
     queryFn: async (): Promise<Channel[]> => {
@@ -42,7 +37,7 @@ export const useChannels = (serverId: string | undefined) => {
         throw new Error("Error fetching channels")
       }
     },
-    enabled: !!accessToken && !!serverId,
+    enabled: !!serverId,
   })
 }
 
