@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import type { Server } from "@/shared/queries/community/community.types"
+import type { Server } from "@/shared/queries/community"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
 import { cn } from "../lib/utils"
 import { Check, X } from "lucide-react"

@@ -1,5 +1,5 @@
 import PageServer from "@/pages/server/ui/PageServer"
-import { useChannels } from "@/shared/queries/community/community.queries"
+import { useChannels } from "@/shared/queries/community"
 import { createFileRoute, useNavigate } from "@tanstack/react-router"
 import { useEffect } from "react"
 

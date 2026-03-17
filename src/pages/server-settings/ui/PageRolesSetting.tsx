@@ -1,6 +1,6 @@
 import { Button } from "@/shared/components/ui/Button"
 import { Skeleton } from "@/shared/components/ui/Skeleton"
-import type { Role } from "@/shared/queries/community/community.types"
+import type { Role } from "@/shared/queries/community"
 import { Separator } from "@radix-ui/react-separator"
 import { Outlet } from "@tanstack/react-router"
 import { RoleButton } from "@/shared/components/RoleButton"

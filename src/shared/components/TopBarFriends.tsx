@@ -3,11 +3,7 @@ import TopBar from "./TopBar"
 import { Button } from "./ui/Button"
 import { UserPlus } from "lucide-react"
 import { Badge } from "./ui/Badge"
-import {
-  communityKeys,
-  useCreateFriendRequest,
-  useFriendInvitations,
-} from "../queries/community/community.queries"
+import { communityKeys, useCreateFriendRequest, useFriendInvitations } from "../queries/community"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { useEffect, useState, useCallback } from "react"
 import { AddFriendRequestForm } from "../forms/AddFriendRequest"

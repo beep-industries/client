@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { PageRoleMembersSettingsFeature } from "@/pages/server-settings/feature/PageRoleMembersSettingsFeature"
-import { useRole } from "@/shared/queries/community/community.queries"
+import { useRole } from "@/shared/queries/community"
 
 export const Route = createFileRoute("/servers/$id/settings/roles/$roleId/members")({
   component: RouteComponent,

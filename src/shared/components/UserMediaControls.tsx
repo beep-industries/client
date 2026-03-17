@@ -18,7 +18,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/components/ui/Avatar"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/shared/components/ui/Tooltip.tsx"
-import { useChannel, useServerById } from "@/shared/queries/community/community.queries.ts"
+import { useChannel, useServerById } from "@/shared/queries/community"
 import {
   Dialog,
   DialogContent,

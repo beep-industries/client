@@ -21,10 +21,10 @@ import {
 import { Button } from "../components/ui/Button"
 import { Switch } from "../components/ui/Switch"
 import { useTranslation } from "react-i18next"
-import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { ChannelTypes } from "@/shared/queries/community"
 import { useEffect } from "react"
 import { useQueryClient } from "@tanstack/react-query"
-import { communityKeys, useCreateChannel } from "@/shared/queries/community/community.queries.ts"
+import { communityKeys, useCreateChannel } from "@/shared/queries/community"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 

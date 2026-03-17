@@ -1,9 +1,9 @@
 import { useState } from "react"
-import { useServerById, useUpdateServer } from "@/shared/queries/community/community.queries"
+import { useServerById, useUpdateServer } from "@/shared/queries/community"
 import { PageServerProfileSettings } from "../ui/PageServerProfileSettings"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
-import type { Server } from "@/shared/queries/community/community.types"
+import type { Server } from "@/shared/queries/community"
 
 interface PageServerProfileSettingsFeatureProps {
   serverId: string

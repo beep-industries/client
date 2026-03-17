@@ -4,14 +4,14 @@ import {
   useAssignRole,
   useUnassignRole,
   useRoleMembers,
-} from "@/shared/queries/community/community.queries"
+} from "@/shared/queries/community"
 import { useUsersBatch } from "@/shared/queries/user/user.queries"
 import { PageRoleMembersSettings } from "../ui/PageRoleMembersSettings"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
-import { communityKeys } from "@/shared/queries/community/community.queries"
-import type { Role } from "@/shared/queries/community/community.types"
+import { communityKeys } from "@/shared/queries/community"
+import type { Role } from "@/shared/queries/community"
 
 interface PageRoleMembersSettingsFeatureProps {
   serverId: string

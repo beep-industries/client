@@ -12,15 +12,11 @@ import {
 import { useTranslation } from "react-i18next"
 import { useFolder } from "@/shared/hooks/UseFolder.ts"
 import { cn } from "@/shared/lib/utils"
-import {
-  communityKeys,
-  useDeleteChannel,
-  useUpdateChannel,
-} from "@/shared/queries/community/community.queries.ts"
+import { communityKeys, useDeleteChannel, useUpdateChannel } from "@/shared/queries/community"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect } from "react"
 import { toast } from "sonner"
-import { type Channel, ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { type Channel, ChannelTypes } from "@/shared/queries/community"
 import { useNavigate, useParams } from "@tanstack/react-router"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 

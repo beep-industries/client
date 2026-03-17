@@ -5,10 +5,10 @@ import {
   useSearchServersPage,
   useDiscoverServersPage,
   useCreateMember,
-} from "@/shared/queries/community/community.queries"
+} from "@/shared/queries/community"
 import { MAXIMUM_SERVERS_PER_API_CALL } from "@/shared/constants/community.contants"
 import PageExplore from "../ui/PageExplore"
-import type { Server } from "@/shared/queries/community/community.types.ts"
+import type { Server } from "@/shared/queries/community"
 import { useNavigate } from "@tanstack/react-router"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"

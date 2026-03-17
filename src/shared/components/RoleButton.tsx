@@ -2,7 +2,7 @@ import { Button } from "@/shared/components/ui/Button"
 import { cn } from "@/shared/lib/utils"
 import { X } from "lucide-react"
 import { Link } from "@tanstack/react-router"
-import type { Role } from "@/shared/queries/community/community.types"
+import type { Role } from "@/shared/queries/community"
 import {
   Dialog,
   DialogContent,

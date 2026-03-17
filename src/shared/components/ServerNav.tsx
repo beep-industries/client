@@ -9,10 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/Avatar"
-import type { Server } from "../queries/community/community.types"
+import type { Server } from "../queries/community"
 import { Button } from "./ui/Button"
 import { useEffect, useMemo, useState } from "react"
-import { communityKeys, useCreateServer, useServers } from "../queries/community/community.queries"
+import { communityKeys, useCreateServer, useServers } from "../queries/community"
 import { useInView } from "react-intersection-observer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/Dialog"
 import { AddServerForm } from "../forms/AddServer"

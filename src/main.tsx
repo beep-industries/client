@@ -10,6 +10,7 @@ import { AuthProvider, useAuth as useOidcAuth } from "react-oidc-context"
 import { WebStorageStateStore, type User as OidcClientUser } from "oidc-client-ts"
 import { type AuthState, mapOidcUserToUser } from "@/app/providers/KeycloakAuthProvider"
 import { SidebarContentProvider } from "@/app/providers/SidebarContentProvider"
+import { api as communityApi } from "@/shared/queries/community"
 import { Toaster } from "./shared/components/ui/Sonner"
 import { useCallback } from "react"
 
@@ -75,7 +76,10 @@ function AuthenticatedRouter() {
     user: mapOidcUserToUser(oidcAuth.user),
     accessToken: oidcAuth.user?.access_token ?? null,
     login: () => oidcAuth.signinRedirect(),
-    logout: () => oidcAuth.signoutRedirect(),
+    logout: () => {
+      communityApi.resetRequester()
+      oidcAuth.signoutRedirect()
+    },
     signinSilent: async () => {
       const user = await oidcAuth.signinSilent()
       return user?.access_token ?? null

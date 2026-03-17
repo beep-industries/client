@@ -9,12 +9,8 @@ import { SidebarMenu } from "./ui/Sidebar"
 import TextChannel from "./TextChannel"
 import VoiceChannel from "./VoiceChannel"
 import { useTranslation } from "react-i18next"
-import {
-  communityKeys,
-  useChannels,
-  useDeleteChannel,
-} from "@/shared/queries/community/community.queries"
-import { ChannelTypes } from "@/shared/queries/community/community.types.ts"
+import { communityKeys, useChannels, useDeleteChannel } from "@/shared/queries/community"
+import { ChannelTypes } from "@/shared/queries/community"
 import { AddChannelForm } from "@/shared/forms/AddChannel.tsx"
 import { useEffect, useMemo, useState } from "react"
 import { useFolder } from "@/shared/hooks/UseFolder.ts"

@@ -2,7 +2,7 @@ import PageAudioChannel from "@/pages/channel/PageAudioChannel.tsx"
 import { useWebRTC } from "@/app/providers/WebRTCProvider.tsx"
 import { useCallback, useEffect } from "react"
 import { useParams } from "@tanstack/react-router"
-import { useChannel } from "@/shared/queries/community/community.queries.ts"
+import { useChannel } from "@/shared/queries/community"
 import PageMessagesFeature from "@/pages/messages/feature/PageMessagesFeature.tsx"
 import { useChannelType, type ChannelType } from "@/shared/components/ChannelTypeContext"
 

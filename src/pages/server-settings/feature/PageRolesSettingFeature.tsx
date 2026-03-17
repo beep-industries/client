@@ -1,11 +1,11 @@
 import { PageRolesSetting } from "../ui/PageRolesSetting"
-import { useRoles, useDeleteRole } from "@/shared/queries/community/community.queries"
+import { useRoles, useDeleteRole } from "@/shared/queries/community"
 import { useNavigate } from "@tanstack/react-router"
 import { useEffect } from "react"
 import { toast } from "sonner"
 import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
-import { communityKeys } from "@/shared/queries/community/community.queries"
+import { communityKeys } from "@/shared/queries/community"
 
 interface PageRolesSettingFeatureProps {
   serverId: string

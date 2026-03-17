@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import type { Role } from "@/shared/queries/community/community.types"
+import type { Role } from "@/shared/queries/community"
 import { MemberSearchCombobox, type SearchMember } from "@/shared/components/MemberSearchCombobox"
 import { RoleMemberItem } from "@/shared/components/RoleMemberItem"
 import { useMemo } from "react"

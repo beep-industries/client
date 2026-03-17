@@ -21,7 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/DropdownMenu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/Sidebar"
-import { type Server } from "../queries/community/community.types"
+import { type Server } from "../queries/community"
 import { AddChannelForm } from "../forms/AddChannel"
 import ServerInvitationDialog from "./ServerInvitationDialog"
 import { Skeleton } from "./ui/Skeleton"
