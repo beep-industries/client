@@ -34,7 +34,12 @@
       "public": "Public",
       "private": "Private",
       "cancel": "Cancel",
-      "create": "Create server"
+      "create": "Create server",
+      "save": "Save",
+      "picture_upload": "Upload Server Picture",
+      "banner_upload": "Upload Server Banner",
+      "click_to_upload": "Click to upload",
+      "click_to_upload_banner": "Click to upload banner"
     }
   },
   "userNav": {
@@ -365,6 +370,18 @@
     "updateName": {
       "success": "Server name updated successfully",
       "error": "Failed to update server name"
+    },
+    "updateBanner": {
+      "title": "Update Server Banner",
+      "save": "Save",
+      "success": "Server banner updated successfully",
+      "error": "Failed to update server banner"
+    },
+    "updatePicture": {
+      "title": "Update Server Picture",
+      "save": "Save",
+      "success": "Server picture updated successfully",
+      "error": "Failed to update server picture"
     }
   }
 }
